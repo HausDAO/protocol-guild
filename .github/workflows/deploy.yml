@@ -22,7 +22,7 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: yarn install
+      - run: yarn install --frozen-lockfile
       - run: echo "🖥️ yarn installed"
       - run: yarn build
 #   deploy:
