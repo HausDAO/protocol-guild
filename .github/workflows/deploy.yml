@@ -1,7 +1,5 @@
 name: Node.js CD
-on:
-  pull_request:
-    branches: [$default-branch]
+on: [push]
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
