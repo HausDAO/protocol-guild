@@ -32,6 +32,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
       - run: npm ci
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
       - run: npm run build
 #   deploy:
 #     uses: web3-storage/add-to-web3@v2
