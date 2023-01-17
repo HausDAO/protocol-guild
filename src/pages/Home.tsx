@@ -9,6 +9,8 @@ import { Trigger } from "../components/Trigger";
 import { TXBuilder } from "@daohaus/tx-builder";
 import { CONTRACT } from "../legos/contract";
 import { useMemberRegistry } from "../hooks/useRegistry";
+import { MemberInfo } from "../components/MemberInfo";
+import { MemberTable } from "../components/MemberTable";
 
 export const HAUS_RPC = {
   "0x1": `https://787b6618b5a34070874c12d7157e6661.eth.rpc.rivet.cloud/`,
@@ -34,7 +36,7 @@ export const Home = () => {
     chainId === daochain
       ? true
       : "You are not connected to the same network as the DAO";
-
+  
   return (
     <TXBuilder
       provider={provider}
@@ -59,7 +61,8 @@ export const Home = () => {
         />
 
         <ParMd>-----------------------</ParMd>
-        <ParMd>Following is a table of members and seconds active</ParMd>
+        <MemberInfo memberList={data?.members}></MemberInfo>
+        <MemberTable memberList={data?.members}></MemberTable>
       </SingleColumnLayout>
     </TXBuilder>
   );

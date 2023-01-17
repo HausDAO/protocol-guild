@@ -30,16 +30,12 @@ export const Routes = () => {
           { label: "Home", href: "/" },
           { label: "New Member/s", href: "/newmember" },
           { label: "Edit Member/s", href: "/editmember" },
-          { label: "Claim", href: "/claim" },
-          { label: "DAO", href: "/dao" },
         ]}
       >
         <Router>
           <Route path="/" element={<Home />} />
           <Route path="/newmember" element={<NewMember />} />
           <Route path="/editmember" element={<EditMember />} />
-          <Route path="/claim" element={<Claim />} />
-          <Route path="/dao" element={<Dao />} />
         </Router>
       </DHLayout>
     </MolochV3DaoProvider>
