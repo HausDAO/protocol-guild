@@ -1,4 +1,4 @@
-name: Node.js CD
+name: CD
 on:
   pull_request:
     branches: [$default-branch]
@@ -31,9 +31,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-      - run: npm ci
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - run: npm run build
+      - run: yarn install
+      - run: echo "🖥️ yarn installed"
+      - run: yarn build
 #   deploy:
 #     uses: web3-storage/add-to-web3@v2
 #     id: web3
