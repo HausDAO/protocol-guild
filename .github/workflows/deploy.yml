@@ -1,49 +1,34 @@
-name: CD
-on:
-  pull_request:
-    branches: [$default-branch]
+name: Deploy to Web3
+run-name: ${{ github.actor }} is deploying to out Web3 🚀
+on: [push]
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
-        uses: actions/checkout@v3
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "npm"
+      - run: rm -rf node_modules && yarn install --frozen-lockfile
+      - run: yarn build
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
-  build:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - uses: web3-storage/add-to-web3@v2
+        id: web3
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
-      - run: yarn install
-      - run: echo "🖥️ yarn installed"
-      - run: yarn build
-#   deploy:
-#     uses: web3-storage/add-to-web3@v2
-#     id: web3
-#     with:
-#       web3_token: ${{ secrets.WEB3_STORAGE_TOKEN }}
-#       path_to_add: 'dist'
-    
-#     steps: 
-#     # "bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
-#     - run: echo ${{ steps.web3.outputs.cid }}
+          web3_token: ${{ secrets.WEB3_STORAGE_TOKEN }}
+          path_to_add: "dist"
 
-#     # "https://dweb.link/ipfs/bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
-#     - run: echo ${{ steps.web3.outputs.url }}
+      # "bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
+      - run: echo ${{ steps.web3.outputs.cid }}
+
+      # "https://dweb.link/ipfs/bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
+      - run: echo ${{ steps.web3.outputs.url }}
