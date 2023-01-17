@@ -11,11 +11,15 @@ jobs:
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
+        uses: actions/checkout@v3
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - run: echo "🍏 This job's status is ${{ job.status }}."
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: "npm"
+          cache: 'npm'
       - run: rm -rf node_modules && yarn install --frozen-lockfile
       - run: yarn build
       - name: List files in the repository
@@ -25,7 +29,7 @@ jobs:
         id: web3
         with:
           web3_token: ${{ secrets.WEB3_STORAGE_TOKEN }}
-          path_to_add: "dist"
+          path_to_add: 'dist'
 
       # "bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
       - run: echo ${{ steps.web3.outputs.cid }}
