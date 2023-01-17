@@ -1,12 +1,13 @@
 name: Deploy to Web3
 run-name: ${{ github.actor }} is deploying to out Web3 🚀
-push:
-  branches: [$default-branch]
-pull_request:
-  types: [opened, synchronize, reopened, closed]
-  branches: [$default-branch]
+on:
+  push:
+    branches: [$default-branch]
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches: [$default-branch]
 jobs:
-  Explore-GitHub-Actions:
+  Deploy-To-Web3-Storage:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
