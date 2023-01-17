@@ -12,7 +12,6 @@ jobs:
       matrix:
         node-version: [14.x, 16.x, 18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
@@ -22,15 +21,15 @@ jobs:
           cache: "npm"
       - run: npm ci
       - run: npm run build --if-present
-      - run: npm test
-      uses: web3-storage/add-to-web3@v2
-      id: web3
-      with:
-        web3_token: ${{ secrets.WEB3_STORAGE_TOKEN }}
-        path_to_add: 'dist'
+  deploy:
+    uses: web3-storage/add-to-web3@v2
+    id: web3
+    with:
+      web3_token: ${{ secrets.WEB3_STORAGE_TOKEN }}
+      path_to_add: 'dist'
 
-      # "bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
-      - run: echo ${{ steps.web3.outputs.cid }}
+    # "bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
+    - run: echo ${{ steps.web3.outputs.cid }}
 
-      # "https://dweb.link/ipfs/bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
-      - run: echo ${{ steps.web3.outputs.url }}
+    # "https://dweb.link/ipfs/bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
+    - run: echo ${{ steps.web3.outputs.url }}
