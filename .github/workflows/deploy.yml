@@ -1,6 +1,10 @@
 name: Deploy to Web3
 run-name: ${{ github.actor }} is deploying to out Web3 🚀
-on: [push]
+push:
+  branches: [$default-branch]
+pull_request:
+  types: [opened, synchronize, reopened, closed]
+  branches: [$default-branch]
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
