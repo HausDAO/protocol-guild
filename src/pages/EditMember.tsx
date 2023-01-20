@@ -1,6 +1,7 @@
 import { useDHConnect } from '@daohaus/connect';
 import { FormBuilder } from '@daohaus/form-builder';
 import { TXBuilder } from '@daohaus/tx-builder';
+import { customFields } from '../legos/fields';
 
 import { FORM } from '../legos/forms';
 
@@ -15,7 +16,8 @@ export const EditMember = () => {
       safeId="0xaccd85e73639b5213a001630eb2512dbd6292e32"
       appState={{}}
     >
-      <FormBuilder form={FORM.EDITMEMBER} targetNetwork="0x5" />
+      <FormBuilder form={FORM.EDITMEMBER} targetNetwork="0x5" customFields={customFields} />
     </TXBuilder>
+    
   );
 };

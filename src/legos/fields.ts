@@ -4,8 +4,9 @@ import { MainLayout } from '@daohaus/ui';
 import { CSTextarea } from '../components/CSTextarea';
 import { Item } from '@daohaus/ui/components/molecules/Dropdown/Dropdown.styles';
 import { OneShareArrayField } from '../components/OneShareArrayField';
+import { EditArrayField } from '../components/EditArrayField';
 
-export const customFields = {...CoreFieldLookup, cstextarea: CSTextarea, memberlistener: OneShareArrayField};
+export const customFields = {...CoreFieldLookup, cstextarea: CSTextarea, memberlistener: OneShareArrayField, editmemberlistener: EditArrayField};
 export type CustomFieldLego = FieldLegoBase<typeof customFields>;
 
 export const FIELD: Record<string, CustomFieldLego> = {
@@ -41,6 +42,10 @@ export const FIELD: Record<string, CustomFieldLego> = {
   MEMBERLISTENER: {
     id: 'memberlistener',
     type: 'memberlistener',
+  },
+  EDITMEMBERLISTENER: {
+    id: 'editmemberlistener',
+    type: 'editmemberlistener',
   },
   LINK: {
     id: 'link',
