@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: "npm"
+          cache: 'npm'
       - run: rm -rf node_modules && yarn install --frozen-lockfile
       - run: yarn build
       - name: List files in the repository
@@ -34,7 +34,7 @@ jobs:
         id: web3
         with:
           web3_token: ${{ secrets.WEB3_STORAGE_TOKEN }}
-          path_to_add: "dist"
+          path_to_add: 'dist'
 
       # "bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
       - run: echo ${{ steps.web3.outputs.cid }}
