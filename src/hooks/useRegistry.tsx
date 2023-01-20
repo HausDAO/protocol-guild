@@ -5,12 +5,9 @@ import { createContract } from "@daohaus/tx-builder";
 import { ValidNetwork, Keychain, HAUS_RPC } from "@daohaus/keychain-utils";
 import { nowInSeconds } from "@daohaus/utils";
 
-import { Member } from "../types/Member.types";
-
 import MemberRegistryAbi from "../abis/memberRegistry.json";
-import { formatMembers } from "../helpers/formatMembers";
 
-
+import { Member } from "../types/Member.types";
 
 const fetchMembers = async ({
   registryAddress,
@@ -31,14 +28,11 @@ const fetchMembers = async ({
   });
 
   try {
-    const members = await MemberRegistryContract.getMembers();
-
-    const lastUpdate = await MemberRegistryContract.lastUpdate();
-
-    const formattedMembers = formatMembers(members);
+    const members: Member[] = await MemberRegistryContract.getMembers();
+    const lastUpdate: number = await MemberRegistryContract.lastUpdate();
 
     return {
-      members: formattedMembers,
+      members: members,
       lastUpdate: lastUpdate,
       // memberAlocs: memberAlocs,
     };

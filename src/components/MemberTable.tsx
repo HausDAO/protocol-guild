@@ -27,8 +27,7 @@ const columns = [
 ]
 
 export const MemberTable = ({ memberList }: {memberList: Member[]}) => {
-  const [data, setData] = React.useState(() => [...memberList])
-  console.log('first', memberList)
+  const [data] = React.useState(() => [...memberList])
   const table = useReactTable({
     data,
     columns,

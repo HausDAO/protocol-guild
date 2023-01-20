@@ -68,7 +68,7 @@ export const Home = () => {
         ></MemberInfo>
         {isLoading && <Spinner />}
         {!isLoading && data?.members && (
-          <MemberTable memberList={data?.members}></MemberTable>
+          <MemberTable memberList={data.members}></MemberTable>
         )}
       </SingleColumnLayout>
     </TXBuilder>
