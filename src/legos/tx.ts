@@ -130,11 +130,28 @@ export const ACTION_TX: Record<string, TXLegoBase> = {
   TRIGGER: {
     id: 'TRIGGER',
     contract: CONTRACT.MEMBER_REGISTRY,
-    method: 'triggerCalcAndSplits',
+    method: 'updateAll',
   },
-  CLAIM: {
-    id: 'CLAIM',
-    contract: CONTRACT.MEMBER_REGISTRY,
-    method: 'claimShare',
+  MCTRIGGER: {
+    id: 'MCTRIGGER',
+    contract: CONTRACT.MULTICALL,
+    method: 'multiSend',
+    args: [
+      {
+        type: 'multicall',
+        actions: [
+          {
+            contract: CONTRACT.MEMBER_REGISTRY,
+            method: 'updateSecondsActive',
+            args: []
+          },
+          {
+            contract: CONTRACT.MEMBER_REGISTRY,
+            method: 'updateSplits',
+            args: ['.sortedMemberList',]
+          }
+        ]
+      }
+    ]
   },
 };

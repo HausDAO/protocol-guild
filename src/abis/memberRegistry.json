@@ -7,11 +7,17 @@
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
+  { "inputs": [], "name": "ALREADY_REGISTERED", "type": "error" },
+  { "inputs": [], "name": "INVALID_ACTIVITY_MULTIPLIER", "type": "error" },
+  { "inputs": [], "name": "INVALID_LIST", "type": "error" },
+  { "inputs": [], "name": "NOT_MEMBER_OR_NOT_SORTED", "type": "error" },
+  { "inputs": [], "name": "NOT_REGISTERED", "type": "error" },
   {
     "inputs": [{ "internalType": "UD60x18", "name": "x", "type": "uint256" }],
     "name": "PRBMathUD60x18__SqrtOverflow",
     "type": "error"
   },
+  { "inputs": [], "name": "START_DATE_IN_FUTURE", "type": "error" },
   {
     "anonymous": false,
     "inputs": [
@@ -184,6 +190,30 @@
   },
   {
     "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "_sortedList",
+        "type": "address[]"
+      }
+    ],
+    "name": "calculate",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "_receivers",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint32[]",
+        "name": "_percentAllocations",
+        "type": "uint32[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
       { "internalType": "address", "name": "_split", "type": "address" }
     ],
     "name": "cancelControlTransfer",
@@ -285,6 +315,24 @@
     "type": "function"
   },
   {
+    "inputs": [
+      { "internalType": "address", "name": "_split", "type": "address" }
+    ],
+    "name": "setSplit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_splitsMain", "type": "address" }
+    ],
+    "name": "setSplitMain",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "split",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
@@ -327,7 +375,45 @@
         "type": "address[]"
       }
     ],
-    "name": "triggerCalcAndSplits",
+    "name": "updateAll",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "_receivers",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint32[]",
+        "name": "_percentAllocations",
+        "type": "uint32[]"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "_sortedList",
+        "type": "address[]"
+      },
+      { "internalType": "contract IERC20", "name": "_token", "type": "address" }
+    ],
+    "name": "updateAllAndDistributeERC20",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "_sortedList",
+        "type": "address[]"
+      }
+    ],
+    "name": "updateAllAndDistributeETH",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -343,6 +429,37 @@
     ],
     "name": "updateMember",
     "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "updateSecondsActive",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "_sortedList",
+        "type": "address[]"
+      }
+    ],
+    "name": "updateSplits",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "_receivers",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint32[]",
+        "name": "_percentAllocations",
+        "type": "uint32[]"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   }
