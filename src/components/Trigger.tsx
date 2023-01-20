@@ -21,7 +21,6 @@ export const Trigger = ({
   const [isLoading, setIsLoading] = React.useState(false);
 
   const handleTrigger = () => {
-    console.log("memberList", memberList);
     const sortedMemberList = memberList
       .map((member: any) => member.account)
       .sort((a: string, b: string) => {
@@ -29,6 +28,8 @@ export const Trigger = ({
       });
     setIsLoading(true);
     fireTransaction({
+      // tx: ACTION_TX.MCTRIGGER as TXLego,
+      // callerState: {sortedMemberList},
       tx: { ...ACTION_TX.TRIGGER, staticArgs: [sortedMemberList] } as TXLego,
       lifeCycleFns: {
         onTxError: (error) => {

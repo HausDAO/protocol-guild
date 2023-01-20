@@ -26,7 +26,7 @@ export const Home = () => {
   const { chainId, provider, address } = useDHConnect();
   const daochain = "0x5";
   const { isIdle, isLoading, error, data, refetch } = useMemberRegistry({
-    registryAddress: "0x664a32F97569b7EA0a1DdC118e2D50EA6507E289", // get from contracts
+    registryAddress: "0xBe87eB4a8B3C2b1142D9Baa022FC861D445a4cf4", // get from contracts
     userAddress: address,
     chainId: "0x5",
     rpcs: HAUS_RPC,
@@ -36,7 +36,8 @@ export const Home = () => {
     chainId === daochain
       ? true
       : "You are not connected to the same network as the DAO";
-  
+  console.log("data", data);
+    
   return (
     <TXBuilder
       provider={provider}
@@ -61,7 +62,7 @@ export const Home = () => {
         />
 
         <ParMd>-----------------------</ParMd>
-        <MemberInfo memberList={data?.members}></MemberInfo>
+        <MemberInfo memberList={data?.members} lastUpdate={data?.lastUpdate}></MemberInfo>
         <MemberTable memberList={data?.members}></MemberTable>
       </SingleColumnLayout>
     </TXBuilder>

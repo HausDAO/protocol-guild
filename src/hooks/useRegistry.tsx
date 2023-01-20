@@ -36,8 +36,20 @@ const fetchMembers = async ({
   try {
     const members: Member[] = await MemberRegistryContract.getMembers();
 
+    const lastUpdate: Member[] = await MemberRegistryContract.lastUpdate();
+
+    // const memberAlocs: Member[] = await MemberRegistryContract.calculate(
+    //   members.map((member: any) => member.account)
+    //   .sort((a: string, b: string) => {
+    //     return parseInt(a.slice(2), 16) - parseInt(b.slice(2), 16);
+    //   })
+    // );
+
+
     return {
       members: members,
+      lastUpdate: lastUpdate,
+      // memberAlocs: memberAlocs,
     };
   } catch (error: any) {
     console.error(error);

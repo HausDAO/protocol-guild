@@ -39,6 +39,12 @@ export const CONTRACT: Record<string, ContractLego> = {
     abi: LOCAL_ABI.TRIBUTE_MINION,
     targetAddress: CONTRACT_KEYCHAINS.TRIBUTE_MINION,
   },
+  MULTICALL: {
+    type: 'static',
+    contractName: 'Multicall',
+    abi: LOCAL_ABI.GNOSIS_MULTISEND,
+    targetAddress: CONTRACT_KEYCHAINS.GNOSIS_MULTISEND,
+  },
   SHARES_ERC20: {
     type: 'static',
     contractName: 'SHARES_ERC20',
@@ -56,6 +62,6 @@ export const CONTRACT: Record<string, ContractLego> = {
     contractName: 'MEMBER_REGISTRY',
     // @ts-ignore
     abi: MEMBER_REGISTRY,
-    targetAddress: '0x664a32F97569b7EA0a1DdC118e2D50EA6507E289'
+    targetAddress: '0xBe87eB4a8B3C2b1142D9Baa022FC861D445a4cf4'
   },
 };
