@@ -1,18 +1,16 @@
+import { useDebugValue } from "react";
 import { useQuery } from "react-query";
 
 import { createContract } from "@daohaus/tx-builder";
 import { ValidNetwork, Keychain, HAUS_RPC } from "@daohaus/keychain-utils";
 import { nowInSeconds } from "@daohaus/utils";
 
-import MemberRegistryAbi from "../abis/memberRegistry.json";
-import { useDebugValue } from "react";
+import { Member } from "../types/Member.types";
 
-interface Member {
-  account: string;
-  activityMultiplier: number; 
-  secondsActive: number; 
-  startDate: number; 
-}
+import MemberRegistryAbi from "../abis/memberRegistry.json";
+import { formatMembers } from "../helpers/formatMembers";
+
+
 
 const fetchMembers = async ({
   registryAddress,
@@ -31,23 +29,16 @@ const fetchMembers = async ({
     chainId,
     rpcs,
   });
-  console.log("MemberRegContract", MemberRegistryContract);
 
   try {
-    const members: Member[] = await MemberRegistryContract.getMembers();
+    const members = await MemberRegistryContract.getMembers();
 
-    const lastUpdate: Member[] = await MemberRegistryContract.lastUpdate();
+    const lastUpdate = await MemberRegistryContract.lastUpdate();
 
-    // const memberAlocs: Member[] = await MemberRegistryContract.calculate(
-    //   members.map((member: any) => member.account)
-    //   .sort((a: string, b: string) => {
-    //     return parseInt(a.slice(2), 16) - parseInt(b.slice(2), 16);
-    //   })
-    // );
-
+    const formattedMembers = formatMembers(members);
 
     return {
-      members: members,
+      members: formattedMembers,
       lastUpdate: lastUpdate,
       // memberAlocs: memberAlocs,
     };
