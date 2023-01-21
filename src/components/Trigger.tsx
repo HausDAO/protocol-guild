@@ -28,9 +28,9 @@ export const Trigger = ({
       });
     setIsLoading(true);
     fireTransaction({
-      // tx: ACTION_TX.MCTRIGGER as TXLego,
-      // callerState: {sortedMemberList},
-      tx: { ...ACTION_TX.TRIGGER, staticArgs: [sortedMemberList] } as TXLego,
+      tx: ACTION_TX.MCTRIGGER as TXLego,
+      callerState: {sortedMemberList},
+      //tx: { ...ACTION_TX.TRIGGER, staticArgs: [sortedMemberList] } as TXLego,
       lifeCycleFns: {
         onTxError: (error) => {
           const errMsg = handleErrorMessage({

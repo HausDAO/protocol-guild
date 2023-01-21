@@ -143,13 +143,15 @@ export const ACTION_TX: Record<string, TXLegoBase> = {
           {
             contract: CONTRACT.MEMBER_REGISTRY,
             method: 'updateSecondsActive',
+            operations: {type: 'static', value: '0x00'},
             args: []
           },
-          {
-            contract: CONTRACT.MEMBER_REGISTRY,
-            method: 'updateSplits',
-            args: ['.sortedMemberList',]
-          }
+          // {
+          //   contract: CONTRACT.MEMBER_REGISTRY,
+          //   method: 'updateSplits',
+          //   operations: {type: 'static', value: 1},
+          //   args: ['.sortedMemberList',]
+          // }
         ]
       }
     ]
