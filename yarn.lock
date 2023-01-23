@@ -1376,7 +1376,7 @@
     react-hook-form "7.39.1"
     tslib "2.4.1"
 
-"@daohaus/utils@0.1.5":
+"@daohaus/utils@0.1.5", "@daohaus/utils@^0.1.5":
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/@daohaus/utils/-/utils-0.1.5.tgz#a63cbe74e1686b07a592e31521512cd9c665c980"
   integrity sha512-gxvVl7wv7ZaPrkPS8RlVEmXmBPtclOTy2ggYqNnGfa9bMAAqOVcecxybK+VVUuH+qODGNBCGe484dbYFIv/3/Q==
@@ -5676,6 +5676,11 @@ mkdirp@^0.5.1, mkdirp@^0.5.3:
   integrity sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==
   dependencies:
     minimist "^1.2.6"
+
+moment@^2.29.4:
+  version "2.29.4"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
+  integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
 
 move-concurrently@^1.0.1:
   version "1.0.1"

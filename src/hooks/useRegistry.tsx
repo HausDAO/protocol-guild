@@ -34,7 +34,6 @@ const fetchMembers = async ({
     return {
       members: members,
       lastUpdate: lastUpdate,
-      // memberAlocs: memberAlocs,
     };
   } catch (error: any) {
     console.error(error);
