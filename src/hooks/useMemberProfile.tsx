@@ -1,8 +1,6 @@
-
-
-import React from 'react';
-import { useQuery } from 'react-query';
-import { fetchProfile } from '../utils/profileCache';
+import React from "react";
+import { useQuery } from "react-query";
+import { fetchProfile } from "../utils/profileCache";
 
 export const useMemberProfile = ({ address }: { address: string }) => {
   const { data, error, ...rest } = useQuery(
