@@ -1,8 +1,11 @@
 import React from "react";
+import { ParMd } from "@daohaus/ui";
 import { convertSeconds } from "../utils/convertSeconds";
 
 const TimeActive = ({ secondsActive }: { secondsActive: number | null }) => {
-  return <div>{secondsActive ? convertSeconds(secondsActive) : "No time"}</div>;
+  return (
+    <ParMd>{secondsActive ? convertSeconds(secondsActive) : "No time"}</ParMd>
+  );
 };
 
 export default TimeActive;

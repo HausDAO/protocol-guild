@@ -10,17 +10,18 @@ import {
 import { Member } from "../types/Member.types";
 import { MemberProfile } from "./MemberProfile";
 import TimeActive from "./TimeActive";
+import { Bold, H2, ParMd } from "@daohaus/ui";
 
 const columnHelper = createColumnHelper<Member>();
 
 const columns = [
   columnHelper.accessor("account", {
-    header: () => "Activity Multiplier",
+    header: () => "Address",
     cell: (info) => <MemberProfile address={info.getValue()} />,
   }),
   columnHelper.accessor("activityMultiplier", {
     header: () => "Activity Multiplier",
-    cell: (info) => info.renderValue(),
+    cell: (info) => <ParMd>{`${info.renderValue()} %`}</ParMd>,
   }),
   columnHelper.accessor("secondsActive", {
     header: () => <span>Time Active</span>,
@@ -28,7 +29,13 @@ const columns = [
   }),
   columnHelper.accessor("startDate", {
     header: "Start Date",
-    cell: (info) => moment(info.renderValue()).format("dd/MM/yyyy"),
+    cell: (info) => (
+      <ParMd>
+        {info.renderValue()
+          ? moment.unix(info.getValue()).format("DD/MM/yyyy")
+          : "No Date"}
+      </ParMd>
+    ),
   }),
 ];
 
