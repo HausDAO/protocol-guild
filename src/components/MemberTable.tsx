@@ -7,22 +7,24 @@ import {
 } from '@tanstack/react-table'
 
 import { Member } from "../types/Member.types";
+import { MemberProfile } from "./MemberProfile";
 
 const columnHelper = createColumnHelper<Member>()
 
 const columns = [
   columnHelper.accessor('account', {
-    cell: info => info.getValue(),
+    header: () => 'Activity Multiplier',
+    cell: info => <MemberProfile address={info.getValue()}/>,
   }),
   columnHelper.accessor('activityMultiplier', {
-    header: () => 'Age',
+    header: () => 'Activity Multiplier',
     cell: info => info.renderValue(),
   }),
   columnHelper.accessor('secondsActive', {
-    header: () => <span>Visits</span>,
+    header: () => <span>Time Active</span>,
   }),
   columnHelper.accessor('startDate', {
-    header: 'Status',
+    header: 'Start Date',
   }),
 ]
 

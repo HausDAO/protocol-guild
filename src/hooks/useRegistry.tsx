@@ -31,10 +31,10 @@ const fetchMembers = async ({
     const members: Member[] = await MemberRegistryContract.getMembers();
     const lastUpdate: number = await MemberRegistryContract.lastUpdate();
 
+
     return {
       members: members,
       lastUpdate: lastUpdate,
-      // memberAlocs: memberAlocs,
     };
   } catch (error: any) {
     console.error(error);

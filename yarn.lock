@@ -1376,7 +1376,7 @@
     react-hook-form "7.39.1"
     tslib "2.4.1"
 
-"@daohaus/utils@0.1.5":
+"@daohaus/utils@0.1.5", "@daohaus/utils@^0.1.5":
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/@daohaus/utils/-/utils-0.1.5.tgz#a63cbe74e1686b07a592e31521512cd9c665c980"
   integrity sha512-gxvVl7wv7ZaPrkPS8RlVEmXmBPtclOTy2ggYqNnGfa9bMAAqOVcecxybK+VVUuH+qODGNBCGe484dbYFIv/3/Q==
