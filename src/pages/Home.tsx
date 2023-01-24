@@ -58,7 +58,7 @@ export const Home = () => {
           onSuccess={() => {
             alert("yay trigger");
           }}
-          memberList={data?.members}
+          sortedMemberList={data?.membersSorted}
         />
 
         <ParMd>-----------------------</ParMd>
