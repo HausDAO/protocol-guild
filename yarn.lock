@@ -1376,7 +1376,7 @@
     react-hook-form "7.39.1"
     tslib "2.4.1"
 
-"@daohaus/utils@0.1.5":
+"@daohaus/utils@0.1.5", "@daohaus/utils@^0.1.5":
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/@daohaus/utils/-/utils-0.1.5.tgz#a63cbe74e1686b07a592e31521512cd9c665c980"
   integrity sha512-gxvVl7wv7ZaPrkPS8RlVEmXmBPtclOTy2ggYqNnGfa9bMAAqOVcecxybK+VVUuH+qODGNBCGe484dbYFIv/3/Q==
@@ -2521,6 +2521,18 @@
   dependencies:
     core-js "^3.6.5"
     find-up "^4.1.0"
+
+"@tanstack/react-table@^8.7.6":
+  version "8.7.6"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-table/-/react-table-8.7.6.tgz#1420d69da458fe13c08af73b6f3c98d5e49e63f6"
+  integrity sha512-/QijmMFeP7wDLBnr0MQ/5MlbXePbIL/1nOtkxBC9zvmBu4gDKJEDBqipUyM7Wc/iBpSd0IFyqBlvZvTPD9FYDA==
+  dependencies:
+    "@tanstack/table-core" "8.7.6"
+
+"@tanstack/table-core@8.7.6":
+  version "8.7.6"
+  resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.7.6.tgz#5ad8a67ef6312c56c4a075326afcb2813c030a22"
+  integrity sha512-sqiNTMzB6cpyL8DFH6/VqW48SwiflLqxQqYpo2wNock7rdVGvlm0BLNI8vZUJbr1+fmmWmHwBvi5OMgZw8n1DA==
 
 "@types/estree@0.0.39":
   version "0.0.39"
@@ -5672,6 +5684,11 @@ mkdirp@^0.5.1, mkdirp@^0.5.3:
   integrity sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==
   dependencies:
     minimist "^1.2.6"
+
+moment@^2.29.4:
+  version "2.29.4"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
+  integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
 
 move-concurrently@^1.0.1:
   version "1.0.1"

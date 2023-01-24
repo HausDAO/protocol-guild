@@ -1,3 +1,4 @@
+import { useDebugValue } from "react";
 import { useQuery } from "react-query";
 
 import { createContract } from "@daohaus/tx-builder";
@@ -5,14 +6,8 @@ import { ValidNetwork, Keychain, HAUS_RPC } from "@daohaus/keychain-utils";
 import { nowInSeconds } from "@daohaus/utils";
 
 import MemberRegistryAbi from "../abis/memberRegistry.json";
-import { useDebugValue } from "react";
 
-interface Member {
-  account: string;
-  activityMultiplier: number; 
-  secondsActive: number; 
-  startDate: number; 
-}
+import { Member } from "../types/Member.types";
 
 const fetchMembers = async ({
   registryAddress,
@@ -31,25 +26,14 @@ const fetchMembers = async ({
     chainId,
     rpcs,
   });
-  console.log("MemberRegContract", MemberRegistryContract);
 
   try {
     const members: Member[] = await MemberRegistryContract.getMembers();
-
-    const lastUpdate: Member[] = await MemberRegistryContract.lastUpdate();
-
-    // const memberAlocs: Member[] = await MemberRegistryContract.calculate(
-    //   members.map((member: any) => member.account)
-    //   .sort((a: string, b: string) => {
-    //     return parseInt(a.slice(2), 16) - parseInt(b.slice(2), 16);
-    //   })
-    // );
-
+    const lastUpdate: number = await MemberRegistryContract.lastUpdate();
 
     return {
       members: members,
       lastUpdate: lastUpdate,
-      // memberAlocs: memberAlocs,
     };
   } catch (error: any) {
     console.error(error);

@@ -30,14 +30,14 @@ export const Home = () => {
     userAddress: address,
     chainId: "0x5",
     rpcs: HAUS_RPC,
-  });  
+  });
 
   const isConnectedToDao =
     chainId === daochain
       ? true
       : "You are not connected to the same network as the DAO";
   console.log("data", data);
-    
+
   return (
     <TXBuilder
       provider={provider}
@@ -62,8 +62,14 @@ export const Home = () => {
         />
 
         <ParMd>-----------------------</ParMd>
-        <MemberInfo memberList={data?.members} lastUpdate={data?.lastUpdate}></MemberInfo>
-        <MemberTable memberList={data?.members}></MemberTable>
+        <MemberInfo
+          memberList={data?.members}
+          lastUpdate={data?.lastUpdate}
+        ></MemberInfo>
+        {isLoading && <Spinner />}
+        {!isLoading && data?.members && (
+          <MemberTable memberList={data.members}></MemberTable>
+        )}
       </SingleColumnLayout>
     </TXBuilder>
   );

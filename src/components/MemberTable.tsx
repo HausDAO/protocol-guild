@@ -1,33 +1,99 @@
 import React from "react";
+import moment from "moment";
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 
-import { ParMd } from "@daohaus/ui";
+import { Member } from "../types/Member.types";
+import { MemberProfile } from "./MemberProfile";
+import TimeActive from "./TimeActive";
+import { Bold, H2, ParMd } from "@daohaus/ui";
 
-interface Member {
-  account: string;
-  activityMultiplier: number;
-  secondsActive: number;
-  startDate: number;
-}
+const columnHelper = createColumnHelper<Member>();
 
-export const MemberTable = ({ memberList }: { memberList: any }) => {
-  const [isLoading, setIsLoading] = React.useState(false);
+const columns = [
+  columnHelper.accessor("account", {
+    header: () => "Address",
+    cell: (info) => <MemberProfile address={info.getValue()} />,
+  }),
+  columnHelper.accessor("activityMultiplier", {
+    header: () => "Activity Multiplier",
+    cell: (info) => <ParMd>{`${info.renderValue()} %`}</ParMd>,
+  }),
+  columnHelper.accessor("secondsActive", {
+    header: () => <span>Time Active</span>,
+    cell: (info) => <TimeActive secondsActive={info.renderValue()} />,
+  }),
+  columnHelper.accessor("startDate", {
+    header: "Start Date",
+    cell: (info) => (
+      <ParMd>
+        {info.renderValue()
+          ? moment.unix(info.getValue()).format("DD/MM/yyyy")
+          : "No Date"}
+      </ParMd>
+    ),
+  }),
+];
 
-  const renderMemberList = () => {
-    return memberList?.map((member: Member) => {
-      return (
-        <ParMd>
-          {member.account} |{" "}
-          {new Date(member.startDate * 1000).toLocaleDateString()} |{" "}
-          {member.secondsActive} | {member.activityMultiplier}
-        </ParMd>
-      );
-    });
-  };
+export const MemberTable = ({ memberList }: { memberList: Member[] }) => {
+  const [data] = React.useState(() => [...memberList]);
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
     <div>
-      <ParMd>acount | startdate | secondsActive | activityMultiplier</ParMd>
-      {renderMemberList()}
+      <table>
+        <thead>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <th key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.map((row) => (
+            <tr key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+        <tfoot>
+          {table.getFooterGroups().map((footerGroup) => (
+            <tr key={footerGroup.id}>
+              {footerGroup.headers.map((header) => (
+                <th key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.footer,
+                        header.getContext()
+                      )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </tfoot>
+      </table>
     </div>
   );
 };
