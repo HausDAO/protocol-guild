@@ -9,10 +9,10 @@ import { GatedButton } from "./GatedButton";
 
 export const Trigger = ({
   onSuccess,
-  memberList,
+  sortedMemberList,
 }: {
   onSuccess: () => void;
-  memberList: any;
+  sortedMemberList: any;
 }) => {
   const daochain = "0x5";
   const { fireTransaction } = useTxBuilder();
@@ -21,16 +21,12 @@ export const Trigger = ({
   const [isLoading, setIsLoading] = React.useState(false);
 
   const handleTrigger = () => {
-    const sortedMemberList = memberList
-      .map((member: any) => member.account)
-      .sort((a: string, b: string) => {
-        return parseInt(a.slice(2), 16) - parseInt(b.slice(2), 16);
-      });
+
     setIsLoading(true);
     fireTransaction({
-      tx: ACTION_TX.MCTRIGGER as TXLego,
-      callerState: {sortedMemberList},
-      //tx: { ...ACTION_TX.TRIGGER, staticArgs: [sortedMemberList] } as TXLego,
+      // tx: ACTION_TX.MCTRIGGER as TXLego,
+      // callerState: {sortedMemberList},
+      tx: { ...ACTION_TX.TRIGGER, staticArgs: [sortedMemberList] } as TXLego,
       lifeCycleFns: {
         onTxError: (error) => {
           const errMsg = handleErrorMessage({
@@ -42,24 +38,11 @@ export const Trigger = ({
         onTxSuccess: () => {
           defaultToast({
             title: "Trigger Success",
-            description: "Please wait for subgraph to sync",
-          });
-        },
-        onPollError: (error) => {
-          const errMsg = handleErrorMessage({
-            error,
-          });
-          errorToast({ title: "Poll Error", description: errMsg });
-          setIsLoading(false);
-        },
-        onPollSuccess: () => {
-          successToast({
-            title: "Trigger Success",
-            description: "Trigger success",
+            description: "Please wait table to update",
           });
           setIsLoading(false);
-          onSuccess();
         },
+        
       },
     });
   };
