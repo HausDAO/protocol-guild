@@ -11,6 +11,7 @@ import { CONTRACT } from "../legos/contract";
 import { useMemberRegistry } from "../hooks/useRegistry";
 import { MemberInfo } from "../components/MemberInfo";
 import { MemberTable } from "../components/MemberTable";
+import { TriggerAndDistro } from "../components/TriggerAndDistro";
 
 export const HAUS_RPC = {
   "0x1": `https://787b6618b5a34070874c12d7157e6661.eth.rpc.rivet.cloud/`,
@@ -61,7 +62,13 @@ export const Home = () => {
           sortedMemberList={data?.membersSorted}
         />
 
-        <ParMd>-----------------------</ParMd>
+        <TriggerAndDistro
+          onSuccess={() => {
+            alert("yay trigger");
+          }}
+          sortedMemberList={data?.membersSorted}
+        />
+
         <MemberInfo
           memberList={data?.members}
           lastUpdate={data?.lastUpdate}

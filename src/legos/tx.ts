@@ -132,6 +132,12 @@ export const ACTION_TX: Record<string, TXLegoBase> = {
     contract: CONTRACT.MEMBER_REGISTRY,
     method: 'updateAll',
   },
+  TRIGGERANDDISTRO: {
+    id: 'TRIGGERANDDISTRO',
+    contract: CONTRACT.MEMBER_REGISTRY,
+    method: 'updateAllAndDistributeETH',
+  },
+  
   MCTRIGGER: {
     id: 'MCTRIGGER',
     contract: CONTRACT.MULTICALL,

@@ -7,7 +7,7 @@ import { Spinner, useToast } from "@daohaus/ui";
 import { ACTION_TX } from "../legos/tx";
 import { GatedButton } from "./GatedButton";
 
-export const Trigger = ({
+export const TriggerAndDistro = ({
   onSuccess,
   sortedMemberList,
 }: {
@@ -26,18 +26,18 @@ export const Trigger = ({
     fireTransaction({
       // tx: ACTION_TX.MCTRIGGER as TXLego,
       // callerState: {sortedMemberList},
-      tx: { ...ACTION_TX.TRIGGER, staticArgs: [sortedMemberList] } as TXLego,
+      tx: { ...ACTION_TX.TRIGGERANDDISTRO, staticArgs: [sortedMemberList] } as TXLego,
       lifeCycleFns: {
         onTxError: (error) => {
           const errMsg = handleErrorMessage({
             error,
           });
-          errorToast({ title: "Trigger Failed", description: errMsg });
+          errorToast({ title: "Update and Distribute Failed", description: errMsg });
           setIsLoading(false);
         },
         onTxSuccess: () => {
           defaultToast({
-            title: "Trigger Success",
+            title: "Update and Distribute Success",
             description: "Please wait table to update",
           });
           setIsLoading(false);
@@ -62,7 +62,7 @@ export const Trigger = ({
       {isLoading ? (
         <Spinner size="2rem" strokeWidth=".2rem" />
       ) : (
-        "Update Only"
+        "Update and Distribute ETH"
       )}
     </GatedButton>
   );
