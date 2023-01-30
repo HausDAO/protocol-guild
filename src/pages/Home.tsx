@@ -1,10 +1,9 @@
 import React from "react";
 import { useDHConnect } from "@daohaus/connect";
-import { H2, Link, ParMd, SingleColumnLayout, Spinner } from "@daohaus/ui";
-import styled from "styled-components";
+import { Card, ParMd, SingleColumnLayout, Spinner } from "@daohaus/ui";
+
+import { homePageCopy } from "../assets/protocol-guild-copy";
 import { GatedButton } from "../components/GatedButton";
-import { SecondsActiveUpdate } from "../components/SecondsActiveUpdate";
-import { HausAnimated } from "../components/HausAnimated";
 import { Trigger } from "../components/Trigger";
 import { TXBuilder } from "@daohaus/tx-builder";
 import { CONTRACT } from "../legos/contract";
@@ -12,6 +11,7 @@ import { useMemberRegistry } from "../hooks/useRegistry";
 import { MemberInfo } from "../components/MemberInfo";
 import { MemberTable } from "../components/MemberTable";
 import { TriggerAndDistro } from "../components/TriggerAndDistro";
+import { MemberRegistry } from "../components/MemberRegistry";
 
 export const HAUS_RPC = {
   "0x1": `https://787b6618b5a34070874c12d7157e6661.eth.rpc.rivet.cloud/`,
@@ -47,35 +47,16 @@ export const Home = () => {
       safeId="0xaccd85e73639b5213a001630eb2512dbd6292e32"
       appState={{}}
     >
-      <SingleColumnLayout>
-        <H2>PG Member Registry</H2>
-        <ParMd>
-          Protocol guild keeps a onchain registry of active members which is
-          updated periodically to track member activity. This registry informs
-          the automatic compensation distro.
-        </ParMd>
-
-        <Trigger
-          onSuccess={() => {
-            alert("yay trigger");
-          }}
-          sortedMemberList={data?.membersSorted}
-        />
-
-        <TriggerAndDistro
-          onSuccess={() => {
-            alert("yay trigger");
-          }}
-          sortedMemberList={data?.membersSorted}
-        />
-
-        <MemberInfo
-          memberList={data?.members}
-          lastUpdate={data?.lastUpdate}
-        ></MemberInfo>
+      <SingleColumnLayout
+        title={homePageCopy.title}
+        description={homePageCopy.description}
+      >
         {isLoading && <Spinner />}
-        {!isLoading && data?.members && (
-          <MemberTable memberList={data.members}></MemberTable>
+        {!isLoading && data && (
+          <MemberRegistry
+            membersList={data.members}
+            lastUpdate={data.lastUpdate}
+          ></MemberRegistry>
         )}
       </SingleColumnLayout>
     </TXBuilder>

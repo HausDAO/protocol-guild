@@ -1,23 +1,36 @@
 import React from "react";
+import styled from "styled-components";
+import moment from "moment";
+import { DataIndicator } from "@daohaus/ui";
 
-import { ParMd } from "@daohaus/ui";
+import { Member } from "../types/Member.types";
+
+const MemberInfoContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 2rem;
+`;
+
+const RightAligned = styled(DataIndicator)`
+  align-items: end;
+`;
 
 export const MemberInfo = ({
   memberList,
   lastUpdate,
 }: {
-  memberList: any;
-  lastUpdate: any;
+  memberList: Member[];
+  lastUpdate: number;
 }) => {
-  const [isLoading, setIsLoading] = React.useState(false);
-
   return (
-    <div>
-      <ParMd>Member Count: {memberList?.length}</ParMd>
-      <ParMd>
-        Last Update: {new Date(lastUpdate * 1000).toLocaleDateString()}{" "}
-        {new Date(lastUpdate * 1000).toLocaleTimeString()}
-      </ParMd>
-    </div>
+    <MemberInfoContainer>
+      <DataIndicator label="Members" data={memberList.length} size="sm" />
+      <RightAligned
+        label="Last Updated!"
+        data={moment.unix(lastUpdate).format("llll")}
+        size="sm"
+      />
+    </MemberInfoContainer>
   );
 };
