@@ -9,7 +9,7 @@ import { TXBuilder } from "@daohaus/tx-builder";
 import { CONTRACT } from "../legos/contract";
 import { useMemberRegistry } from "../hooks/useRegistry";
 import { MemberInfo } from "../components/MemberInfo";
-import { MemberTable } from "../components/MemberTable";
+import { MemberTable } from "../components/MemberTable/MemberTable";
 import { TriggerAndDistro } from "../components/TriggerAndDistro";
 import { MemberRegistry } from "../components/MemberRegistry";
 

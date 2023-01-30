@@ -25,9 +25,9 @@ export const MemberInfo = ({
 }) => {
   return (
     <MemberInfoContainer>
-      <DataIndicator label="Members" data={memberList.length} size="sm" />
+      <DataIndicator label="Members" data={memberList.length} />
       <RightAligned
-        label="Last Updated!"
+        label="Last Updated"
         data={moment.unix(lastUpdate).format("llll")}
         size="sm"
       />

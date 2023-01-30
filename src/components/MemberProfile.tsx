@@ -1,14 +1,14 @@
-import { ParMd, ProfileAvatar } from '@daohaus/ui';
-import { truncateAddress } from '@daohaus/utils';
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
-import { useMemberProfile } from '../hooks/useMemberProfile';
+import { ParMd, ProfileAvatar } from "@daohaus/ui";
+import { truncateAddress } from "@daohaus/utils";
+import React, { useEffect } from "react";
+import styled from "styled-components";
+import { useMemberProfile } from "../hooks/useMemberProfile";
 
 const MemberBox = styled.div`
   display: flex;
+  align-items: center;
   .avatar {
     margin-right: 1.25rem;
-    transform: translateY(-0.2rem);
   }
 `;
 
