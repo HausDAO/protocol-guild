@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Theme } from "@daohaus/ui/theme";
+import { Theme } from "@daohaus/ui";
 
 export const Table = styled.table`
   width: 100%;

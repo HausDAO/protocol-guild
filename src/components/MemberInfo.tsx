@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import moment from "moment";
-import { DataIndicator } from "@daohaus/ui";
+import { DataIndicator, H3, Link } from "@daohaus/ui";
 
 import { Member } from "../types/Member.types";
 
