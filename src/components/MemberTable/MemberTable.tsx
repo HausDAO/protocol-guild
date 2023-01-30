@@ -1,5 +1,6 @@
 import React from "react";
 import moment from "moment";
+import { Bold, DataLg, H2, ParMd } from "@daohaus/ui";
 import {
   createColumnHelper,
   flexRender,
@@ -7,10 +8,10 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { Member } from "../types/Member.types";
-import { MemberProfile } from "./MemberProfile";
-import TimeActive from "./TimeActive";
-import { Bold, H2, ParMd } from "@daohaus/ui";
+import { Member } from "../../types/Member.types";
+import { MemberProfile } from "../MemberProfile";
+import TimeActive from "../TimeActive";
+import { Table, TableData, TableHead, TableRow } from "./MemberTable.styles";
 
 const columnHelper = createColumnHelper<Member>();
 
@@ -48,40 +49,36 @@ export const MemberTable = ({ memberList }: { memberList: Member[] }) => {
   });
 
   return (
-    <table
-      {...{
-        style: {
-          width: table.getCenterTotalSize(),
-        },
-      }}
-    >
-      <thead>
+    <Table>
+      <TableHead>
         {table.getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
               <th key={header.id}>
-                {header.isPlaceholder
-                  ? null
-                  : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
+                <DataLg>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </DataLg>
               </th>
             ))}
           </tr>
         ))}
-      </thead>
+      </TableHead>
       <tbody>
         {table.getRowModel().rows.map((row) => (
-          <tr key={row.id}>
+          <TableRow key={row.id}>
             {row.getVisibleCells().map((cell) => (
-              <td key={cell.id}>
+              <TableData key={cell.id}>
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </td>
+              </TableData>
             ))}
-          </tr>
+          </TableRow>
         ))}
       </tbody>
-    </table>
+    </Table>
   );
 };

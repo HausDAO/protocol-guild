@@ -1,16 +1,10 @@
 import React from "react";
 import { useDHConnect } from "@daohaus/connect";
-import { Card, ParMd, SingleColumnLayout, Spinner } from "@daohaus/ui";
+import { SingleColumnLayout, Spinner } from "@daohaus/ui";
 
 import { homePageCopy } from "../assets/protocol-guild-copy";
-import { GatedButton } from "../components/GatedButton";
-import { Trigger } from "../components/Trigger";
 import { TXBuilder } from "@daohaus/tx-builder";
-import { CONTRACT } from "../legos/contract";
 import { useMemberRegistry } from "../hooks/useRegistry";
-import { MemberInfo } from "../components/MemberInfo";
-import { MemberTable } from "../components/MemberTable";
-import { TriggerAndDistro } from "../components/TriggerAndDistro";
 import { MemberRegistry } from "../components/MemberRegistry";
 
 export const HAUS_RPC = {
@@ -56,7 +50,7 @@ export const Home = () => {
           <MemberRegistry
             membersList={data.members}
             lastUpdate={data.lastUpdate}
-          ></MemberRegistry>
+          />
         )}
       </SingleColumnLayout>
     </TXBuilder>

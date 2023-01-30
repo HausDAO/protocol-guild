@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from "react";
 
 import { Member } from "../types/Member.types";
 import { MemberInfo } from "./MemberInfo";
-import { MemberTable } from "./MemberTable";
+import { MemberTable } from "./MemberTable/MemberTable";
 
 type MemberRegistryProps = {
   membersList: Member[];
