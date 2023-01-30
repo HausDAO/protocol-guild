@@ -21,7 +21,6 @@ export const Trigger = ({
   const [isLoading, setIsLoading] = React.useState(false);
 
   const handleTrigger = () => {
-
     setIsLoading(true);
     fireTransaction({
       // tx: ACTION_TX.MCTRIGGER as TXLego,
@@ -42,7 +41,6 @@ export const Trigger = ({
           });
           setIsLoading(false);
         },
-        
       },
     });
   };
@@ -57,13 +55,8 @@ export const Trigger = ({
       color="secondary"
       rules={[isConnectedToDao]}
       onClick={handleTrigger}
-      // centerAlign
     >
-      {isLoading ? (
-        <Spinner size="2rem" strokeWidth=".2rem" />
-      ) : (
-        "Update Only"
-      )}
+      {isLoading ? <Spinner size="2rem" strokeWidth=".2rem" /> : "Update Only"}
     </GatedButton>
   );
 };
