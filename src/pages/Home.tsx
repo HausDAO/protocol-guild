@@ -1,11 +1,18 @@
-import React from "react";
-import { useDHConnect } from "@daohaus/connect";
-import { SingleColumnLayout, Spinner } from "@daohaus/ui";
+import styled from "styled-components";
 
-import { homePageCopy } from "../assets/protocol-guild-copy";
-import { TXBuilder } from "@daohaus/tx-builder";
+import { SingleColumnLayout, Spinner } from "@daohaus/ui";
+import { useDHConnect } from "@daohaus/connect";
 import { useMemberRegistry } from "../hooks/useRegistry";
-import { MemberRegistry } from "../components/MemberRegistry";
+import { useCurrentDao } from "@daohaus/moloch-v3-hooks";
+import { MemberRegistry } from "../components/MemberRegistry/MemberRegistry";
+import { Trigger } from "../components/MemberRegistry/Trigger";
+import { TriggerAndDistro } from "../components/TriggerAndDistro";
+
+const LinkBox = styled.div`
+  display: flex;
+  width: 50%;
+  justify-content: space-between;
+`;
 
 export const HAUS_RPC = {
   "0x1": `https://787b6618b5a34070874c12d7157e6661.eth.rpc.rivet.cloud/`,
@@ -18,41 +25,33 @@ export const HAUS_RPC = {
 };
 
 export const Home = () => {
+  const { daoChain, daoId } = useCurrentDao();
   const { chainId, provider, address } = useDHConnect();
   const daochain = "0x5";
   const { isIdle, isLoading, error, data, refetch } = useMemberRegistry({
     registryAddress: "0xBe87eB4a8B3C2b1142D9Baa022FC861D445a4cf4", // get from contracts
     userAddress: address,
-    chainId: "0x5",
+    chainId: daochain,
     rpcs: HAUS_RPC,
   });
+  console.log("isLoading", isLoading);
+  console.log("daoId", daoId);
 
-  const isConnectedToDao =
-    chainId === daochain
-      ? true
-      : "You are not connected to the same network as the DAO";
   console.log("data", data);
-
   return (
-    <TXBuilder
-      provider={provider}
-      chainId="0x5"
-      daoId="0x7839755b77aadcd6a8cdb76248b3dddfa9b7f5f1"
-      safeId="0xaccd85e73639b5213a001630eb2512dbd6292e32"
-      appState={{}}
+    <SingleColumnLayout
+      title="Protocol Guild Member Registry"
+      description={`Protocol guild keeps a onchain registry of active members which is updated periodically to track member activity. This registry informs the automatic compensation distro.`}
     >
-      <SingleColumnLayout
-        title={homePageCopy.title}
-        description={homePageCopy.description}
-      >
-        {isLoading && <Spinner />}
-        {!isLoading && data && (
+      {isLoading && <Spinner />}
+      {!isLoading && data && (
+        <>
           <MemberRegistry
             membersList={data.members}
             lastUpdate={data.lastUpdate}
           />
-        )}
-      </SingleColumnLayout>
-    </TXBuilder>
+        </>
+      )}
+    </SingleColumnLayout>
   );
 };

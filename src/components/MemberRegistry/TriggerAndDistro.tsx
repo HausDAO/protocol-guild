@@ -2,12 +2,11 @@ import React from "react";
 import { handleErrorMessage, TXLego } from "@daohaus/utils";
 import { useDHConnect } from "@daohaus/connect";
 import { useTxBuilder } from "@daohaus/tx-builder";
-import { Spinner, useToast } from "@daohaus/ui";
+import { Spinner, useToast, GatedButton } from "@daohaus/ui";
 
-import { ACTION_TX } from "../legos/tx";
-import { GatedButton } from "./GatedButton";
+import { ACTION_TX } from "../../legos/tx";
 
-export const Trigger = ({
+export const TriggerAndDistro = ({
   onSuccess,
   sortedMemberList,
 }: {
@@ -25,18 +24,24 @@ export const Trigger = ({
     fireTransaction({
       // tx: ACTION_TX.MCTRIGGER as TXLego,
       // callerState: {sortedMemberList},
-      tx: { ...ACTION_TX.TRIGGER, staticArgs: [sortedMemberList] } as TXLego,
+      tx: {
+        ...ACTION_TX.TRIGGERANDDISTRO,
+        staticArgs: [sortedMemberList],
+      } as TXLego,
       lifeCycleFns: {
         onTxError: (error) => {
           const errMsg = handleErrorMessage({
             error,
           });
-          errorToast({ title: "Trigger Failed", description: errMsg });
+          errorToast({
+            title: "Update and Distribute Failed",
+            description: errMsg,
+          });
           setIsLoading(false);
         },
         onTxSuccess: () => {
           defaultToast({
-            title: "Trigger Success",
+            title: "Update and Distribute Success",
             description: "Please wait table to update",
           });
           setIsLoading(false);
@@ -55,8 +60,13 @@ export const Trigger = ({
       color="secondary"
       rules={[isConnectedToDao]}
       onClick={handleTrigger}
+      // centerAlign
     >
-      {isLoading ? <Spinner size="2rem" strokeWidth=".2rem" /> : "Update Only"}
+      {isLoading ? (
+        <Spinner size="2rem" strokeWidth=".2rem" />
+      ) : (
+        "Update and Distribute ETH"
+      )}
     </GatedButton>
   );
 };

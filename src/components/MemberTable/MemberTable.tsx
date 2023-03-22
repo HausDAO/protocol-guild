@@ -9,8 +9,8 @@ import {
 } from "@tanstack/react-table";
 
 import { Member } from "../../types/Member.types";
-import { MemberProfile } from "../MemberProfile";
-import TimeActive from "../TimeActive";
+import { MemberProfile } from "./MemberProfile";
+import { TimeActive } from "./TimeActive";
 import { Table, TableData, TableHead, TableRow } from "./MemberTable.styles";
 
 const columnHelper = createColumnHelper<Member>();
