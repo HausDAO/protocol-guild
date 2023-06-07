@@ -6,6 +6,9 @@ import { Spinner, useToast, GatedButton } from "@daohaus/ui";
 
 import { ACTION_TX } from "../../legos/tx";
 
+import MEMBER_REGISTRY from '../../abis/memberRegistry.json'
+
+
 export const Trigger = ({
   onSuccess,
   sortedMemberList,
@@ -22,9 +25,18 @@ export const Trigger = ({
   const handleTrigger = () => {
     setIsLoading(true);
     fireTransaction({
-      // tx: ACTION_TX.MCTRIGGER as TXLego,
-      // callerState: {sortedMemberList},
-      tx: { ...ACTION_TX.TRIGGER, staticArgs: [sortedMemberList] } as TXLego,
+      tx: {
+        id: 'TRIGGER',
+        contract: {
+          type: 'static',
+          contractName: 'MEMBER_REGISTRY',
+          // @ts-ignore
+          abi: MEMBER_REGISTRY,
+          targetAddress: '0xBe87eB4a8B3C2b1142D9Baa022FC861D445a4cf4'
+        },
+        method: 'updateAll',
+        args: [{type:"static", value: sortedMemberList}]
+      },
       lifeCycleFns: {
         onTxError: (error) => {
           const errMsg = handleErrorMessage({
