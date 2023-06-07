@@ -6,7 +6,7 @@ import { useMemberRegistry } from "../hooks/useRegistry";
 import { useCurrentDao } from "@daohaus/moloch-v3-hooks";
 import { MemberRegistry } from "../components/MemberRegistry/MemberRegistry";
 import { Trigger } from "../components/MemberRegistry/Trigger";
-import { TriggerAndDistro } from "../components/TriggerAndDistro";
+// import { TriggerAndDistro } from "../components/TriggerAndDistro";
 
 const LinkBox = styled.div`
   display: flex;
@@ -48,6 +48,7 @@ export const Home = () => {
         <>
           <MemberRegistry
             membersList={data.members}
+            membersSorted={data.membersSorted}
             lastUpdate={data.lastUpdate}
           />
         </>
