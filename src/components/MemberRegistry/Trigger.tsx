@@ -7,6 +7,7 @@ import { Spinner, useToast, GatedButton } from "@daohaus/ui";
 import { ACTION_TX } from "../../legos/tx";
 
 import MEMBER_REGISTRY from '../../abis/memberRegistry.json'
+import { TARGETS } from "../../targetDao";
 
 
 export const Trigger = ({
@@ -16,7 +17,7 @@ export const Trigger = ({
   onSuccess: () => void;
   sortedMemberList: any;
 }) => {
-  const daochain = "0x5";
+  const daochain = TARGETS.DEFAULT_CHAIN;
   const { fireTransaction } = useTxBuilder();
   const { chainId, address } = useDHConnect();
   const { errorToast, defaultToast, successToast } = useToast();
@@ -32,7 +33,7 @@ export const Trigger = ({
           contractName: 'MEMBER_REGISTRY',
           // @ts-ignore
           abi: MEMBER_REGISTRY,
-          targetAddress: '0xBe87eB4a8B3C2b1142D9Baa022FC861D445a4cf4'
+          targetAddress: TARGETS.REGISRTY_ADDRESS,
         },
         method: 'updateAll',
         args: [{type:"static", value: sortedMemberList}]

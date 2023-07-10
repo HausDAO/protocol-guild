@@ -6,6 +6,7 @@ import { useMemberRegistry } from "../hooks/useRegistry";
 import { useCurrentDao } from "@daohaus/moloch-v3-hooks";
 import { MemberRegistry } from "../components/MemberRegistry/MemberRegistry";
 import { Trigger } from "../components/MemberRegistry/Trigger";
+import { TARGETS } from "../targetDao";
 // import { TriggerAndDistro } from "../components/TriggerAndDistro";
 
 const LinkBox = styled.div`
@@ -27,9 +28,9 @@ export const HAUS_RPC = {
 export const Home = () => {
   const { daoChain, daoId } = useCurrentDao();
   const { chainId, provider, address } = useDHConnect();
-  const daochain = "0x5";
+  const daochain = TARGETS.DEFAULT_CHAIN;
   const { isIdle, isLoading, error, data, refetch } = useMemberRegistry({
-    registryAddress: "0xBe87eB4a8B3C2b1142D9Baa022FC861D445a4cf4", // get from contracts
+    registryAddress: TARGETS.REGISRTY_ADDRESS,
     userAddress: address,
     chainId: daochain,
     rpcs: HAUS_RPC,
