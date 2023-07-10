@@ -119,8 +119,8 @@ These values are used in most hooks and components and you have some options:
 Get them from `targetDao.ts`
 
 ```tsx
-const daoChain = TARGET_DAO[import.meta.env.VITE_TARGET_KEY].CHAIN_ID;
-const daoId = TARGET_DAO[import.meta.env.VITE_TARGET_KEY].ADDRESS;
+const daoChain = TARGETS.DEFAULT_CHAIN;
+const daoId = TARGETS.DAO_ADDRESS;
 ```
 
 or load them into a context from the `@daohaus/moloch-v3-hooks` library and then there is a hook you can use.
@@ -134,8 +134,8 @@ import { CurrentDaoProvider } from "@daohaus/moloch-v3-hooks";
 
 <CurrentDaoProvider
   targetDao={{
-    daoChain: TARGET_DAO[import.meta.env.VITE_TARGET_KEY].CHAIN_ID,
-    daoId: TARGET_DAO[import.meta.env.VITE_TARGET_KEY].ADDRESS,
+    daoChain: TARGETS.DEFAULT_CHAIN,
+    daoId: TARGETS.DAO_ADDRESS,
   }}
 >
   {children}

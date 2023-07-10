@@ -11,12 +11,12 @@ import { Members } from "./pages/Members";
 import { Member } from "./pages/Member";
 import { NewMember } from "./pages/NewMember";
 import { EditMember } from "./pages/EditMember";
-import { TARGET_DAO } from "./targetDao";
+import { TARGETS, TARGET_DAO } from "./targetDao";
 import RageQuit from "./pages/RageQuit";
 
 const routePath = `molochv3/${
-  TARGET_DAO[import.meta.env.VITE_TARGET_KEY].CHAIN_ID
-}/${TARGET_DAO[import.meta.env.VITE_TARGET_KEY].ADDRESS}`;
+  TARGETS.DEFAULT_CHAIN
+}/${TARGETS.DAO_ADDRESS}`;
 
 export const Routes = () => {
   return (
