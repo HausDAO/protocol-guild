@@ -1,43 +1,46 @@
-import { DHLayout, useDHConnect } from "@daohaus/connect";
-import { Routes as Router, Route, useLocation } from "react-router-dom";
-import { NewMember } from "./pages/NewMember";
+import { Routes as Router, Route } from "react-router-dom";
+import { FormTest } from "./pages/FormTest";
 import { Home } from "./pages/Home";
+import { LayoutContainer } from "./components/LayoutContainer";
+import Dao from "./pages/Dao";
+import { Safes } from "./pages/Safes";
+import { Settings } from "./pages/Settings";
+import { Proposals } from "./pages/Proposals";
+import { Proposal } from "./pages/Proposal";
+import { Members } from "./pages/Members";
+import { Member } from "./pages/Member";
+import { NewMember } from "./pages/NewMember";
 import { EditMember } from "./pages/EditMember";
-import { Claim } from "./pages/Claim";
-import { Dao } from "./pages/Dao";
-import { MolochV3DaoProvider } from "@daohaus/moloch-v3-context";
+import { TARGET_DAO } from "./targetDao";
+import RageQuit from "./pages/RageQuit";
 
-const targetDao = {
-  daoId: "0x7839755b77aadcd6a8cdb76248b3dddfa9b7f5f1",
-  daoChain: "0x5",
-};
-
-const graphApiKeys = { "0x1": process.env["NX_GRAPH_API_KEY_MAINNET"] };
+const routePath = `molochv3/${
+  TARGET_DAO[import.meta.env.VITE_TARGET_KEY].CHAIN_ID
+}/${TARGET_DAO[import.meta.env.VITE_TARGET_KEY].ADDRESS}`;
 
 export const Routes = () => {
-  const { pathname } = useLocation();
-  const { address } = useDHConnect();
   return (
-    <MolochV3DaoProvider
-      address={address}
-      daoid={targetDao.daoId}
-      daochain={targetDao.daoChain}
-      graphApiKeys={graphApiKeys}
-    >
-      <DHLayout
-        pathname={pathname}
-        navLinks={[
-          { label: "Home", href: "/" },
-          { label: "New Member/s", href: "/newmember" },
-          { label: "Edit Member/s", href: "/editmember" },
-        ]}
-      >
-        <Router>
-          <Route path="/" element={<Home />} />
-          <Route path="/newmember" element={<NewMember />} />
-          <Route path="/editmember" element={<EditMember />} />
-        </Router>
-      </DHLayout>
-    </MolochV3DaoProvider>
+    <Router>
+      <Route path="/" element={<LayoutContainer />}>
+        <Route index element={<Home />} />
+        <Route path={`${routePath}/newmember`} element={<NewMember />} />
+        <Route path={`${routePath}/editmember`} element={<EditMember />} />
+        <Route path={`${routePath}/formtest`} element={<FormTest />} />
+        <Route path={`${routePath}/dao`} element={<Dao />} />
+        <Route path={`${routePath}/safes`} element={<Safes />} />
+        <Route path={`${routePath}/settings`} element={<Settings />} />
+        <Route path={`${routePath}/proposals/`} element={<Proposals />} />
+        <Route
+          path={`${routePath}/proposal/:proposalId`}
+          element={<Proposal />}
+        />
+        <Route path={`${routePath}/members/`} element={<Members />} />
+        <Route
+          path={`${routePath}/member/:memberAddress`}
+          element={<Member />}
+        />
+        <Route path={`${routePath}/members/ragequit`} element={<RageQuit />} />
+      </Route>
+    </Router>
   );
 };

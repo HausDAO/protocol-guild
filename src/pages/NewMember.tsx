@@ -1,9 +1,11 @@
-import { useDHConnect } from '@daohaus/connect';
-import { FormBuilder } from '@daohaus/form-builder';
-import { TXBuilder } from '@daohaus/tx-builder';
-import { customFields } from '../legos/fields';
+import { useDHConnect } from "@daohaus/connect";
+import { FormBuilder } from "@daohaus/form-builder";
+import { MolochFields } from "@daohaus/moloch-v3-fields";
+import { TXBuilder } from "@daohaus/tx-builder";
+import { AppFieldLookup } from "../legos/fieldConfig";
 
-import { FORM } from '../legos/forms';
+import { APP_FORM } from "../legos/forms";
+import { TARGET_DAO } from "../targetDao";
 
 export const NewMember = () => {
   const { provider } = useDHConnect();
@@ -16,7 +18,11 @@ export const NewMember = () => {
       safeId="0xaccd85e73639b5213a001630eb2512dbd6292e32"
       appState={{}}
     >
-      <FormBuilder form={FORM.NEWMEMBER} targetNetwork="0x5" customFields={customFields} />
+      <FormBuilder
+        form={APP_FORM.NEWMEMBER}
+        targetNetwork={TARGET_DAO[import.meta.env.VITE_TARGET_KEY].CHAIN_ID}
+        customFields={{ ...MolochFields, ...AppFieldLookup }}
+      />
     </TXBuilder>
   );
 };

@@ -1,26 +1,31 @@
-import { CoreFieldLookup, FieldLego } from '@daohaus/form-builder';
-import { FieldLegoBase } from '@daohaus/utils';
-import { MainLayout } from '@daohaus/ui';
-import { CSTextarea } from '../components/CSTextarea';
-import { Item } from '@daohaus/ui/components/molecules/Dropdown/Dropdown.styles';
-import { OneShareArrayField } from '../components/OneShareArrayField';
-import { EditArrayField } from '../components/EditArrayField';
+import { FieldLego, CoreFieldLookup } from "@daohaus/form-builder";
+import { CustomFieldLego } from "./fieldConfig";
 
-export const customFields = {...CoreFieldLookup, cstextarea: CSTextarea, memberlistener: OneShareArrayField, editmemberlistener: EditArrayField};
-export type CustomFieldLego = FieldLegoBase<typeof customFields>;
-
-export const FIELD: Record<string, CustomFieldLego> = {
+export const APP_FIELD: Record<string, CustomFieldLego> = {
   TITLE: {
-    id: 'title',
-    type: 'input',
-    label: 'Proposal Title',
-    placeholder: 'Enter title',
+    id: "title",
+    type: "input",
+    label: "Proposal Title",
+    placeholder: "Enter title",
   },
   DESCRIPTION: {
-    id: 'description',
-    type: 'textarea',
-    label: 'Description',
-    placeholder: 'Enter description',
+    id: "description",
+    type: "textarea",
+    label: "Description",
+    placeholder: "Enter description",
+  },
+  LINK: {
+    id: "link",
+    type: "input",
+    label: "Link",
+    placeholder: "http://",
+    expectType: "url",
+  },
+  TEST_FIELD: {
+    id: "testField",
+    type: "testField",
+    label: "Test Field",
+    placeholder: "Enter something",
   },
   ARRAY: {
     id: 'array',
@@ -46,13 +51,6 @@ export const FIELD: Record<string, CustomFieldLego> = {
   EDITMEMBERLISTENER: {
     id: 'editmemberlistener',
     type: 'editmemberlistener',
-  },
-  LINK: {
-    id: 'link',
-    type: 'input',
-    label: 'Link',
-    placeholder: 'http://',
-    expectType: 'url',
   },
   RECIPIENT: {
     id: 'recipient',

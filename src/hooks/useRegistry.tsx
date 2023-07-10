@@ -30,12 +30,15 @@ const fetchMembers = async ({
   try {
     const members: Member[] = await MemberRegistryContract.getMembers();
     const lastUpdate: number = await MemberRegistryContract.lastUpdate();
-    const membersSorted: string[] = members.map((member: any) => member.account)
-    .sort((a: string, b: string) => {
-      return parseInt(a.slice(2), 16) - parseInt(b.slice(2), 16);
-    });
+    const membersSorted: string[] = members
+      .map((member: any) => member.account)
+      .sort((a: string, b: string) => {
+        return parseInt(a.slice(2), 16) - parseInt(b.slice(2), 16);
+      });
 
-    const percAlloc:  any[] = await MemberRegistryContract.calculate(membersSorted);
+    const percAlloc: any[] = await MemberRegistryContract.calculate(
+      membersSorted
+    );
 
     return {
       members: members,
