@@ -2,7 +2,7 @@ import { FormLego } from "@daohaus/form-builder";
 import { FIELD } from "@daohaus/moloch-v3-legos";
 import { CustomFormLego } from "./fieldConfig";
 import { APP_FIELD } from "./fields";
-import { APP_TX } from "./tx";
+import { ACTION_TX, APP_TX } from "./tx";
 
 const PROPOSAL_SETTINGS_FIELDS = [FIELD.PROPOSAL_EXPIRY, FIELD.PROP_OFFERING];
 
@@ -21,6 +21,20 @@ export const APP_FORM: Record<string, CustomFormLego> = {
       FIELD.LINK,
       APP_FIELD.TEST_FIELD,
       ...PROPOSAL_SETTINGS_FIELDS,
+    ],
+  },
+  ACCEPT_CONTROLL: {
+    id: "ACCEPTCONTROLL",
+    title: "Accept Control",
+    subtitle: "0xSplits",
+    description: "Accept control of 0xsplits",
+    requiredFields: { title: true, description: true },
+    log: true,
+    tx: APP_TX.ACCEPT_CONTROL,
+    fields: [
+      FIELD.TITLE,
+      FIELD.DESCRIPTION,
+      FIELD.LINK,
     ],
   },
   NEWMEMBER: {

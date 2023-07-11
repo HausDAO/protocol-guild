@@ -5,7 +5,7 @@ import { TXBuilder } from "@daohaus/tx-builder";
 import { AppFieldLookup } from "../legos/fieldConfig";
 
 import { APP_FORM } from "../legos/forms";
-import { TARGET_DAO } from "../targetDao";
+import { TARGETS, TARGET_DAO } from "../targetDao";
 
 export const NewMember = () => {
   const { provider } = useDHConnect();
@@ -13,14 +13,14 @@ export const NewMember = () => {
   return (
     <TXBuilder
       provider={provider}
-      chainId="0x5"
-      daoId="0x7839755b77aadcd6a8cdb76248b3dddfa9b7f5f1"
-      safeId="0xaccd85e73639b5213a001630eb2512dbd6292e32"
+      chainId={TARGETS.DEFAULT_CHAIN}
+      daoId={TARGETS.DAO_ADDRESS}
+      safeId={TARGETS.SAFE_ADDRESS}
       appState={{}}
     >
       <FormBuilder
         form={APP_FORM.NEWMEMBER}
-        targetNetwork={TARGET_DAO[import.meta.env.VITE_TARGET_KEY].CHAIN_ID}
+        targetNetwork={TARGETS.DEFAULT_CHAIN}
         customFields={{ ...MolochFields, ...AppFieldLookup }}
       />
     </TXBuilder>

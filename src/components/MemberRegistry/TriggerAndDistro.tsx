@@ -5,6 +5,7 @@ import { useTxBuilder } from "@daohaus/tx-builder";
 import { Spinner, useToast, GatedButton } from "@daohaus/ui";
 
 import { ACTION_TX } from "../../legos/tx";
+import { TARGETS } from "../../targetDao";
 
 export const TriggerAndDistro = ({
   onSuccess,
@@ -13,7 +14,7 @@ export const TriggerAndDistro = ({
   onSuccess: () => void;
   sortedMemberList: any;
 }) => {
-  const daochain = "0x5";
+  const daochain = TARGETS.DEFAULT_CHAIN;
   const { fireTransaction } = useTxBuilder();
   const { chainId, address } = useDHConnect();
   const { errorToast, defaultToast, successToast } = useToast();

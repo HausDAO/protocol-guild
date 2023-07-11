@@ -3,6 +3,7 @@ import { ContractLego } from "@daohaus/utils";
 import { CONTRACT_KEYCHAINS } from "@daohaus/keychain-utils";
 
 import MEMBER_REGISTRY from '../abis/memberRegistry.json'
+import { TARGETS } from "../targetDao";
 
 export const APP_CONTRACT: Record<string, ContractLego> = {
   POSTER: {
@@ -56,6 +57,6 @@ export const APP_CONTRACT: Record<string, ContractLego> = {
     contractName: 'MEMBER_REGISTRY',
     // @ts-ignore
     abi: MEMBER_REGISTRY,
-    targetAddress: '0xBe87eB4a8B3C2b1142D9Baa022FC861D445a4cf4'
+    targetAddress: TARGETS.REGISRTY_ADDRESS,
   },
 };

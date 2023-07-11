@@ -1,12 +1,5 @@
 [
-  {
-    "inputs": [
-      { "internalType": "address", "name": "_splitsMain", "type": "address" },
-      { "internalType": "address", "name": "_split", "type": "address" }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
+  { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
   { "inputs": [], "name": "ALREADY_REGISTERED", "type": "error" },
   { "inputs": [], "name": "INVALID_ACTIVITY_MULTIPLIER", "type": "error" },
   { "inputs": [], "name": "INVALID_LIST", "type": "error" },
@@ -14,10 +7,54 @@
   { "inputs": [], "name": "NOT_REGISTERED", "type": "error" },
   {
     "inputs": [{ "internalType": "UD60x18", "name": "x", "type": "uint256" }],
-    "name": "PRBMathUD60x18__SqrtOverflow",
+    "name": "PRBMath_UD60x18_Sqrt_Overflow",
     "type": "error"
   },
   { "inputs": [], "name": "START_DATE_IN_FUTURE", "type": "error" },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "version",
+        "type": "uint8"
+      }
+    ],
+    "name": "Initialized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_registryAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint32",
+        "name": "_chainId",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "_domainId",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "_delegate",
+        "type": "address"
+      }
+    ],
+    "name": "NetworkRegistryUpdated",
+    "type": "event"
+  },
   {
     "anonymous": false,
     "inputs": [
@@ -48,12 +85,12 @@
             "name": "secondsActive",
             "type": "uint32"
           },
+          { "internalType": "uint32", "name": "startDate", "type": "uint32" },
           {
-            "internalType": "uint32",
+            "internalType": "uint8",
             "name": "activityMultiplier",
-            "type": "uint32"
-          },
-          { "internalType": "uint32", "name": "startDate", "type": "uint32" }
+            "type": "uint8"
+          }
         ],
         "indexed": false,
         "internalType": "struct MemberRegistry.Member",
@@ -68,6 +105,74 @@
       }
     ],
     "name": "SetMember",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "_transferId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes4",
+        "name": "_action",
+        "type": "bytes4"
+      },
+      {
+        "indexed": true,
+        "internalType": "bool",
+        "name": "_success",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "_originDomain",
+        "type": "uint32"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "_originSender",
+        "type": "address"
+      }
+    ],
+    "name": "SyncActionPerformed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes4",
+        "name": "_action",
+        "type": "bytes4"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint32",
+        "name": "_chainId",
+        "type": "uint32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "_transferId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "_registryAddress",
+        "type": "address"
+      }
+    ],
+    "name": "SyncMessageSubmitted",
     "type": "event"
   },
   {
@@ -94,12 +199,12 @@
             "name": "secondsActive",
             "type": "uint32"
           },
+          { "internalType": "uint32", "name": "startDate", "type": "uint32" },
           {
-            "internalType": "uint32",
+            "internalType": "uint8",
             "name": "activityMultiplier",
-            "type": "uint32"
-          },
-          { "internalType": "uint32", "name": "startDate", "type": "uint32" }
+            "type": "uint8"
+          }
         ],
         "indexed": false,
         "internalType": "struct MemberRegistry.Member",
@@ -121,12 +226,12 @@
             "name": "secondsActive",
             "type": "uint32"
           },
+          { "internalType": "uint32", "name": "startDate", "type": "uint32" },
           {
-            "internalType": "uint32",
+            "internalType": "uint8",
             "name": "activityMultiplier",
-            "type": "uint32"
-          },
-          { "internalType": "uint32", "name": "startDate", "type": "uint32" }
+            "type": "uint8"
+          }
         ],
         "indexed": false,
         "internalType": "struct MemberRegistry.Member",
@@ -152,9 +257,21 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_split", "type": "address" }
+      { "internalType": "uint32[]", "name": "_chainIds", "type": "uint32[]" },
+      {
+        "internalType": "uint256[]",
+        "name": "_relayerFees",
+        "type": "uint256[]"
+      }
     ],
-    "name": "acceptControl",
+    "name": "acceptNetworkSplitControl",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "acceptSplitControl",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -163,9 +280,9 @@
     "inputs": [
       { "internalType": "address[]", "name": "_members", "type": "address[]" },
       {
-        "internalType": "uint32[]",
+        "internalType": "uint8[]",
         "name": "_activityMultipliers",
-        "type": "uint32[]"
+        "type": "uint8[]"
       },
       { "internalType": "uint32[]", "name": "_startDates", "type": "uint32[]" }
     ],
@@ -178,9 +295,9 @@
     "inputs": [
       { "internalType": "address[]", "name": "_members", "type": "address[]" },
       {
-        "internalType": "uint32[]",
+        "internalType": "uint8[]",
         "name": "_activityMultipliers",
-        "type": "uint32[]"
+        "type": "uint8[]"
       }
     ],
     "name": "batchUpdateMember",
@@ -214,17 +331,60 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_split", "type": "address" }
+      { "internalType": "uint32[]", "name": "_chainIds", "type": "uint32[]" },
+      {
+        "internalType": "uint256[]",
+        "name": "_relayerFees",
+        "type": "uint256[]"
+      }
     ],
-    "name": "cancelControlTransfer",
+    "name": "cancelNetworkSplitControlTransfer",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "cancelSplitControlTransfer",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "count",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "connext",
+    "outputs": [
+      { "internalType": "contract IConnext", "name": "", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_member", "type": "address" }
+    ],
+    "name": "getMember",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "address", "name": "account", "type": "address" },
+          {
+            "internalType": "uint32",
+            "name": "secondsActive",
+            "type": "uint32"
+          },
+          { "internalType": "uint32", "name": "startDate", "type": "uint32" },
+          {
+            "internalType": "uint8",
+            "name": "activityMultiplier",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct MemberRegistry.Member",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -240,18 +400,38 @@
             "name": "secondsActive",
             "type": "uint32"
           },
+          { "internalType": "uint32", "name": "startDate", "type": "uint32" },
           {
-            "internalType": "uint32",
+            "internalType": "uint8",
             "name": "activityMultiplier",
-            "type": "uint32"
-          },
-          { "internalType": "uint32", "name": "startDate", "type": "uint32" }
+            "type": "uint8"
+          }
         ],
         "internalType": "struct MemberRegistry.Member[]",
         "name": "",
         "type": "tuple[]"
       }
     ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "_initializationParams",
+        "type": "bytes"
+      }
+    ],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "isMainRegistry",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -275,12 +455,23 @@
     "outputs": [
       { "internalType": "address", "name": "account", "type": "address" },
       { "internalType": "uint32", "name": "secondsActive", "type": "uint32" },
+      { "internalType": "uint32", "name": "startDate", "type": "uint32" },
+      { "internalType": "uint8", "name": "activityMultiplier", "type": "uint8" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
+    "name": "networkRegistry",
+    "outputs": [
+      { "internalType": "uint32", "name": "domainId", "type": "uint32" },
       {
-        "internalType": "uint32",
-        "name": "activityMultiplier",
-        "type": "uint32"
+        "internalType": "address",
+        "name": "registryAddress",
+        "type": "address"
       },
-      { "internalType": "uint32", "name": "startDate", "type": "uint32" }
+      { "internalType": "address", "name": "delegate", "type": "address" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -303,9 +494,9 @@
     "inputs": [
       { "internalType": "address", "name": "_member", "type": "address" },
       {
-        "internalType": "uint32",
+        "internalType": "uint8",
         "name": "_activityMultiplier",
-        "type": "uint32"
+        "type": "uint8"
       },
       { "internalType": "uint32", "name": "_startDate", "type": "uint32" }
     ],
@@ -316,7 +507,12 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_split", "type": "address" }
+      { "internalType": "address", "name": "_split", "type": "address" },
+      {
+        "internalType": "uint32",
+        "name": "_splitDistributorFee",
+        "type": "uint32"
+      }
     ],
     "name": "setSplit",
     "outputs": [],
@@ -325,9 +521,19 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_splitsMain", "type": "address" }
+      { "internalType": "address", "name": "_splitMain", "type": "address" }
     ],
     "name": "setSplitMain",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint32", "name": "_updaterDomain", "type": "uint32" },
+      { "internalType": "address", "name": "_updater", "type": "address" }
+    ],
+    "name": "setUpdater",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -341,21 +547,192 @@
   },
   {
     "inputs": [],
-    "name": "splitsMain",
+    "name": "splitDistributorFee",
+    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "splitMain",
     "outputs": [
-      { "internalType": "contract ISPLITS", "name": "", "type": "address" }
+      { "internalType": "contract ISplitMain", "name": "", "type": "address" }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_split", "type": "address" },
-      { "internalType": "address", "name": "_newController", "type": "address" }
+      { "internalType": "address[]", "name": "_members", "type": "address[]" },
+      {
+        "internalType": "uint8[]",
+        "name": "_activityMultipliers",
+        "type": "uint8[]"
+      },
+      { "internalType": "uint32[]", "name": "_startDates", "type": "uint32[]" },
+      { "internalType": "uint32[]", "name": "_chainIds", "type": "uint32[]" },
+      {
+        "internalType": "uint256[]",
+        "name": "_relayerFees",
+        "type": "uint256[]"
+      }
     ],
-    "name": "transferControl",
+    "name": "syncBatchNewMember",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address[]", "name": "_members", "type": "address[]" },
+      {
+        "internalType": "uint8[]",
+        "name": "_activityMultipliers",
+        "type": "uint8[]"
+      },
+      { "internalType": "uint32[]", "name": "_chainIds", "type": "uint32[]" },
+      {
+        "internalType": "uint256[]",
+        "name": "_relayerFees",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "syncBatchUpdateMember",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint32[]", "name": "_chainIds", "type": "uint32[]" },
+      {
+        "internalType": "uint256[]",
+        "name": "_relayerFees",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "syncNetworkMemberRegistry",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_member", "type": "address" },
+      {
+        "internalType": "uint8",
+        "name": "_activityMultiplier",
+        "type": "uint8"
+      },
+      { "internalType": "uint32", "name": "_startDate", "type": "uint32" },
+      { "internalType": "uint32[]", "name": "_chainIds", "type": "uint32[]" },
+      {
+        "internalType": "uint256[]",
+        "name": "_relayerFees",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "syncSetNewMember",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "_sortedList",
+        "type": "address[]"
+      },
+      { "internalType": "uint32[]", "name": "_chainIds", "type": "uint32[]" },
+      {
+        "internalType": "uint256[]",
+        "name": "_relayerFees",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "syncUpdateAll",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_member", "type": "address" },
+      {
+        "internalType": "uint8",
+        "name": "_activityMultiplier",
+        "type": "uint8"
+      },
+      { "internalType": "uint32[]", "name": "_chainIds", "type": "uint32[]" },
+      {
+        "internalType": "uint256[]",
+        "name": "_relayerFees",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "syncUpdateMember",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint32[]", "name": "_chainIds", "type": "uint32[]" },
+      {
+        "internalType": "uint256[]",
+        "name": "_relayerFees",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "syncUpdateSecondsActive",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "_sortedList",
+        "type": "address[]"
+      },
+      { "internalType": "uint32[]", "name": "_chainIds", "type": "uint32[]" },
+      {
+        "internalType": "uint256[]",
+        "name": "_relayerFees",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "syncUpdateSplits",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalMembers",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint32[]", "name": "_chainIds", "type": "uint32[]" },
+      {
+        "internalType": "address[]",
+        "name": "_newControllers",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_relayerFees",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "transferNetworkSplitControl",
+    "outputs": [],
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -363,6 +740,15 @@
       { "internalType": "address", "name": "newOwner", "type": "address" }
     ],
     "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_newController", "type": "address" }
+    ],
+    "name": "transferSplitControl",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -398,7 +784,16 @@
         "name": "_sortedList",
         "type": "address[]"
       },
-      { "internalType": "contract IERC20", "name": "_token", "type": "address" }
+      {
+        "internalType": "contract IERC20",
+        "name": "_token",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_distributorAddress",
+        "type": "address"
+      }
     ],
     "name": "updateAllAndDistributeERC20",
     "outputs": [],
@@ -411,6 +806,11 @@
         "internalType": "address[]",
         "name": "_sortedList",
         "type": "address[]"
+      },
+      {
+        "internalType": "address",
+        "name": "_distributorAddress",
+        "type": "address"
       }
     ],
     "name": "updateAllAndDistributeETH",
@@ -422,14 +822,76 @@
     "inputs": [
       { "internalType": "address", "name": "_member", "type": "address" },
       {
-        "internalType": "uint32",
+        "internalType": "uint8",
         "name": "_activityMultiplier",
-        "type": "uint32"
+        "type": "uint8"
       }
     ],
     "name": "updateMember",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint32", "name": "_chainId", "type": "uint32" },
+      {
+        "components": [
+          { "internalType": "uint32", "name": "domainId", "type": "uint32" },
+          {
+            "internalType": "address",
+            "name": "registryAddress",
+            "type": "address"
+          },
+          { "internalType": "address", "name": "delegate", "type": "address" }
+        ],
+        "internalType": "struct INetworkMemberRegistry.NetworkRegistry",
+        "name": "_registry",
+        "type": "tuple"
+      }
+    ],
+    "name": "updateNetworkRegistry",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint32[]", "name": "_chainIds", "type": "uint32[]" },
+      { "internalType": "address[]", "name": "_splits", "type": "address[]" },
+      {
+        "internalType": "uint32[]",
+        "name": "_splitDistributorFees",
+        "type": "uint32[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_relayerFees",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "updateNetworkSplit",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint32[]", "name": "_chainIds", "type": "uint32[]" },
+      {
+        "internalType": "address[]",
+        "name": "_splitsMain",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_relayerFees",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "updateNetworkSplitMain",
+    "outputs": [],
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -460,6 +922,34 @@
         "type": "uint32[]"
       }
     ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "updater",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "updaterDomain",
+    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "_transferId", "type": "bytes32" },
+      { "internalType": "uint256", "name": "", "type": "uint256" },
+      { "internalType": "address", "name": "", "type": "address" },
+      { "internalType": "address", "name": "_originSender", "type": "address" },
+      { "internalType": "uint32", "name": "_origin", "type": "uint32" },
+      { "internalType": "bytes", "name": "_incomingCalldata", "type": "bytes" }
+    ],
+    "name": "xReceive",
+    "outputs": [{ "internalType": "bytes", "name": "", "type": "bytes" }],
     "stateMutability": "nonpayable",
     "type": "function"
   }
