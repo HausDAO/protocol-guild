@@ -13,6 +13,7 @@ import { NewMember } from "./pages/NewMember";
 import { EditMember } from "./pages/EditMember";
 import { TARGETS, TARGET_DAO } from "./targetDao";
 import RageQuit from "./pages/RageQuit";
+import { ControllerConfig } from "./pages/ControllerConfig";
 
 const routePath = `molochv3/${
   TARGETS.DEFAULT_CHAIN
@@ -30,6 +31,7 @@ export const Routes = () => {
         <Route path={`${routePath}/safes`} element={<Safes />} />
         <Route path={`${routePath}/settings`} element={<Settings />} />
         <Route path={`${routePath}/proposals/`} element={<Proposals />} />
+        <Route path={`${routePath}/controller/`} element={<ControllerConfig />} />
         <Route
           path={`${routePath}/proposal/:proposalId`}
           element={<Proposal />}

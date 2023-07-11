@@ -29,6 +29,7 @@ export const LayoutContainer = () => {
         { label: "DAO Overview", href: `${routePath}/dao` },
         { label: "New Members", href: `${routePath}/newmember` },
         { label: "Edit Members", href: `${routePath}/editmember` },
+        { label: "Controller Config", href: `${routePath}/controller` },
       ]}
       dropdownLinks={[
         { label: "Safes", href: `${routePath}/safes` },

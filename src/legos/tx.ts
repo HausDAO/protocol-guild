@@ -2,6 +2,7 @@ import { POSTER_TAGS, TXLegoBase } from "@daohaus/utils";
 import { buildMultiCallTX } from "@daohaus/tx-builder";
 import { APP_CONTRACT } from "./contract";
 import { CONTRACT } from "@daohaus/moloch-v3-legos";
+import { TARGETS } from "../targetDao";
 
 export enum ProposalTypeIds {
   Signal = "SIGNAL",
@@ -15,7 +16,9 @@ export enum ProposalTypeIds {
   GuildKick = "GUILDKICK",
   WalletConnect = "WALLETCONNECT",
   NewMember = 'NEWMEMBER',
-  EditMember = 'EDITMEMBER',
+  EditMember = 'EDITMEMBER',  
+  MultiCall = 'MULTICALL',
+
 }
 
 export const APP_TX = {
@@ -48,6 +51,26 @@ export const APP_TX = {
           },
           { type: "static", value: POSTER_TAGS.signalProposal },
         ],
+      },
+    ],
+  }),
+  ACCEPT_CONTROL: buildMultiCallTX({
+    id: "ACCEPT_CONTROL",
+    JSONDetails: {
+      type: "JSONDetails",
+      jsonSchema: {
+        title: `.formValues.title`,
+        description: `.formValues.description`,
+        contentURI: `.formValues.link`,
+        contentURIType: { type: "static", value: "url" },
+        proposalType: { type: "static", value: ProposalTypeIds.MultiCall },
+      },
+    },
+    actions: [
+      {
+        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        method: "acceptSplitControl",
+        args: [],
       },
     ],
   }),
