@@ -4,7 +4,6 @@ import { Member } from "../../types/Member.types";
 import { MemberInfo } from "../MemberInfo";
 import { MemberTable } from "../MemberTable/MemberTable";
 import { Trigger } from "./Trigger";
-import { TriggerAndDistro } from "./TriggerAndDistro";
 
 type MemberRegistryProps = {
   membersList: Member[];
@@ -32,12 +31,6 @@ const MemberRegistry = (props: MemberRegistryProps) => {
           sortedMemberList={membersSorted}
         />
 
-        <TriggerAndDistro
-          onSuccess={() => {
-            alert("yay trigger");
-          }}
-          sortedMemberList={membersSorted}
-        />
       </ActionContainer>
 
       <MemberTable memberList={membersList}></MemberTable>

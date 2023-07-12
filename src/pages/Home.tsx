@@ -5,9 +5,7 @@ import { useDHConnect } from "@daohaus/connect";
 import { useMemberRegistry } from "../hooks/useRegistry";
 import { useCurrentDao } from "@daohaus/moloch-v3-hooks";
 import { MemberRegistry } from "../components/MemberRegistry/MemberRegistry";
-import { Trigger } from "../components/MemberRegistry/Trigger";
 import { TARGETS } from "../targetDao";
-// import { TriggerAndDistro } from "../components/TriggerAndDistro";
 
 const LinkBox = styled.div`
   display: flex;
@@ -38,7 +36,7 @@ export const Home = () => {
   console.log("isLoading", isLoading);
   console.log("daoId", daoId);
 
-  console.log("data", data);
+  console.log("data???", data);
   return (
     <SingleColumnLayout
       title="Protocol Guild Member Registry"

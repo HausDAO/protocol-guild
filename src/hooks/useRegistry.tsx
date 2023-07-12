@@ -26,25 +26,28 @@ const fetchMembers = async ({
     chainId,
     rpcs,
   });
+console.log("MemberRegistryContract", MemberRegistryContract);
 
   try {
     const members: Member[] = await MemberRegistryContract.getMembers();
-    const lastUpdate: number = await MemberRegistryContract.lastUpdate();
+    // const lastUpdate: number = await MemberRegistryContract.lastUpdate() || 0;
     const membersSorted: string[] = members
       .map((member: any) => member.account)
       .sort((a: string, b: string) => {
         return parseInt(a.slice(2), 16) - parseInt(b.slice(2), 16);
       });
 
-    const percAlloc: any[] = await MemberRegistryContract.calculate(
-      membersSorted
-    );
+    // const percAlloc: any[] = await MemberRegistryContract.calculate(
+    //   membersSorted
+    // );
+
+    console.log("members", members);
 
     return {
       members: members,
-      lastUpdate: lastUpdate,
+      lastUpdate: 0, // lastUpdate,
       membersSorted: membersSorted,
-      percAlloc: percAlloc,
+      // percAlloc: percAlloc,
     };
   } catch (error: any) {
     console.error(error);
@@ -64,7 +67,7 @@ export const useMemberRegistry = ({
   rpcs?: Keychain;
 }) => {
   const { data, ...rest } = useQuery(
-    ["memberData", { userAddress }],
+    ["memberData2", { userAddress }],
     () =>
       fetchMembers({
         registryAddress,
@@ -75,6 +78,9 @@ export const useMemberRegistry = ({
     { enabled: !!userAddress }
   );
   useDebugValue(data ?? "Loading");
+
+  console.log("data>>>>????", data);
+  
 
   return { data, ...rest };
 };

@@ -5,7 +5,7 @@ import { TXBuilder } from "@daohaus/tx-builder";
 import { AppFieldLookup } from "../legos/fieldConfig";
 
 import { APP_FORM } from "../legos/forms";
-import { TARGETS, TARGET_DAO } from "../targetDao";
+import { TARGETS } from "../targetDao";
 
 export const NewMember = () => {
   const { provider } = useDHConnect();
