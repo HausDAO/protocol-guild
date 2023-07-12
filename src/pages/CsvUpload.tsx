@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { ParLg, SingleColumnLayout } from "@daohaus/ui";
+import { Button, ParLg, SingleColumnLayout } from "@daohaus/ui";
 
 import { CsvUploader } from "../components/CsvUploader";
 import { Member } from "../types/Member.types";
@@ -25,7 +25,11 @@ export const CsvUpload = () => {
       <CsvUploader setMemberList={setMemberList} />
 
       
-      {memberList && (<MemberTable memberList={memberList} />)}
+      {memberList && (
+      <>
+      <MemberTable memberList={memberList} />
+      <Button onClick={() => console.log("memberList", memberList)}>Submit Proposal</Button>
+      </>)}
 
     </SingleColumnLayout>
   );

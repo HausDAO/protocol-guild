@@ -1,6 +1,7 @@
 import React, { CSSProperties, useState } from "react";
 import { useCSVReader } from "react-papaparse";
 import { Member } from "../types/Member.types";
+import { Button, ErrorText, HelperText } from "@daohaus/ui";
 interface CsvData {
   address: string;
   modifier: number;
@@ -8,25 +9,7 @@ interface CsvData {
 }
 
 const styles = {
-  csvReader: {
-    display: "flex",
-    flexDirection: "row",
-    marginBottom: 10,
-  } as CSSProperties,
-  browseFile: {
-    width: "20%",
-  } as CSSProperties,
-  acceptedFile: {
-    border: "1px solid #ccc",
-    height: 45,
-    lineHeight: 2.5,
-    paddingLeft: 10,
-    width: "80%",
-  } as CSSProperties,
-  remove: {
-    borderRadius: 0,
-    padding: "0 20px",
-  } as CSSProperties,
+
   progressBarBackgroundColor: {
     backgroundColor: "red",
   } as CSSProperties,
@@ -112,22 +95,16 @@ export const CsvUploader = (props: CsvUploaderProps) => {
         getRootProps,
         acceptedFile,
         ProgressBar,
-        getRemoveFileProps,
       }: any) => (
         <>
-          <div style={styles.csvReader}>
-            <button type="button" {...getRootProps()} style={styles.browseFile}>
-              Browse file
-            </button>
-            <div style={styles.acceptedFile}>
+        
+            <Button {...getRootProps()}>Browse File</Button>
+            <HelperText>
               {acceptedFile && acceptedFile.name}
-            </div>
-            <button {...getRemoveFileProps()} style={styles.remove}>
-              Remove
-            </button>
-          </div>
+            </HelperText>
+
           <ProgressBar style={styles.progressBarBackgroundColor} />
-          {error && <p>{error}</p>}
+          {error && <ErrorText>{error}</ErrorText>}
         </>
       )}
     </CSVReader>
