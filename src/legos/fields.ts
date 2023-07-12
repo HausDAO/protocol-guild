@@ -59,6 +59,31 @@ export const APP_FIELD: Record<string, CustomFieldLego> = {
     placeholder: '0x...',
     expectType: 'ethAddress',
   },
+  REPLICA: {
+    id: 'replica',
+    type: 'input',
+    label: 'Replica',
+    placeholder: '0x...',
+    expectType: 'ethAddress',
+  },
+  SPLITS: {
+    id: 'splits',
+    type: 'input',
+    label: 'Splits',
+    placeholder: '0x...',
+    expectType: 'ethAddress',
+  },
+  CHAINID: {
+    id: 'chainid',
+    type: 'input',
+    label: 'Chain ID',
+    placeholder: '0x...',
+  },
+  RELAY_FEE: {
+    id: 'relayFee',
+    type: 'toWeiInput',
+    label: 'Relay Fee',
+  },
   TO_WEI: {
     id: 'shouldOverwrite',
     type: 'toWeiInput',

@@ -1,21 +1,23 @@
 import React from "react";
 
 import { ParLg, SingleColumnLayout } from "@daohaus/ui";
+
 import { FormBuilder } from "@daohaus/form-builder";
 import { APP_FORM } from "../legos/forms";
 import { TARGETS } from "../targetDao";
 
-export const ControllerConfig = () => {
+export const ReplicaConfig = () => {
 
   return (
-    <SingleColumnLayout title="0xSplits Controller">
-      <ParLg>Current Owner?</ParLg>
-      <ParLg>Transfer Control</ParLg>
-      <ParLg>Accept Control</ParLg>
-      <ParLg>maybe better to fix walletconnect and give instructions for that</ParLg>
+    <SingleColumnLayout title="Replicants">
+      <ParLg>Current Networks</ParLg>
+      <ParLg>Add new</ParLg>
+      <ParLg>Accept/transfer splits Control</ParLg>
+      <ParLg>Documentation for current owner to deploy and transfer</ParLg>
+
 
       <FormBuilder
-        form={APP_FORM.ACCEPT_CONTROLL}
+        form={APP_FORM.REPLICA}
         targetNetwork={TARGETS.DEFAULT_CHAIN}
       />
 

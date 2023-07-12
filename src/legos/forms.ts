@@ -37,6 +37,24 @@ export const APP_FORM: Record<string, CustomFormLego> = {
       FIELD.LINK,
     ],
   },
+  REPLICA: {
+    id: "REPLICA",
+    title: "Register Replica",
+    subtitle: "forign chain registries",
+    description: "Register a replica for a forign chain and set 0xsplits controller",
+    requiredFields: { title: true, description: true },
+    log: true,
+    tx: APP_TX.ACCEPT_CONTROL,
+    fields: [
+      FIELD.TITLE,
+      FIELD.DESCRIPTION,
+      FIELD.LINK,
+      APP_FIELD.REPLICA,
+      APP_FIELD.SPLITS,
+      APP_FIELD.RELAY_FEE,
+      APP_FIELD.CHAINID
+    ],
+  },
   NEWMEMBER: {
     id: 'NEWMEMBER',
     title: 'New Member/s Form',

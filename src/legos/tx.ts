@@ -54,6 +54,47 @@ export const APP_TX = {
       },
     ],
   }),
+  REPLICA: buildMultiCallTX({
+    id: "REPLICA",
+    JSONDetails: {
+      type: "JSONDetails",
+      jsonSchema: {
+        title: `.formValues.title`,
+        description: `.formValues.description`,
+        contentURI: `.formValues.link`,
+        contentURIType: { type: "static", value: "url" },
+        proposalType: { type: "static", value: ProposalTypeIds.MultiCall },
+      },
+    },
+    actions: [
+      {
+        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        method: "updateNetworkRegistry",
+        args: [
+          '.formValues.chainid',
+          '.formValues.replica',
+        ],
+      },
+      {
+        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        method: "updateNetworkSplit",
+        args: [
+          '.formValues.chainid',
+          '.formValues.splits',
+          '.formValues.splits',
+          '.formVaules.relay_fee'
+        ],
+      },
+      {
+        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        method: "acceptNetworkSplitControl",
+        args: [
+          '.formValues.chainid',
+          '.formValues.replica',
+        ],
+      },
+    ],
+  }),
   ACCEPT_CONTROL: buildMultiCallTX({
     id: "ACCEPT_CONTROL",
     JSONDetails: {
