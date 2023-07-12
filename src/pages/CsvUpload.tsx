@@ -2,9 +2,6 @@ import React, { useState } from "react";
 
 import { ParLg, SingleColumnLayout } from "@daohaus/ui";
 
-import { FormBuilder } from "@daohaus/form-builder";
-import { APP_FORM } from "../legos/forms";
-import { TARGETS } from "../targetDao";
 import { CsvUploader } from "../components/CsvUploader";
 import { Member } from "../types/Member.types";
 import { MemberTable } from "../components/MemberTable/MemberTable";
@@ -21,6 +18,8 @@ export const CsvUpload = () => {
 
       <ParLg>Submit data to multicall proposal</ParLg>
       <ParLg>batch update and batch new</ParLg>
+      <ParLg>csv format: account, modifier, startdate</ParLg>
+
 
 
       <CsvUploader setMemberList={setMemberList} />
