@@ -77,10 +77,7 @@ export const useMemberRegistry = ({
       }),
     { enabled: !!userAddress }
   );
-  useDebugValue(data ?? "Loading");
-
-  console.log("data>>>>????", data);
-  
+  useDebugValue(data ?? "Loading");  
 
   return { data, ...rest };
 };

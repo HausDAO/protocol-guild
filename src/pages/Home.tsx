@@ -24,7 +24,7 @@ export const HAUS_RPC = {
 };
 
 export const Home = () => {
-  const { daoChain, daoId } = useCurrentDao();
+
   const { chainId, provider, address } = useDHConnect();
   const daochain = TARGETS.DEFAULT_CHAIN;
   const { isIdle, isLoading, error, data, refetch } = useMemberRegistry({
@@ -34,7 +34,7 @@ export const Home = () => {
     rpcs: HAUS_RPC,
   });
   console.log("isLoading", isLoading);
-  console.log("daoId", daoId);
+
 
   console.log("data???", data);
   return (
