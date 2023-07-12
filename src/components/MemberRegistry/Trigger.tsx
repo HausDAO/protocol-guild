@@ -68,7 +68,7 @@ export const Trigger = ({
       rules={[isConnectedToDao]}
       onClick={handleTrigger}
     >
-      {isLoading ? <Spinner size="2rem" strokeWidth=".2rem" /> : "Update Only"}
+      {isLoading ? <Spinner size="2rem" strokeWidth=".2rem" /> : "Update"}
     </GatedButton>
   );
 };

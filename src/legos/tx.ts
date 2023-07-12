@@ -145,11 +145,6 @@ export const ACTION_TX: Record<string, TXLegoBase> = {
     method: 'updateAll',
     args: ['.sortedMemberList',]
   },
-  TRIGGERANDDISTRO: {
-    id: 'TRIGGERANDDISTRO',
-    contract: CONTRACT.MEMBER_REGISTRY,
-    method: 'updateAllAndDistributeETH',
-  },
   
   MCTRIGGER: {
     id: 'MCTRIGGER',
