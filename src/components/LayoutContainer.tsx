@@ -25,7 +25,9 @@ export const LayoutContainer = () => {
         { label: "Home", href: `/` },
         { label: "New Members", href: `newmember` },
         { label: "Edit Members", href: `editmember` },
-        { label: "Controller Config", href: `controller` },
+        { label: "Splits Controller", href: `controller` },
+        { label: "Replicas", href: `replicas` },
+
       ]}
       leftNav={<H4>Network Registry</H4>}
     >
