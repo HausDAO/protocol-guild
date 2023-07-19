@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import { Bold, DataLg, H2, ParMd } from "@daohaus/ui";
+import { Bold, Checkbox, DataLg, H2, ParMd } from "@daohaus/ui";
 import {
   createColumnHelper,
   flexRender,
@@ -8,14 +8,18 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { Member } from "../../types/Member.types";
+import { Member, StagingMember } from "../../types/Member.types";
 import { MemberProfile } from "./MemberProfile";
 import { TimeActive } from "./TimeActive";
 import { Table, TableData, TableHead, TableRow } from "./MemberTable.styles";
 
-const columnHelper = createColumnHelper<Member>();
+const columnHelper = createColumnHelper<StagingMember>();
 
 const columns = [
+  columnHelper.accessor("newMember", {
+    header: () => "New",
+    cell: (info) => <Checkbox disabled={true} checked={info.getValue()} title=" "/>,
+  }),
   columnHelper.accessor("account", {
     header: () => "Address",
     cell: (info) => <MemberProfile address={info.getValue()} />,
@@ -23,10 +27,6 @@ const columns = [
   columnHelper.accessor("activityMultiplier", {
     header: () => "Activity Multiplier",
     cell: (info) => <ParMd>{`${info.renderValue()} %`}</ParMd>,
-  }),
-  columnHelper.accessor("secondsActive", {
-    header: () => <span>Time Active</span>,
-    cell: (info) => <TimeActive secondsActive={info.renderValue()} />,
   }),
   columnHelper.accessor("startDate", {
     header: "Start Date",
@@ -40,7 +40,7 @@ const columns = [
   }),
 ];
 
-export const MemberTable = ({ memberList }: { memberList: Member[] }) => {
+export const MemberImportTable = ({ memberList }: { memberList: StagingMember[] }) => {
   console.log("memberList table", memberList);
   
   const [data] = React.useState(() => [...memberList]);

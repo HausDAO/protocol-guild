@@ -24,17 +24,17 @@ export const HAUS_RPC = {
 };
 
 export const Home = () => {
-  const { daoChain, daoId } = useCurrentDao();
-  const { chainId, provider, address } = useDHConnect();
+
+  const { address } = useDHConnect();
   const daochain = TARGETS.DEFAULT_CHAIN;
+  
   const { isIdle, isLoading, error, data, refetch } = useMemberRegistry({
     registryAddress: TARGETS.REGISRTY_ADDRESS,
-    userAddress: address,
     chainId: daochain,
     rpcs: HAUS_RPC,
   });
   console.log("isLoading", isLoading);
-  console.log("daoId", daoId);
+
 
   console.log("data???", data);
   return (

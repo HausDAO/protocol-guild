@@ -172,6 +172,30 @@ export const APP_TX = {
       },
     ],
   }),
+  NEW_AND_EDIT_MEMBER: buildMultiCallTX({
+    id: 'NEW_AND_EDIT_MEMBER',
+    JSONDetails: {
+      type: 'JSONDetails',
+      jsonSchema: {
+        title: `.formValues.title`,
+        description: `.formValues.description`,
+        contentURI: `.formValues.link`,
+        contentURIType: { type: 'static', value: 'url' },
+        proposalType: { type: 'static', value: ProposalTypeIds.EditMember },
+      },
+    },
+    actions: [
+      {
+        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        method: 'batchUpdateMember',
+        args: [
+          '.formValues.members',
+          '.formValues.activitymods',
+          //{ type: 'static', value: POSTER_TAGS.signalProposal }, //hardcoded
+        ],
+      },
+    ],
+  }),
 };
 
 export const ACTION_TX: Record<string, TXLegoBase> = {

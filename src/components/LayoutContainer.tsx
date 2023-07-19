@@ -23,10 +23,10 @@ export const LayoutContainer = () => {
       pathname={location.pathname}
       navLinks={[
         { label: "Home", href: `/` },
-        { label: "New Members", href: `newmember` },
-        { label: "Edit Members", href: `editmember` },
         { label: "Splits Controller", href: `controller` },
         { label: "Replicas", href: `replicas` },
+        { label: "Upload", href: `upload` },
+
 
       ]}
       leftNav={<H4>Network Registry</H4>}
