@@ -2,8 +2,7 @@ import { useDebugValue } from "react";
 import { useQuery } from "react-query";
 
 import { createContract } from "@daohaus/tx-builder";
-import { ValidNetwork, Keychain, HAUS_RPC } from "@daohaus/keychain-utils";
-import { nowInSeconds } from "@daohaus/utils";
+import { ValidNetwork, Keychain } from "@daohaus/keychain-utils";
 
 import MemberRegistryAbi from "../abis/memberRegistry.json";
 
@@ -11,22 +10,20 @@ import { Member } from "../types/Member.types";
 
 const fetchMembers = async ({
   registryAddress,
-  userAddress,
   chainId,
   rpcs,
 }: {
   registryAddress: string;
-  userAddress: string;
   chainId: ValidNetwork;
   rpcs?: Keychain;
 }) => {
+  
   const MemberRegistryContract = createContract({
     address: registryAddress,
     abi: MemberRegistryAbi,
     chainId,
     rpcs,
   });
-console.log("MemberRegistryContract", MemberRegistryContract);
 
   try {
     const members: Member[] = await MemberRegistryContract.getMembers();
@@ -41,7 +38,6 @@ console.log("MemberRegistryContract", MemberRegistryContract);
     //   membersSorted
     // );
 
-    console.log("members", members);
 
     return {
       members: members,
@@ -57,26 +53,25 @@ console.log("MemberRegistryContract", MemberRegistryContract);
 
 export const useMemberRegistry = ({
   registryAddress,
-  userAddress,
   chainId,
   rpcs,
 }: {
   registryAddress: string;
-  userAddress: string | undefined | null;
   chainId: ValidNetwork;
   rpcs?: Keychain;
 }) => {
+  
   const { data, ...rest } = useQuery(
-    ["memberData2", { userAddress }],
+    ["memberData", { registryAddress }],
     () =>
       fetchMembers({
         registryAddress,
-        userAddress: userAddress as string,
         chainId,
         rpcs,
       }),
-    { enabled: !!userAddress }
+    { enabled: !!registryAddress }
   );
+
   useDebugValue(data ?? "Loading");  
 
   return { data, ...rest };
