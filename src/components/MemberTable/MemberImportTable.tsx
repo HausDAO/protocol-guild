@@ -1,6 +1,7 @@
 import React from "react";
 import moment from "moment";
-import { Bold, Checkbox, DataLg, H2, ParMd } from "@daohaus/ui";
+import { DataLg, ParMd, Tooltip } from "@daohaus/ui";
+import { RiCheckboxCircleFill } from "react-icons/ri";
 import {
   createColumnHelper,
   flexRender,
@@ -8,9 +9,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { Member, StagingMember } from "../../types/Member.types";
+import { StagingMember } from "../../types/Member.types";
 import { MemberProfile } from "./MemberProfile";
-import { TimeActive } from "./TimeActive";
 import { Table, TableData, TableHead, TableRow } from "./MemberTable.styles";
 
 const columnHelper = createColumnHelper<StagingMember>();
@@ -18,7 +18,21 @@ const columnHelper = createColumnHelper<StagingMember>();
 const columns = [
   columnHelper.accessor("newMember", {
     header: () => "New",
-    cell: (info) => <Checkbox disabled={true} checked={info.getValue()} title=" "/>,
+    cell: (info) => (
+      <>
+        {info.getValue() && (
+          <Tooltip
+            content="New Member to be added to the DAO and registry"
+            triggerEl={
+              <RiCheckboxCircleFill
+                color="hsl(131, 41.0%, 46.5%)"
+                size="2rem"
+              />
+            }
+          />
+        )}
+      </>
+    ),
   }),
   columnHelper.accessor("account", {
     header: () => "Address",
@@ -40,9 +54,13 @@ const columns = [
   }),
 ];
 
-export const MemberImportTable = ({ memberList }: { memberList: StagingMember[] }) => {
+export const MemberImportTable = ({
+  memberList,
+}: {
+  memberList: StagingMember[];
+}) => {
   console.log("memberList table", memberList);
-  
+
   const [data] = React.useState(() => [...memberList]);
   const table = useReactTable({
     data,
