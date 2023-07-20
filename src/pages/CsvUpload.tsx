@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, ParLg, SingleColumnLayout } from "@daohaus/ui";
+import { Divider, ParLg, ParMd, SingleColumnLayout, WarningText } from "@daohaus/ui";
 
 import { CsvUploader } from "../components/CsvUploader";
 import { Member, StagingMember } from "../types/Member.types";
@@ -9,6 +9,11 @@ import { useMemberRegistry } from "../hooks/useRegistry";
 import { TARGETS } from "../targetDao";
 import { HAUS_RPC } from "./Home";
 import { ComboMemberProposal } from "../components/MemberRegistry/ComboMemberProposal";
+import styled from "styled-components";
+
+const StyledDivider = styled(Divider)`
+  margin-bottom: 2rem;
+`
 
 export const CsvUpload = () => {
 
@@ -42,9 +47,11 @@ export const CsvUpload = () => {
 
 
   return (
-    <SingleColumnLayout title="CsvUpload">
+    <SingleColumnLayout>
 
-      <ParLg>csv format: address, modifier, startdate</ParLg>
+      <ParLg>CSV Upload format:</ParLg>
+      <ParMd>Format and 1st row header: address, modifier, startdate</ParMd>
+      <StyledDivider />
 
       <CsvUploader setMemberList={setMemberList} />
 
