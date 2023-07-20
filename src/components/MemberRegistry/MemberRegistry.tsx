@@ -7,7 +7,7 @@ import { Trigger } from "./Trigger";
 
 type MemberRegistryProps = {
   membersList: Member[];
-  membersSorted: string[];
+  membersSorted: Member[];
   lastUpdate: number;
 };
 

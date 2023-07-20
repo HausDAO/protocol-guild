@@ -17,7 +17,6 @@ const fetchMembers = async ({
   chainId: ValidNetwork;
   rpcs?: Keychain;
 }) => {
-  
   const MemberRegistryContract = createContract({
     address: registryAddress,
     abi: MemberRegistryAbi,
@@ -27,23 +26,22 @@ const fetchMembers = async ({
 
   try {
     const members: Member[] = await MemberRegistryContract.getMembers();
-    // const lastUpdate: number = await MemberRegistryContract.lastUpdate() || 0;
-    const membersSorted: string[] = members
-      .map((member: any) => member.account)
-      .sort((a: string, b: string) => {
-        return parseInt(a.slice(2), 16) - parseInt(b.slice(2), 16);
-      });
+    const lastUpdate: number =
+      (await MemberRegistryContract.lastActivityUpdate()) || 0;
 
-    // const percAlloc: any[] = await MemberRegistryContract.calculate(
-    //   membersSorted
-    // );
+    const membersSorted: Member[] = members.sort((a: Member, b: Member) =>
+      a.account.toLowerCase() > b.account.toLowerCase() ? 1 : -1
+    );
 
+    const percAlloc: any[] = await MemberRegistryContract.calculate(
+      membersSorted
+    );
 
     return {
       members: members,
       lastUpdate: 0, // lastUpdate,
       membersSorted: membersSorted,
-      // percAlloc: percAlloc,
+      percAlloc: percAlloc,
     };
   } catch (error: any) {
     console.error(error);
@@ -60,7 +58,6 @@ export const useMemberRegistry = ({
   chainId: ValidNetwork;
   rpcs?: Keychain;
 }) => {
-  
   const { data, ...rest } = useQuery(
     ["memberData", { registryAddress }],
     () =>
@@ -72,7 +69,7 @@ export const useMemberRegistry = ({
     { enabled: !!registryAddress }
   );
 
-  useDebugValue(data ?? "Loading");  
+  useDebugValue(data ?? "Loading");
 
   return { data, ...rest };
 };

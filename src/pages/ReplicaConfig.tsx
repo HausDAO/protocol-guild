@@ -14,6 +14,7 @@ export const ReplicaConfig = () => {
       <ParLg>Add new</ParLg>
       <ParLg>Accept/transfer splits Control</ParLg>
       <ParLg>Documentation for current owner to deploy and transfer</ParLg>
+      <ParLg>instal connext sdk</ParLg>
 
 
       <FormBuilder

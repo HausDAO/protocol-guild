@@ -13,6 +13,8 @@ export const ControllerConfig = () => {
       <ParLg>Transfer Control</ParLg>
       <ParLg>Accept Control</ParLg>
       <ParLg>maybe better to fix walletconnect and give instructions for that</ParLg>
+      <ParLg>set bridge id</ParLg>
+
 
       <FormBuilder
         form={APP_FORM.ACCEPT_CONTROLL}
