@@ -43,18 +43,13 @@ export const CsvUpload = () => {
 
   return (
     <SingleColumnLayout title="CsvUpload">
-      <ParLg>Upload CSV file with address, modifier, start date</ParLg>
-      <ParLg>Validate shape</ParLg>
-      <ParLg>Compare against current registry</ParLg>
 
-      <ParLg>Submit data to multicall proposal</ParLg>
-      <ParLg>batch update and batch new</ParLg>
       <ParLg>csv format: address, modifier, startdate</ParLg>
 
       <CsvUploader setMemberList={setMemberList} />
 
       
-      {stageMemberList.length && (
+      {stageMemberList.length > 0 && (
       <>
       <MemberImportTable memberList={stageMemberList} />
       <ComboMemberProposal onSuccess={() => console.log("success")} stageMemberList={stageMemberList} />
