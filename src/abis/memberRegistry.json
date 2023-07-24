@@ -214,6 +214,31 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "address",
+        "name": "_split",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "_splitHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "_splitDistributorFee",
+        "type": "uint32"
+      }
+    ],
+    "name": "SplitsUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "bytes32",
         "name": "_transferId",
@@ -393,6 +418,51 @@
         "name": "_percentAllocations",
         "type": "uint32[]"
       }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_memberAddress", "type": "address" }
+    ],
+    "name": "calculateContributionOf",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "address", "name": "account", "type": "address" },
+          {
+            "internalType": "uint32",
+            "name": "secondsActive",
+            "type": "uint32"
+          },
+          { "internalType": "uint32", "name": "startDate", "type": "uint32" },
+          {
+            "internalType": "uint32",
+            "name": "activityMultiplier",
+            "type": "uint32"
+          }
+        ],
+        "internalType": "struct MemberRegistry.Member",
+        "name": "_member",
+        "type": "tuple"
+      }
+    ],
+    "name": "calculateContributionOf",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "calculateTotalContributions",
+    "outputs": [
+      { "internalType": "uint256", "name": "total", "type": "uint256" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -841,68 +911,6 @@
       }
     ],
     "name": "updateAll",
-    "outputs": [
-      {
-        "internalType": "address[]",
-        "name": "_receivers",
-        "type": "address[]"
-      },
-      {
-        "internalType": "uint32[]",
-        "name": "_percentAllocations",
-        "type": "uint32[]"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address[]",
-        "name": "_sortedList",
-        "type": "address[]"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "_token",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_distributorAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "uint32",
-        "name": "_splitDistributorFee",
-        "type": "uint32"
-      }
-    ],
-    "name": "updateAllAndDistributeERC20",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address[]",
-        "name": "_sortedList",
-        "type": "address[]"
-      },
-      {
-        "internalType": "address",
-        "name": "_distributorAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "uint32",
-        "name": "_splitDistributorFee",
-        "type": "uint32"
-      }
-    ],
-    "name": "updateAllAndDistributeETH",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -934,7 +942,7 @@
           },
           { "internalType": "address", "name": "delegate", "type": "address" }
         ],
-        "internalType": "struct INetworkMemberRegistry.NetworkRegistry",
+        "internalType": "struct INetworkMemberRegistry.Registry",
         "name": "_newRegistry",
         "type": "tuple"
       }
@@ -985,18 +993,7 @@
       }
     ],
     "name": "updateSplits",
-    "outputs": [
-      {
-        "internalType": "address[]",
-        "name": "_receivers",
-        "type": "address[]"
-      },
-      {
-        "internalType": "uint32[]",
-        "name": "_percentAllocations",
-        "type": "uint32[]"
-      }
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
