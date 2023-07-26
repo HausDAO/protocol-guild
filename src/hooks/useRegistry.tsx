@@ -26,24 +26,28 @@ const fetchMembers = async ({
 
   try {
     const members: Member[] = await MemberRegistryContract.getMembers();
+
     console.log(await MemberRegistryContract.lastActivityUpdate());
 
     const lastUpdate: number =
       await MemberRegistryContract.lastActivityUpdate();
 
-    const membersSorted: Member[] = members
+    const membersSorted: String[] = members
       .map((member: any) => member.account)
-      .sort((a: Member, b: Member) => (a > b ? 1 : -1));
+      .sort((a: string, b: string) =>
+        a.toLowerCase() > b.toLowerCase() ? 1 : -1
+      );
 
-    // const percAlloc: any[] = await MemberRegistryContract.calculate(
-    //   membersSorted
-    // );
+    const percAlloc: any[] = await MemberRegistryContract.calculate(
+      membersSorted
+    );
+
 
     return {
       members: members,
       lastUpdate: 0, // lastUpdate,
       membersSorted: membersSorted,
-      // percAlloc: percAlloc,
+      percAlloc: percAlloc,
     };
   } catch (error: any) {
     console.error(error);

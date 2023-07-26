@@ -6,37 +6,38 @@ import { Spinner, useToast, GatedButton } from "@daohaus/ui";
 
 import { ACTION_TX } from "../../legos/tx";
 
-import MEMBER_REGISTRY from '../../abis/memberRegistry.json'
+import MEMBER_REGISTRY from "../../abis/memberRegistry.json";
 import { TARGETS } from "../../targetDao";
+import { useMemberRegistry } from "../../hooks/useRegistry";
+import { HAUS_RPC } from "../../pages/Home";
 
-
-export const Trigger = ({
-  onSuccess,
-  sortedMemberList,
-}: {
-  onSuccess: () => void;
-  sortedMemberList: any;
-}) => {
+export const Trigger = ({ onSuccess }: { onSuccess: () => void }) => {
   const daochain = TARGETS.NETWORK_ID;
   const { fireTransaction } = useTxBuilder();
   const { chainId, address } = useDHConnect();
   const { errorToast, defaultToast, successToast } = useToast();
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isDataLoading, setIsDataLoading] = React.useState(false);
+  const { isIdle, isLoading, error, data, refetch } = useMemberRegistry({
+    registryAddress: TARGETS.REGISRTY_ADDRESS,
+    chainId: TARGETS.NETWORK_ID,
+    rpcs: HAUS_RPC,
+  });
 
   const handleTrigger = () => {
-    setIsLoading(true);
+    
+    setIsDataLoading(true);
     fireTransaction({
       tx: {
-        id: 'TRIGGER',
+        id: "TRIGGER",
         contract: {
-          type: 'static',
-          contractName: 'MEMBER_REGISTRY',
+          type: "static",
+          contractName: "MEMBER_REGISTRY",
           // @ts-ignore
           abi: MEMBER_REGISTRY,
           targetAddress: TARGETS.REGISRTY_ADDRESS,
         },
-        method: 'updateAll',
-        args: [{type:"static", value: sortedMemberList}]
+        method: "updateAll",
+        args: [{ type: "static", value: data?.membersSorted as [] }],
       },
       lifeCycleFns: {
         onTxError: (error) => {
@@ -44,14 +45,14 @@ export const Trigger = ({
             error,
           });
           errorToast({ title: "Trigger Failed", description: errMsg });
-          setIsLoading(false);
+          setIsDataLoading(false);
         },
         onTxSuccess: () => {
           defaultToast({
             title: "Trigger Success",
             description: "Please wait table to update",
           });
-          setIsLoading(false);
+          setIsDataLoading(false);
         },
       },
     });
@@ -68,7 +69,7 @@ export const Trigger = ({
       rules={[isConnectedToDao]}
       onClick={handleTrigger}
     >
-      {isLoading ? <Spinner size="2rem" strokeWidth=".2rem" /> : "Update"}
+      {isDataLoading ? <Spinner size="2rem" strokeWidth=".2rem" /> : "Update"}
     </GatedButton>
   );
 };

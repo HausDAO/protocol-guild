@@ -2,18 +2,14 @@ import { useState } from "react";
 import styled from "styled-components";
 
 import {
-  Button,
   Card,
-  Dialog,
-  DialogContent,
-  DialogTrigger,
   Divider,
   SingleColumnLayout,
-  useBreakpoint,
   widthQuery,
 } from "@daohaus/ui";
 import { RegistryOverview } from "../components/registries/RegistryOverview";
 import { REGISRTY_ADDRESS, TARGETS } from "../targetDao";
+
 
 const RegistryContainer = styled(Card)`
   padding: 3rem;
@@ -31,6 +27,7 @@ const CardDivider = styled(Divider)`
 `;
 
 export function Registries() {
+  
   return (
     <SingleColumnLayout title="Registries">
       <RegistryContainer>

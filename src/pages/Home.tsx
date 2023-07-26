@@ -33,10 +33,7 @@ export const Home = () => {
     chainId: daochain,
     rpcs: HAUS_RPC,
   });
-  console.log("isLoading", isLoading);
 
-
-  console.log("data???", data);
   return (
     <SingleColumnLayout
       title="Protocol Guild Member Registry"
@@ -47,7 +44,6 @@ export const Home = () => {
         <>
           <MemberRegistry
             membersList={data.members}
-            membersSorted={data.membersSorted}
             lastUpdate={data.lastUpdate}
           />
         </>

@@ -4,10 +4,10 @@ import { Member } from "../../types/Member.types";
 import { MemberInfo } from "../MemberInfo";
 import { MemberTable } from "../MemberTable/MemberTable";
 import { Trigger } from "./Trigger";
+import { CSVDownloader } from "../CsvDownloader";
 
 type MemberRegistryProps = {
   membersList: Member[];
-  membersSorted: Member[];
   lastUpdate: number;
 };
 
@@ -19,7 +19,7 @@ const ActionContainer = styled.div`
 `;
 
 const MemberRegistry = (props: MemberRegistryProps) => {
-  const { membersList, lastUpdate, membersSorted } = props;
+  const { membersList, lastUpdate } = props;
   return (
     <>
       <MemberInfo memberList={membersList} lastUpdate={lastUpdate}></MemberInfo>
@@ -28,9 +28,8 @@ const MemberRegistry = (props: MemberRegistryProps) => {
           onSuccess={() => {
             alert("yay trigger");
           }}
-          sortedMemberList={membersSorted}
         />
-
+        <CSVDownloader></CSVDownloader>
       </ActionContainer>
 
       <MemberTable memberList={membersList}></MemberTable>
