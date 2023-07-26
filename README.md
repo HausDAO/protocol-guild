@@ -119,7 +119,7 @@ These values are used in most hooks and components and you have some options:
 Get them from `targetDao.ts`
 
 ```tsx
-const daoChain = TARGETS.DEFAULT_CHAIN;
+const daoChain = TARGETS.NETWORK_ID;
 const daoId = TARGETS.DAO_ADDRESS;
 ```
 
@@ -134,7 +134,7 @@ import { CurrentDaoProvider } from "@daohaus/moloch-v3-hooks";
 
 <CurrentDaoProvider
   targetDao={{
-    daoChain: TARGETS.DEFAULT_CHAIN,
+    daoChain: TARGETS.NETWORK_ID,
     daoId: TARGETS.DAO_ADDRESS,
   }}
 >

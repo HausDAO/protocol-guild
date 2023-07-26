@@ -18,7 +18,7 @@ export const ControllerConfig = () => {
 
       <FormBuilder
         form={APP_FORM.ACCEPT_CONTROLL}
-        targetNetwork={TARGETS.DEFAULT_CHAIN}
+        targetNetwork={TARGETS.NETWORK_ID}
       />
 
     </SingleColumnLayout>

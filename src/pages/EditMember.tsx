@@ -10,7 +10,7 @@ export const EditMember = () => {
 
       <FormBuilder
         form={APP_FORM.EDITMEMBER}
-        targetNetwork={TARGETS.DEFAULT_CHAIN}
+        targetNetwork={TARGETS.NETWORK_ID}
         customFields={AppFieldLookup}
       />
 

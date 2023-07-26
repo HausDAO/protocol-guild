@@ -81,7 +81,7 @@ export const APP_FIELD: Record<string, CustomFieldLego> = {
   },
   RELAY_FEE: {
     id: 'relayFee',
-    type: 'toWeiInput',
+    type: 'input',
     label: 'Relay Fee',
   },
   TO_WEI: {

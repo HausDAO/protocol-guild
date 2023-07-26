@@ -13,7 +13,7 @@ export const NewMember = () => {
 
       <FormBuilder
         form={APP_FORM.NEWMEMBER}
-        targetNetwork={TARGETS.DEFAULT_CHAIN}
+        targetNetwork={TARGETS.NETWORK_ID}
         customFields={{ ...MolochFields, ...AppFieldLookup }}
       />
 

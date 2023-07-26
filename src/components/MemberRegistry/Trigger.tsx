@@ -17,7 +17,7 @@ export const Trigger = ({
   onSuccess: () => void;
   sortedMemberList: any;
 }) => {
-  const daochain = TARGETS.DEFAULT_CHAIN;
+  const daochain = TARGETS.NETWORK_ID;
   const { fireTransaction } = useTxBuilder();
   const { chainId, address } = useDHConnect();
   const { errorToast, defaultToast, successToast } = useToast();

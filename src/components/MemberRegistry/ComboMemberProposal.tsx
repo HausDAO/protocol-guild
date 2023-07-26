@@ -30,7 +30,7 @@ export const ComboMemberProposal = ({
 }) => {
   if (!stageMemberList) return null;
 
-  const daochain = TARGETS.DEFAULT_CHAIN;
+  const daochain = TARGETS.NETWORK_ID;
   const { fireTransaction } = useTxBuilder();
   const { chainId, address } = useDHConnect();
   const { errorToast, defaultToast, successToast } = useToast();
@@ -174,7 +174,7 @@ export const ComboMemberProposal = ({
           <>
             <ParMd>Proposal Submitted: The DAO can now vote to execute.</ParMd>
             <Link
-              href={`https://admin.daohaus.fun/#/molochv3/${TARGETS.DEFAULT_CHAIN}/${TARGETS.DAO_ADDRESS}`}
+              href={`https://admin.daohaus.fun/#/molochv3/${TARGETS.NETWORK_ID}/${TARGETS.DAO_ADDRESS}`}
               style={{ marginTop: "2rem" }}
             >
               DAO Admin

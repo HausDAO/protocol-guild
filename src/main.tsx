@@ -20,7 +20,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <HashRouter>
       <QueryClientProvider client={queryClient}>
         <DHConnectProvider
-          daoChainId={TARGETS.DEFAULT_CHAIN}
+          daoChainId={TARGETS.NETWORK_ID}
         >
           <HausThemeProvider>
             <Routes />

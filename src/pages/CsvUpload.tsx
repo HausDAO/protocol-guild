@@ -19,7 +19,7 @@ export const CsvUpload = () => {
 
   const { isIdle, isLoading, error, data, refetch } = useMemberRegistry({
     registryAddress: TARGETS.REGISRTY_ADDRESS,
-    chainId: TARGETS.DEFAULT_CHAIN,
+    chainId: TARGETS.NETWORK_ID,
     rpcs: HAUS_RPC,
   });
   
