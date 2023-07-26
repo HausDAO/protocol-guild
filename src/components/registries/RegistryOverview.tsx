@@ -90,6 +90,8 @@ export const RegistryOverview = ({ home, target }: RegistryProps) => {
           <RegistryMenu
             home={home}
             registryAddress={registry.REGISRTY_ADDRESS}
+            splitAddress={registry.SPLIT_ADDRESS}
+            networkId={registry.NETWORK_ID}
           />
         </div>
       </VaultCardHeader>

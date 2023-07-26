@@ -86,9 +86,6 @@ export const CsvUploader = (props: CsvUploaderProps) => {
           setError("Failed to parse CSV file");
         }
 
-        console.log("---------------------------");
-        console.log(results);
-        console.log("---------------------------");
       }}
     >
       {({

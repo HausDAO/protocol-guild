@@ -28,7 +28,6 @@ export const CsvUpload = () => {
 
 
   useEffect(() => {
-    console.log('change?', memberList, data?.members);
     
     if (data?.members && memberList) {
       const stagingList: StagingMember[] = memberList.map((member) => {
