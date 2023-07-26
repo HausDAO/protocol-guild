@@ -26,7 +26,7 @@ export const HAUS_RPC = {
 export const Home = () => {
 
   const { address } = useDHConnect();
-  const daochain = TARGETS.DEFAULT_CHAIN;
+  const daochain = TARGETS.NETWORK_ID;
   
   const { isIdle, isLoading, error, data, refetch } = useMemberRegistry({
     registryAddress: TARGETS.REGISRTY_ADDRESS,

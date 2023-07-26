@@ -9,6 +9,7 @@ import { EditMember } from "./pages/EditMember";
 import { ControllerConfig } from "./pages/ControllerConfig";
 import { ReplicaConfig } from "./pages/ReplicaConfig";
 import { CsvUpload } from "./pages/CsvUpload";
+import { Registries } from "./pages/Registries";
 
 export const Routes = () => {
   return (
@@ -18,7 +19,8 @@ export const Routes = () => {
         <Route path={`newmember`} element={<NewMember />} />
         <Route path={`editmember`} element={<EditMember />} />
         <Route path={`controller/`} element={<ControllerConfig />} />
-        <Route path={`replicas/`} element={<ReplicaConfig />} />
+        <Route path={`replicas/`} element={<ReplicaConfig />} />       
+         <Route path={`registries/`} element={<Registries />} />
         <Route path={`upload/`} element={<CsvUpload />} />
       </Route>
     </Router>

@@ -15,25 +15,22 @@ export const LayoutContainer = () => {
   const { provider, address } = useDHConnect();
   // const { dao } = useDaoData({
   //   daoId: TARGETS.DAO_ADDRESS,
-  //   daoChain: TARGETS.DEFAULT_CHAIN,
+  //   daoChain: TARGETS.NETWORK_ID,
   // });
 
   return (
     <DHLayout
       pathname={location.pathname}
       navLinks={[
-        { label: "Home", href: `/` },
-        { label: "Splits Controller", href: `controller` },
-        { label: "Replicas", href: `replicas` },
-        { label: "Upload", href: `upload` },
-
+        { label: "Members", href: `/` },
+        { label: "Registries", href: `registries` },
 
       ]}
       leftNav={<H4>Network Registry</H4>}
     >
         <TXBuilder
           provider={provider}
-          chainId={TARGETS.DEFAULT_CHAIN}
+          chainId={TARGETS.NETWORK_ID}
           daoId={TARGETS.DAO_ADDRESS}
           safeId={TARGETS.SAFE_ADDRESS}
           appState={{ memberAddress: address }}

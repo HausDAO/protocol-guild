@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@connext/sdk": "^2.1.1",
     "@daohaus/connect": "^0.1.24",
     "@daohaus/contract-utils": "^0.1.24",
     "@daohaus/form-builder": "^0.1.24",
