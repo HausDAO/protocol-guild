@@ -1,5 +1,6 @@
-import { ValidNetwork } from "@daohaus/keychain-utils";
+
 import { EthAddress } from '@daohaus/utils';
+import { ValidNetwork } from './utils/createContract';
 
 export const TARGET_DAO: {
   [key: string]: {
@@ -29,7 +30,7 @@ export const TARGET_DAO: {
 export type REGISTRY = {
   NETWORK_LOGO: string;
   NETWORK_NAME: string;
-  NETWORK_ID: string;
+  NETWORK_ID: ValidNetwork;
   DOMAIN_ID?: string;
   REGISTRY_ADDRESS?: EthAddress;
   DELEGATE?: EthAddress;

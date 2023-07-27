@@ -66,6 +66,9 @@ export const RegistryMenu = ({
 
   if (!enableActions) return null;
 
+  console.log("foreignRegistry", foreignRegistry);
+  
+
   return (
     <DropdownMenu>
       <DropdownIconTrigger Icon={RiMore2Fill} size="sm" variant="ghost" />

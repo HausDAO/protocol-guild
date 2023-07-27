@@ -73,6 +73,10 @@ export const RegistryOverview = ({ home, target, foreignRegistries }: RegistryPr
   const daochain = TARGETS.NETWORK_ID;
   const registry = target || TARGETS;
 
+  console.log("registry", registry);
+  console.log("foreignRegistries", foreignRegistries);
+  
+
   return (
     <VaultOverviewCard>
       <VaultCardHeader>

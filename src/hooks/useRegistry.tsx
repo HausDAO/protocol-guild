@@ -53,16 +53,19 @@ const fetchMembers = async ({
     );
     const foreignRegistries = await Promise.all(regPromises);
     const hydratedFr = foreignRegistries.map((fr, idx) =>
-      Object.assign({}, fr, {
-        networkId: TARGETS.REPLICA_CHAIN_ADDRESSES[idx].NETWORK_ID,
+      ( {
+        NETWORK_ID: TARGETS.REPLICA_CHAIN_ADDRESSES[idx].NETWORK_ID,
+        DOMAIN_ID: fr.domainId,
+        REGISTRY_ADDRESS: fr.registryAddress,
+        DELEGATE: fr.delegate,
       })
     );
 
-    console.log("hydratedFr", hydratedFr);
+    console.log("hydratedFr 1", hydratedFr);
 
     for (let i = 0; i < hydratedFr.length; i++) {
       const registryData = hydratedFr[i];
-      if (registryData.registryAddress == ZERO_ADDRESS) {
+      if (registryData.REGISTRY_ADDRESS == ZERO_ADDRESS) {
         hydratedFr[i] = Object.assign({}, registryData, {
           TOTAL_MEMBERS: "0",
           UPDATER: ZERO_ADDRESS,
@@ -72,9 +75,9 @@ const fetchMembers = async ({
         continue;
       };
       const ForeignMemberRegistryContract = createContract({
-        address: registryData.registryAddress,
+        address: registryData.REGISTRY_ADDRESS,
         abi: MemberRegistryAbi,
-        chainId: registryData.networkId,
+        chainId: registryData.NETWORK_ID,
         rpcs,
       });
       const getters = [
@@ -89,10 +92,10 @@ const fetchMembers = async ({
         })
       );
       hydratedFr[i] = Object.assign({}, {
-        NETWORK_ID: registryData.networkId,
-        DOMAIN_ID: registryData.domainId,
-        REGISTRY_ADDRESS: registryData.registryAddress,
-        DELEGATE: registryData.delegate,
+        NETWORK_ID: registryData.NETWORK_ID,
+        DOMAIN_ID: registryData.DOMAIN_ID,
+        REGISTRY_ADDRESS: registryData.REGISTRY_ADDRESS,
+        DELEGATE: registryData.DELEGATE,
       }, {
         TOTAL_MEMBERS: registryData2[0],
         UPDATER: registryData2[1],
@@ -101,7 +104,7 @@ const fetchMembers = async ({
       });
     }
 
-    console.log("hydratedFr", hydratedFr);
+    console.log("hydratedFr 2", hydratedFr);
 
     return {
       members: members,
