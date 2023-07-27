@@ -44,7 +44,7 @@ export const APP_FORM: Record<string, CustomFormLego> = {
     description: "Register a replica for a foreign chain and set 0xsplits controller",
     requiredFields: { title: true, description: true },
     log: true,
-    tx: APP_TX.ACCEPT_CONTROL,
+    tx: APP_TX.REPLICA,
     fields: [
       FIELD.TITLE,
       FIELD.DESCRIPTION,
