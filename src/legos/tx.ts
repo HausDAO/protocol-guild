@@ -1,4 +1,4 @@
-import { POSTER_TAGS, TXLegoBase } from "@daohaus/utils";
+import { NestedArray, POSTER_TAGS, TXLegoBase, ValidArgType } from "@daohaus/utils";
 import { buildMultiCallTX } from "@daohaus/tx-builder";
 import { APP_CONTRACT } from "./contract";
 import { CONTRACT } from "@daohaus/moloch-v3-legos";
@@ -20,6 +20,13 @@ export enum ProposalTypeIds {
   MultiCall = 'MULTICALL',
 
 }
+
+const nestInArray = (arg: ValidArgType | ValidArgType[]): NestedArray => {
+  return {
+    type: 'nestedArray',
+    args: Array.isArray(arg) ? arg : [arg],
+  };
+};
 
 export const APP_TX = {
   POST_SIGNAL: buildMultiCallTX({
@@ -71,26 +78,16 @@ export const APP_TX = {
         contract: APP_CONTRACT.MEMBER_REGISTRY,
         method: "updateNetworkRegistry",
         args: [
-          '.formValues.chainid',
-          '.formValues.replica',
-        ],
-      },
-      {
-        contract: APP_CONTRACT.MEMBER_REGISTRY,
-        method: "updateNetworkSplit",
-        args: [
-          '.formValues.chainid',
-          '.formValues.splits',
-          '.formValues.splits',
-          '.formVaules.relay_fee'
+          '.formValues.chainID',
+          '.formValues.replica', // TODO: this needs to be a tuple (uint32 domainId; address registryAddress; address delegate;)
         ],
       },
       {
         contract: APP_CONTRACT.MEMBER_REGISTRY,
         method: "acceptNetworkSplitControl",
         args: [
-          '.formValues.chainid',
-          '.formValues.replica',
+          nestInArray('.formValues.chainID'),
+          nestInArray('.formValues.relayFee'),
         ],
       },
     ],

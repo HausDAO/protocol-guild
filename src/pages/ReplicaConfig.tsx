@@ -8,6 +8,7 @@ import { TARGETS } from "../targetDao";
 
 import { create, SdkConfig } from "@connext/sdk";
 import { fromWei } from "@daohaus/utils";
+import { useParams } from "react-router-dom";
 
 const sdkConfig: SdkConfig = {
   signerAddress: "0x2b8aA42fFb2c9c7B9f0B1e1b935F7D8331b6dC7c",
@@ -27,7 +28,9 @@ const sdkConfig: SdkConfig = {
 
 export const ReplicaConfig = () => {
 
-  const [relayerFee, setRelayerFee] = React.useState("1");
+  const [relayerFee, setRelayerFee] = React.useState("");
+  // get chain id from useParams hook
+  const { chainID } = useParams<{ chainID: string }>();
 
   const params = {
     originDomain: "1735353714",
@@ -45,20 +48,21 @@ export const ReplicaConfig = () => {
     run();
   })
 
+  if(!relayerFee || !chainID) return (
+    <SingleColumnLayout title="Replicants">
+      <ParLg>Loading...</ParLg> 
+    </SingleColumnLayout>
+  );
+
   return (
     <SingleColumnLayout title="Replicants">
-      <ParLg>Current Networks</ParLg>
-      <ParLg>Add new</ParLg>
-      <ParLg>Accept/transfer splits Control</ParLg>
-      <ParLg>Documentation for current owner to deploy and transfer</ParLg>
-      <ParLg>instal connext sdk</ParLg>
-
 
       <FormBuilder
         form={APP_FORM.REPLICA}
         targetNetwork={TARGETS.NETWORK_ID}
         defaultValues={{
           relayFee: relayerFee,
+          chainID: chainID,
         }
         }
       />

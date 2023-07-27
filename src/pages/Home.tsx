@@ -21,6 +21,8 @@ export const HAUS_RPC = {
   "0x89": "https://polygon-rpc.com/",
   "0xa4b1": "https://arb1.arbitrum.io/rpc",
   "0xa4ec": "https://forno.celo.org",
+  "0x1a4": "https://goerli.optimism.io",
+  "0x66eed": "https://rpc.goerli.arbitrum.gateway.fm"
 };
 
 export const Home = () => {
@@ -29,7 +31,7 @@ export const Home = () => {
   const daochain = TARGETS.NETWORK_ID;
   
   const { isIdle, isLoading, error, data, refetch } = useMemberRegistry({
-    registryAddress: TARGETS.REGISRTY_ADDRESS,
+    registryAddress: TARGETS.REGISTRY_ADDRESS,
     chainId: daochain,
     rpcs: HAUS_RPC,
   });

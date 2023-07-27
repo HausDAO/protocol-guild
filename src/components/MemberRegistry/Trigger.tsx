@@ -2,7 +2,7 @@ import React from "react";
 import { handleErrorMessage, TXLego } from "@daohaus/utils";
 import { useDHConnect } from "@daohaus/connect";
 import { useTxBuilder } from "@daohaus/tx-builder";
-import { Spinner, useToast, GatedButton } from "@daohaus/ui";
+import { Spinner, useToast, GatedButton, Button } from "@daohaus/ui";
 
 import { ACTION_TX } from "../../legos/tx";
 
@@ -18,13 +18,12 @@ export const Trigger = ({ onSuccess }: { onSuccess: () => void }) => {
   const { errorToast, defaultToast, successToast } = useToast();
   const [isDataLoading, setIsDataLoading] = React.useState(false);
   const { isIdle, isLoading, error, data, refetch } = useMemberRegistry({
-    registryAddress: TARGETS.REGISRTY_ADDRESS,
+    registryAddress: TARGETS.REGISTRY_ADDRESS,
     chainId: TARGETS.NETWORK_ID,
     rpcs: HAUS_RPC,
   });
 
   const handleTrigger = () => {
-    
     setIsDataLoading(true);
     fireTransaction({
       tx: {
@@ -34,10 +33,13 @@ export const Trigger = ({ onSuccess }: { onSuccess: () => void }) => {
           contractName: "MEMBER_REGISTRY",
           // @ts-ignore
           abi: MEMBER_REGISTRY,
-          targetAddress: TARGETS.REGISRTY_ADDRESS,
+          targetAddress: TARGETS.REGISTRY_ADDRESS,
         },
         method: "updateAll",
-        args: [{ type: "static", value: data?.membersSorted as [] }],
+        args: [
+          { type: "static", value: data?.membersSorted as [] },
+          { type: "static", value: "0" }, // split distribution fee
+        ],
       },
       lifeCycleFns: {
         onTxError: (error) => {

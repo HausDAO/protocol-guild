@@ -15,7 +15,8 @@ import {
   Link,
 } from "@daohaus/ui";
 
-import { TARGETS } from "../../targetDao";
+import { TARGETS, REGISTRY } from "../../targetDao";
+import { ZERO_ADDRESS } from "@daohaus/utils";
 
 export const RegistryMenuTrigger = styled(Button)`
   padding: 0 4px 0 4px;
@@ -48,12 +49,10 @@ export const StyledExternalLink = styled(Link)`
 
 type RegistryMenuProps = {
   home: boolean;
-  registryAddress: string;
-  splitAddress: string;
-  networkId: string;
+  foreignRegistry: REGISTRY | undefined;
 };
 
-export const RegistryMenu = ({ home, registryAddress, splitAddress, networkId }: RegistryMenuProps) => {
+export const RegistryMenu = ({ home, foreignRegistry }: RegistryMenuProps) => {
   const theme = useTheme();
 
   const enableActions = useMemo(() => {
@@ -61,6 +60,8 @@ export const RegistryMenu = ({ home, registryAddress, splitAddress, networkId }:
   }, []);
 
   if (!enableActions) return null;
+
+  console.log("foreignRegistry", foreignRegistry);
 
   return (
     <DropdownMenu>
@@ -70,7 +71,9 @@ export const RegistryMenu = ({ home, registryAddress, splitAddress, networkId }:
           {home && (
             <>
               <DropdownItem key="upload" asChild>
-                <RegistryMenuLink to={`/upload`}>Manage Membership</RegistryMenuLink>
+                <RegistryMenuLink to={`/upload`}>
+                  Manage Membership
+                </RegistryMenuLink>
               </DropdownItem>
               <DropdownItem key="dao" asChild>
                 <StyledExternalLink
@@ -82,11 +85,22 @@ export const RegistryMenu = ({ home, registryAddress, splitAddress, networkId }:
               <Divider />
             </>
           )}
+          {!home && foreignRegistry?.REGISTRY_ADDRESS == ZERO_ADDRESS && (
+            <>
+              <DropdownItem key="replica" asChild>
+                <RegistryMenuLink
+                  to={`/replica/${foreignRegistry?.NETWORK_ID}`}
+                >
+                  Register
+                </RegistryMenuLink>
+              </DropdownItem>
+            </>
+          )}
           <DropdownItem key="split" asChild>
             <StyledExternalLink
               href={`https://app.0xsplits.xyz/accounts/${
-                splitAddress
-              }/?chainId=${Number(networkId)}`}
+                foreignRegistry?.SPLIT_ADDRESS
+              }/?chainId=${Number(foreignRegistry?.NETWORK_ID)}`}
             >
               Split
             </StyledExternalLink>
