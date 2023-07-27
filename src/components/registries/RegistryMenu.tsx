@@ -18,8 +18,6 @@ import {
 import { TARGETS, REGISTRY } from "../../targetDao";
 import { ZERO_ADDRESS } from "@daohaus/utils";
 
-
-
 export const RegistryMenuTrigger = styled(Button)`
   padding: 0 4px 0 4px;
 
@@ -54,10 +52,7 @@ type RegistryMenuProps = {
   foreignRegistry: REGISTRY | undefined;
 };
 
-export const RegistryMenu = ({
-  home,
-  foreignRegistry,
-}: RegistryMenuProps) => {
+export const RegistryMenu = ({ home, foreignRegistry }: RegistryMenuProps) => {
   const theme = useTheme();
 
   const enableActions = useMemo(() => {
@@ -67,7 +62,6 @@ export const RegistryMenu = ({
   if (!enableActions) return null;
 
   console.log("foreignRegistry", foreignRegistry);
-  
 
   return (
     <DropdownMenu>
@@ -94,15 +88,19 @@ export const RegistryMenu = ({
           {!home && foreignRegistry?.REGISTRY_ADDRESS == ZERO_ADDRESS && (
             <>
               <DropdownItem key="replica" asChild>
-                <RegistryMenuLink to={`/replica`}>Register</RegistryMenuLink>
+                <RegistryMenuLink
+                  to={`/replica/${foreignRegistry?.NETWORK_ID}`}
+                >
+                  Register
+                </RegistryMenuLink>
               </DropdownItem>
             </>
           )}
           <DropdownItem key="split" asChild>
             <StyledExternalLink
-              href={`https://app.0xsplits.xyz/accounts/${foreignRegistry?.SPLIT_ADDRESS}/?chainId=${Number(
-                foreignRegistry?.NETWORK_ID
-              )}`}
+              href={`https://app.0xsplits.xyz/accounts/${
+                foreignRegistry?.SPLIT_ADDRESS
+              }/?chainId=${Number(foreignRegistry?.NETWORK_ID)}`}
             >
               Split
             </StyledExternalLink>

@@ -74,15 +74,17 @@ export const APP_FIELD: Record<string, CustomFieldLego> = {
     expectType: 'ethAddress',
   },
   CHAINID: {
-    id: 'chainid',
+    id: 'chainID',
     type: 'input',
     label: 'Chain ID',
     placeholder: '0x...',
+    disabled: true,
   },
   RELAY_FEE: {
     id: 'relayFee',
     type: 'input',
     label: 'Relay Fee',
+    disabled: true,
   },
   TO_WEI: {
     id: 'shouldOverwrite',
