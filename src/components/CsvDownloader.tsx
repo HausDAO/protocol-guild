@@ -10,7 +10,7 @@ import { Button } from "@daohaus/ui";
 export const CSVDownloader = () => {
   const { CSVDownloader, Type } = useCSVDownloader();
   const { isIdle, isLoading, error, data, refetch } = useMemberRegistry({
-    registryAddress: TARGETS.REGISRTY_ADDRESS,
+    registryAddress: TARGETS.REGISTRY_ADDRESS,
     chainId: TARGETS.NETWORK_ID,
     rpcs: HAUS_RPC,
   });

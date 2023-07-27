@@ -18,7 +18,7 @@ const StyledDivider = styled(Divider)`
 export const CsvUpload = () => {
 
   const { isIdle, isLoading, error, data, refetch } = useMemberRegistry({
-    registryAddress: TARGETS.REGISRTY_ADDRESS,
+    registryAddress: TARGETS.REGISTRY_ADDRESS,
     chainId: TARGETS.NETWORK_ID,
     rpcs: HAUS_RPC,
   });

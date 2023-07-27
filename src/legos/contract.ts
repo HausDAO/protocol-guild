@@ -57,6 +57,6 @@ export const APP_CONTRACT: Record<string, ContractLego> = {
     contractName: 'MEMBER_REGISTRY',
     // @ts-ignore
     abi: MEMBER_REGISTRY,
-    targetAddress: TARGETS.REGISRTY_ADDRESS,
+    targetAddress: TARGETS.REGISTRY_ADDRESS,
   },
 };

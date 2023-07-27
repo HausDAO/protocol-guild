@@ -8,7 +8,9 @@ import {
   widthQuery,
 } from "@daohaus/ui";
 import { RegistryOverview } from "../components/registries/RegistryOverview";
-import { REGISRTY_ADDRESS, TARGETS } from "../targetDao";
+import { REGISTRY, TARGETS } from "../targetDao";
+import { useMemberRegistry } from "../hooks/useRegistry";
+import { HAUS_RPC } from "./Home";
 
 
 const RegistryContainer = styled(Card)`
@@ -27,6 +29,11 @@ const CardDivider = styled(Divider)`
 `;
 
 export function Registries() {
+  const { isIdle, isLoading, error, data, refetch } = useMemberRegistry({
+    registryAddress: TARGETS.REGISTRY_ADDRESS,
+    chainId: TARGETS.NETWORK_ID,
+    rpcs: HAUS_RPC,
+  });
   
   return (
     <SingleColumnLayout title="Registries">
@@ -34,9 +41,9 @@ export function Registries() {
         <RegistryOverview home={true} />
       </RegistryContainer>
       <CardDivider />
-      {TARGETS.REPLICA_CHAIN_ADDRESSES.map((registry: REGISRTY_ADDRESS) => (
-        <RegistryContainer key={registry.REGISRTY_ADDRESS}>
-          <RegistryOverview home={false} target={registry} />
+      {TARGETS.REPLICA_CHAIN_ADDRESSES.map((registry: REGISTRY) => (
+        <RegistryContainer key={registry.NETWORK_ID}>
+          <RegistryOverview home={false} target={registry} foreignRegistries={data?.foreignRegistries}  />
         </RegistryContainer>
       ))}
     </SingleColumnLayout>

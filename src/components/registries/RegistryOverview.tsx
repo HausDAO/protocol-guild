@@ -12,9 +12,9 @@ import {
   widthQuery,
   Tag,
 } from "@daohaus/ui";
-import { formatValueTo, generateGnosisUiLink } from "@daohaus/utils";
+import { ZERO_ADDRESS, formatValueTo, generateGnosisUiLink } from "@daohaus/utils";
 import { Keychain } from "@daohaus/keychain-utils";
-import { REGISRTY_ADDRESS, TARGETS } from "../../targetDao";
+import { REGISTRY, TARGET, TARGETS } from "../../targetDao";
 import { RegistryMenu } from "./RegistryMenu";
 
 const VaultOverviewCard = styled(Card)`
@@ -65,12 +65,14 @@ const TagSection = styled.div`
 
 type RegistryProps = {
   home: boolean;
-  target?: REGISRTY_ADDRESS;
+  target?: REGISTRY;
+  foreignRegistries?: REGISTRY[];
 };
 
-export const RegistryOverview = ({ home, target }: RegistryProps) => {
+export const RegistryOverview = ({ home, target, foreignRegistries }: RegistryProps) => {
   const daochain = TARGETS.NETWORK_ID;
   const registry = target || TARGETS;
+
   return (
     <VaultOverviewCard>
       <VaultCardHeader>
@@ -78,7 +80,7 @@ export const RegistryOverview = ({ home, target }: RegistryProps) => {
           <H4>{registry.NETWORK_NAME}</H4>
           <TagSection>
             <AddressDisplay
-              address={registry.REGISRTY_ADDRESS}
+              address={registry.REGISTRY_ADDRESS?.toString() || ZERO_ADDRESS}
               truncate
               copy
               explorerNetworkId={daochain as keyof Keychain}
@@ -89,9 +91,7 @@ export const RegistryOverview = ({ home, target }: RegistryProps) => {
         <div className="right-section">
           <RegistryMenu
             home={home}
-            registryAddress={registry.REGISRTY_ADDRESS}
-            splitAddress={registry.SPLIT_ADDRESS}
-            networkId={registry.NETWORK_ID}
+            foreignRegistry={foreignRegistries?.find((fr)=>fr.NETWORK_ID === registry.NETWORK_ID)}
           />
         </div>
       </VaultCardHeader>
