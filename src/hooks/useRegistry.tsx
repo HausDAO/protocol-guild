@@ -25,7 +25,10 @@ const fetchMembers = async ({
   });
 
   try {
-    const members: Member[] = await MemberRegistryContract.getMembers();
+    const members: Member[] = await MemberRegistryContract.getMembers();    
+    const owner: string = await MemberRegistryContract.owner();
+    console.log("owner", owner);
+
 
     const lastUpdate: number =
       await MemberRegistryContract.lastActivityUpdate();
@@ -38,9 +41,9 @@ const fetchMembers = async ({
 
     console.log("membersSorted", membersSorted);
 
-    const percAlloc: any[] = await MemberRegistryContract.calculate(
+    const percAlloc: any[] = await membersSorted.length ? MemberRegistryContract.calculate(
       membersSorted
-    );
+    ) : [];
 
     console.log("percAlloc", percAlloc);
 
@@ -108,6 +111,7 @@ const fetchMembers = async ({
 
     return {
       members: members,
+      owner: owner,
       lastUpdate: 0, // lastUpdate,
       membersSorted: membersSorted,
       percAlloc: percAlloc,
