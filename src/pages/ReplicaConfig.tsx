@@ -9,6 +9,8 @@ import { TARGETS } from "../targetDao";
 import { create, SdkConfig } from "@connext/sdk";
 import { fromWei } from "@daohaus/utils";
 import { useParams } from "react-router-dom";
+import { MolochFields } from "@daohaus/moloch-v3-fields";
+import { AppFieldLookup } from "../legos/fieldConfig";
 
 const sdkConfig: SdkConfig = {
   signerAddress: "0x2b8aA42fFb2c9c7B9f0B1e1b935F7D8331b6dC7c",
@@ -37,6 +39,14 @@ export const ReplicaConfig = () => {
     destinationDomain: "1735356532",
   }
 
+  const domainID = TARGETS.REPLICA_CHAIN_ADDRESSES.find(
+    (r) => r.NETWORK_ID === chainID
+  )?.DOMAIN_ID;
+
+  console.log('domainID: ', domainID);
+  
+
+
   useEffect(() => {
     const run = async () => {
       const { sdkBase } = await create(sdkConfig);
@@ -60,9 +70,11 @@ export const ReplicaConfig = () => {
       <FormBuilder
         form={APP_FORM.REPLICA}
         targetNetwork={TARGETS.NETWORK_ID}
+        customFields={{ ...MolochFields, ...AppFieldLookup }}
         defaultValues={{
           relayFee: relayerFee,
           chainID: chainID,
+          domainID: domainID,
         }
         }
       />

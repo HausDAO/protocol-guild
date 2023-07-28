@@ -52,6 +52,10 @@ export const APP_FIELD: Record<string, CustomFieldLego> = {
     id: 'editmemberlistener',
     type: 'editmemberlistener',
   },
+  REPLICALISTENER: {
+    id: 'replicalistener',
+    type: 'replicalistener',
+  },
   RECIPIENT: {
     id: 'recipient',
     type: 'input',
@@ -83,7 +87,20 @@ export const APP_FIELD: Record<string, CustomFieldLego> = {
   RELAY_FEE: {
     id: 'relayFee',
     type: 'input',
-    label: 'Relay Fee',
+    label: 'Connext Relay Fee',
+    disabled: true,
+  },
+  DELEGATE: {
+    id: 'delegate',
+    type: 'input',
+    label: 'Delegate',
+    disabled: true,
+    expectType: 'ethAddress',
+  },
+  DOMAIN_ID: {
+    id: 'domainID',
+    type: 'input',
+    label: 'Connext Domain ID',
     disabled: true,
   },
   TO_WEI: {

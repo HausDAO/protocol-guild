@@ -5,12 +5,14 @@ import { TestField } from "../components/customFields/fieldTest";
 import { CSTextarea } from "../components/customFields/CSTextarea";
 import { OneShareArrayField } from "../components/customFields/OneShareArrayField";
 import { EditArrayField } from "../components/customFields/EditArrayField";
+import { ReplicaArrayField } from "../components/customFields/ReplicaArrayField";
 
 export const AppFieldLookup = {
   ...MolochFields,
   testField: TestField,
   cstextarea: CSTextarea,
   memberlistener: OneShareArrayField,
+  replicalistener: ReplicaArrayField,
   editmemberlistener: EditArrayField,
 };
 

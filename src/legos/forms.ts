@@ -50,9 +50,10 @@ export const APP_FORM: Record<string, CustomFormLego> = {
       FIELD.DESCRIPTION,
       FIELD.LINK,
       APP_FIELD.REPLICA,
-      APP_FIELD.SPLITS,
       APP_FIELD.RELAY_FEE,
-      APP_FIELD.CHAINID
+      APP_FIELD.CHAINID,
+      APP_FIELD.DOMAIN_ID,
+      APP_FIELD.REPLICALISTENER,
     ],
   },
   NEWMEMBER: {
