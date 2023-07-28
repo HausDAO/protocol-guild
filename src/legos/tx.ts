@@ -79,7 +79,7 @@ export const APP_TX = {
         method: "updateNetworkRegistry",
         args: [
           '.formValues.chainID',
-          '.formValues.replica', // TODO: this needs to be a tuple (uint32 domainId; address registryAddress; address delegate;)
+          '.formValues.replicaData', // TODO: this needs to be a tuple (uint32 domainId; address registryAddress; address delegate;)
         ],
       },
       {

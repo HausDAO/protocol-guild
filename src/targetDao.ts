@@ -50,6 +50,7 @@ export type TARGET = {
   REGISTRY_SINGLETON_ADDRESS: EthAddress;
   SHAMAN_ADDRESS: EthAddress;
   SPLIT_ADDRESS: EthAddress;
+  DOMAIN_ID: string;
   NETWORK_LOGO: string;  
   NETWORK_NAME: string;
 }
@@ -59,7 +60,8 @@ export const TARGETS: TARGET = {
     { // optimism goerli
       NETWORK_LOGO: "",
       NETWORK_NAME: "Optimism Goerli",
-      NETWORK_ID: "0x1a4"
+      NETWORK_ID: "0x1a4",
+      DOMAIN_ID: "1735356532"
     },
 
     { // arbitrum goerli
@@ -69,7 +71,8 @@ export const TARGETS: TARGET = {
       // SPLIT_ADDRESS: "", // get in hook
       NETWORK_LOGO: "",
       NETWORK_NAME: "Arbitrum Goerli",
-      NETWORK_ID: "0x66eed"
+      NETWORK_ID: "0x66eed",
+      DOMAIN_ID: "1734439522"
     },
   ],
   DAO_ADDRESS: "0x719dfde5f1be59318cadb2ad60e1fd56ba7eaffa",
@@ -80,6 +83,7 @@ export const TARGETS: TARGET = {
   REGISTRY_SINGLETON_ADDRESS: "0x6A24DF62c9b1DE05442F59F2718ed2e6Ee6C3872",
   SHAMAN_ADDRESS: "0x5CE4aC4F49c43E42216f5F00503EF6c6EE672bFF",
   SPLIT_ADDRESS: "0x6c482189763877052C5C6982462C3756d7D51dc2",
+  DOMAIN_ID: "1735353714",
   NETWORK_LOGO: "",
   NETWORK_NAME: "Ethereum Goerli"
 };
