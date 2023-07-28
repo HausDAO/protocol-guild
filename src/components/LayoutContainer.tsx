@@ -12,7 +12,7 @@ export const LayoutContainer = () => {
     proposalId: string;
     memberAddress: string;
   }>();
-  const { provider, address } = useDHConnect();
+  const { publicClient, address } = useDHConnect();
   // const { dao } = useDaoData({
   //   daoId: TARGETS.DAO_ADDRESS,
   //   daoChain: TARGETS.NETWORK_ID,
@@ -29,7 +29,7 @@ export const LayoutContainer = () => {
       leftNav={<H4>Network Registry</H4>}
     >
         <TXBuilder
-          provider={provider}
+          publicClient={publicClient}
           chainId={TARGETS.NETWORK_ID}
           daoId={TARGETS.DAO_ADDRESS}
           safeId={TARGETS.SAFE_ADDRESS}

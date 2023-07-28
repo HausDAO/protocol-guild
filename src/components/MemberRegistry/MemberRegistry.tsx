@@ -25,11 +25,13 @@ const MemberRegistry = (props: MemberRegistryProps) => {
     <>
       <MemberInfo memberList={membersList} lastUpdate={lastUpdate}></MemberInfo>
       <ActionContainer>
-        <Trigger
-          onSuccess={() => {
-            alert("yay trigger");
-          }}
-        />
+        {membersList.length > 0 && (
+          <Trigger
+            onSuccess={() => {
+              alert("yay trigger");
+            }}
+          />
+        )}
         <CSVDownloader></CSVDownloader>
       </ActionContainer>
 

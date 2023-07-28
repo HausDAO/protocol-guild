@@ -61,7 +61,7 @@ export const RegistryMenu = ({ home, foreignRegistry }: RegistryMenuProps) => {
 
   if (!enableActions) return null;
 
-  console.log("foreignRegistry", foreignRegistry);
+  console.log("foreignRegistry from menu", foreignRegistry);
 
   return (
     <DropdownMenu>
@@ -85,7 +85,7 @@ export const RegistryMenu = ({ home, foreignRegistry }: RegistryMenuProps) => {
               <Divider />
             </>
           )}
-          {!home && foreignRegistry?.REGISTRY_ADDRESS == ZERO_ADDRESS && (
+          {!home && (!foreignRegistry?.REGISTRY_ADDRESS || foreignRegistry?.REGISTRY_ADDRESS == ZERO_ADDRESS) && (
             <>
               <DropdownItem key="replica" asChild>
                 <RegistryMenuLink
