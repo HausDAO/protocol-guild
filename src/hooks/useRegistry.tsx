@@ -9,7 +9,6 @@ import { REGISTRY, TARGETS } from "../targetDao";
 import {
   AddressKeyChain,
   ValidNetwork,
-  createContract,
   createViemClient,
 } from "../utils/createContract";
 
@@ -28,12 +27,6 @@ const fetchMembers = async ({
   chainId: ValidNetwork;
   rpcs?: AddressKeyChain;
 }) => {
-  const MemberRegistryContract = createContract({
-    address: registryAddress,
-    abi: MemberRegistryAbi,
-    chainId,
-    rpcs,
-  });
 
   const client = createViemClient({
     chainId,
@@ -64,33 +57,25 @@ const fetchMembers = async ({
       .sort((a: string, b: string) =>
         a.toLowerCase() > b.toLowerCase() ? 1 : -1
       );
-    const percAlloc = (await client.readContract({
-      abi: MemberRegistryAbi,
-      address: registryAddress,
-      functionName: "calculate",
-      args: [membersSorted],
-    })) as [];
-
-    // const members: Member[] = await MemberRegistryContract.getMembers();
-    // const owner: string = await MemberRegistryContract.owner();
-    // const lastUpdate: number =
-    //   await MemberRegistryContract.lastActivityUpdate();
-    // const percAlloc: any[] = await membersSorted.length ? MemberRegistryContract.calculate(
-    //   membersSorted
-    // ) : [];
+    const percAlloc = membersSorted.length
+      ? ((await client.readContract({
+          abi: MemberRegistryAbi,
+          address: registryAddress,
+          functionName: "calculate",
+          args: [membersSorted],
+        })) as [])
+      : [];
 
     const regPromises = TARGETS.REPLICA_CHAIN_ADDRESSES.map(
       async (registry) => {
+
         return await client.readContract({
           abi: MemberRegistryAbi,
-          address: registry.REGISTRY_ADDRESS || ZERO_ADDRESS,
+          address: TARGETS.REGISTRY_ADDRESS || ZERO_ADDRESS,
           functionName: "networkRegistry",
           args: [registry.NETWORK_ID],
         });
 
-        // return await MemberRegistryContract.networkRegistry(
-        //   registry.NETWORK_ID
-        // );
       }
     );
     const foreignRegistries = (await Promise.all(
@@ -116,12 +101,7 @@ const fetchMembers = async ({
         });
         continue;
       }
-      const ForeignMemberRegistryContract = createContract({
-        address: registryData.REGISTRY_ADDRESS,
-        abi: MemberRegistryAbi,
-        chainId: registryData.NETWORK_ID,
-        rpcs,
-      });
+
       const getters = [
         "totalMembers",
         "updater",
@@ -130,7 +110,12 @@ const fetchMembers = async ({
       ];
       const registryData2 = await Promise.all(
         getters.map(async (getter) => {
-          return await ForeignMemberRegistryContract[getter]();
+          return (await client.readContract({
+            abi: MemberRegistryAbi,
+            address: registryAddress,
+            functionName: getter,
+            args: [],
+          })) as Member[];
         })
       );
       hydratedFr[i] = Object.assign(
