@@ -178,7 +178,7 @@
       {
         "indexed": false,
         "internalType": "uint32",
-        "name": "_date",
+        "name": "_timestamp",
         "type": "uint32"
       },
       {
@@ -340,13 +340,6 @@
     ],
     "name": "UpdateMemberSeconds",
     "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "PERCENTAGE_SCALE",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
   },
   {
     "inputs": [
@@ -555,7 +548,7 @@
   },
   {
     "inputs": [],
-    "name": "getMembersSplitProperties",
+    "name": "getMembersProperties",
     "outputs": [
       { "internalType": "address[]", "name": "", "type": "address[]" },
       { "internalType": "uint32[]", "name": "", "type": "uint32[]" },

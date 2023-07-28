@@ -5,6 +5,7 @@ import { MemberInfo } from "../MemberInfo";
 import { MemberTable } from "../MemberTable/MemberTable";
 import { Trigger } from "./Trigger";
 import { CSVDownloader } from "../CsvDownloader";
+import { ParLg } from "@daohaus/ui";
 
 type MemberRegistryProps = {
   membersList: Member[];
@@ -32,7 +33,11 @@ const MemberRegistry = (props: MemberRegistryProps) => {
         <CSVDownloader></CSVDownloader>
       </ActionContainer>
 
-      <MemberTable memberList={membersList}></MemberTable>
+      {membersList.length ? (
+        <MemberTable memberList={membersList}></MemberTable>
+      ) : (
+        <ParLg>No members found</ParLg>
+      )}
     </>
   );
 };

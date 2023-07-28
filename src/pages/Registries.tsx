@@ -4,6 +4,7 @@ import styled from "styled-components";
 import {
   Card,
   Divider,
+  ParLg,
   SingleColumnLayout,
   widthQuery,
 } from "@daohaus/ui";
@@ -34,7 +35,10 @@ export function Registries() {
     chainId: TARGETS.NETWORK_ID,
     rpcs: HAUS_RPC,
   });
+
+  console.log("data menu", data);
   
+  if (isLoading) return <ParLg>Loading...</ParLg>;
   return (
     <SingleColumnLayout title="Registries">
       <RegistryContainer>
@@ -43,7 +47,7 @@ export function Registries() {
       <CardDivider />
       {TARGETS.REPLICA_CHAIN_ADDRESSES.map((registry: REGISTRY) => (
         <RegistryContainer key={registry.NETWORK_ID}>
-          <RegistryOverview home={false} target={registry} foreignRegistries={data?.foreignRegistries}  />
+          <RegistryOverview home={false} target={registry} owner={data?.owner} foreignRegistries={data?.foreignRegistries}  />
         </RegistryContainer>
       ))}
     </SingleColumnLayout>

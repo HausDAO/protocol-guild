@@ -12,7 +12,11 @@ import {
   widthQuery,
   Tag,
 } from "@daohaus/ui";
-import { ZERO_ADDRESS, formatValueTo, generateGnosisUiLink } from "@daohaus/utils";
+import {
+  ZERO_ADDRESS,
+  formatValueTo,
+  generateGnosisUiLink,
+} from "@daohaus/utils";
 import { Keychain } from "@daohaus/keychain-utils";
 import { REGISTRY, TARGET, TARGETS } from "../../targetDao";
 import { RegistryMenu } from "./RegistryMenu";
@@ -66,16 +70,18 @@ const TagSection = styled.div`
 type RegistryProps = {
   home: boolean;
   target?: REGISTRY;
+  owner?: string;
   foreignRegistries?: REGISTRY[];
 };
 
-export const RegistryOverview = ({ home, target, foreignRegistries }: RegistryProps) => {
+export const RegistryOverview = ({
+  home,
+  target,
+  owner,
+  foreignRegistries,
+}: RegistryProps) => {
   const daochain = TARGETS.NETWORK_ID;
   const registry = target || TARGETS;
-
-  console.log("registry", registry);
-  console.log("foreignRegistries", foreignRegistries);
-  
 
   return (
     <VaultOverviewCard>
@@ -89,26 +95,39 @@ export const RegistryOverview = ({ home, target, foreignRegistries }: RegistryPr
               copy
               explorerNetworkId={daochain as keyof Keychain}
             />
-            {home && <Tag tagColor="pink">Home</Tag>}
+            {home ? (
+              <Tag tagColor="pink">Home</Tag>
+            ) : (
+              <Tag tagColor="blue">Foreign</Tag>
+            )}
           </TagSection>
         </div>
         <div className="right-section">
           <RegistryMenu
             home={home}
-            foreignRegistry={foreignRegistries?.find((fr)=>fr.NETWORK_ID === registry.NETWORK_ID)}
+            foreignRegistry={foreignRegistries?.find(
+              (fr) => fr.NETWORK_ID === registry.NETWORK_ID
+            )}
           />
         </div>
       </VaultCardHeader>
       <DataGrid>
-        {!home && (
+        {!home ? (
           <>
             <DataIndicator label="Registerd" data={"NA"} />
             <DataIndicator label="Status" data={"NA"} />
           </>
+        ) : (
+          <DataIndicator
+            label="Owner"
+            data={
+              owner?.toLowerCase() == TARGETS.SAFE_ADDRESS.toLowerCase()
+                ? "DAO"
+                : owner?.toString()
+            }
+          />
         )}
         <DataIndicator label={`Last ${home ? "Update" : "Sync"}`} data={"NA"} />
-        <DataIndicator label="Owner" data={"DAO"} />
-
       </DataGrid>
     </VaultOverviewCard>
   );
