@@ -89,8 +89,10 @@ export const APP_TX = {
           nestInArray('.formValues.chainID'),
           nestInArray('.formValues.relayFee'),
         ],
+        value: '.formValues.relayFee',      
       },
     ],
+
   }),
   ACCEPT_CONTROL: buildMultiCallTX({
     id: "ACCEPT_CONTROL",
@@ -131,7 +133,7 @@ export const APP_TX = {
         args: [
           '.formValues.members', 
           '.formValues.shares',
-        ]
+        ],
       },
       {
         contract: APP_CONTRACT.MEMBER_REGISTRY,
