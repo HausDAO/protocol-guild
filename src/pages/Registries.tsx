@@ -13,7 +13,6 @@ import { REGISTRY, TARGETS } from "../targetDao";
 import { useMemberRegistry } from "../hooks/useRegistry";
 import { HAUS_RPC } from "./Home";
 
-
 const RegistryContainer = styled(Card)`
   padding: 3rem;
   width: 100%;
@@ -37,17 +36,28 @@ export function Registries() {
   });
 
   console.log("data menu", data);
-  
+
   if (isLoading) return <ParLg>Loading...</ParLg>;
   return (
     <SingleColumnLayout title="Registries">
       <RegistryContainer>
-        <RegistryOverview home={true} />
+        <RegistryOverview
+          home={true}
+          homeOwner={data?.owner}
+          homeLastUpdate={data?.lastUpdate}
+          homeTotalMembers={data?.totalMembers}
+        />
       </RegistryContainer>
       <CardDivider />
       {TARGETS.REPLICA_CHAIN_ADDRESSES.map((registry: REGISTRY) => (
         <RegistryContainer key={registry.NETWORK_ID}>
-          <RegistryOverview home={false} target={registry} owner={data?.owner} foreignRegistries={data?.foreignRegistries}  />
+          <RegistryOverview
+            home={false}
+            target={registry}
+            foreignRegistry={data?.foreignRegistries?.find(
+              (fr) => fr.NETWORK_ID === registry.NETWORK_ID
+            )}
+          />
         </RegistryContainer>
       ))}
     </SingleColumnLayout>

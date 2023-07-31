@@ -40,6 +40,12 @@ const fetchMembers = async ({
       functionName: "getMembers",
       args: [],
     })) as Member[];
+    const totalembers = (await client.readContract({
+      abi: MemberRegistryAbi,
+      address: registryAddress,
+      functionName: "totalMembers",
+      args: [],
+    })) as number;
     const owner = (await client.readContract({
       abi: MemberRegistryAbi,
       address: registryAddress,
@@ -49,7 +55,7 @@ const fetchMembers = async ({
     const lastUpdate = (await client.readContract({
       abi: MemberRegistryAbi,
       address: registryAddress,
-      functionName: "owner",
+      functionName: "lastActivityUpdate",
       args: [],
     })) as number;
     const membersSorted: String[] = members
@@ -80,18 +86,22 @@ const fetchMembers = async ({
     );
     const foreignRegistries = (await Promise.all(
       regPromises
-    )) as FrFetchShape[];
-    const hydratedFr = foreignRegistries.map((fr, idx) => ({
-      NETWORK_ID: TARGETS.REPLICA_CHAIN_ADDRESSES[idx].NETWORK_ID,
-      DOMAIN_ID: fr.domainId,
-      REGISTRY_ADDRESS: fr.registryAddress,
-      DELEGATE: fr.delegate,
-    }));
+    )) as [];
+    const hydratedFr: REGISTRY[] = foreignRegistries.map((fr, idx) => {
+      const obj = {
+        NETWORK_ID: TARGETS.REPLICA_CHAIN_ADDRESSES[idx].NETWORK_ID,
+        DOMAIN_ID: fr[0] as string,
+        REGISTRY_ADDRESS: fr[1] as EthAddress,
+        DELEGATE: fr[2] as EthAddress,
+      }
+      return obj;
+  });
 
-    console.log("hydratedFr 1", hydratedFr);
 
     for (let i = 0; i < hydratedFr.length; i++) {
       const registryData = hydratedFr[i];
+      console.log('registryData: ', registryData);
+      // if this is zero address, skip
       if (registryData.REGISTRY_ADDRESS == ZERO_ADDRESS) {
         hydratedFr[i] = Object.assign({}, registryData, {
           TOTAL_MEMBERS: "0",
@@ -101,6 +111,18 @@ const fetchMembers = async ({
         });
         continue;
       }
+      if (!registryData.REGISTRY_ADDRESS) {
+        continue;
+      }
+      console.log('registryData continue: ', registryData.NETWORK_ID);
+      console.log('registryData continue: ', registryData.REGISTRY_ADDRESS);
+
+
+      
+      const frClient = createViemClient({
+        chainId: registryData.NETWORK_ID,
+        rpcs,
+      });
 
       const getters = [
         "totalMembers",
@@ -110,14 +132,15 @@ const fetchMembers = async ({
       ];
       const registryData2 = await Promise.all(
         getters.map(async (getter) => {
-          return (await client.readContract({
+          return (await frClient.readContract({
             abi: MemberRegistryAbi,
-            address: registryAddress,
+            address: registryData.REGISTRY_ADDRESS as EthAddress,
             functionName: getter,
             args: [],
-          })) as Member[];
+          }));
         })
-      );
+      ) as string[];
+      
       hydratedFr[i] = Object.assign(
         {},
         {
@@ -128,19 +151,19 @@ const fetchMembers = async ({
         },
         {
           TOTAL_MEMBERS: registryData2[0],
-          UPDATER: registryData2[1],
+          UPDATER: registryData2[1] as EthAddress,
           LAST_ACTIVITY_UPDATE: registryData2[2],
-          SPLIT_ADDRESS: registryData2[3],
+          SPLIT_ADDRESS: registryData2[3] as EthAddress,
         }
       );
     }
 
-    console.log("hydratedFr 2", hydratedFr);
 
     return {
       members: members,
       owner: owner,
-      lastUpdate: 0, // lastUpdate,
+      lastUpdate: lastUpdate,
+      totalMembers: totalembers,
       membersSorted: membersSorted,
       percAlloc: percAlloc,
       foreignRegistries: hydratedFr as REGISTRY[],
