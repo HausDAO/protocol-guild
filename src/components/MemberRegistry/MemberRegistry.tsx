@@ -5,7 +5,7 @@ import { MemberInfo } from "../MemberInfo";
 import { MemberTable } from "../MemberTable/MemberTable";
 import { Trigger } from "./Trigger";
 import { CSVDownloader } from "../CsvDownloader";
-import { ParLg } from "@daohaus/ui";
+import { Button, ParLg } from "@daohaus/ui";
 
 type MemberRegistryProps = {
   membersList: Member[];
@@ -33,6 +33,7 @@ const MemberRegistry = (props: MemberRegistryProps) => {
           />
         )}
         <CSVDownloader></CSVDownloader>
+        <Button>Update All (todo)</Button>
       </ActionContainer>
 
       {membersList.length ? (

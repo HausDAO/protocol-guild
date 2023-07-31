@@ -150,12 +150,15 @@ export const ComboMemberProposal = ({
         {!isSuccess ? (
           <>
             <ParMd>
-              This will submit a proposal to the DAO to update the member
+              This will submit a proposal to the DAO to update the home member
               registry.
             </ParMd>
             <ParMd>
               This will mint shares for new members and update activity
               modifiers for existing members.
+            </ParMd>
+            <ParMd>
+              TODO: update so this syncs all foreign registries as well.
             </ParMd>
             <GatedButton
               color="primary"
