@@ -3,6 +3,7 @@ export interface Member {
     activityMultiplier: number;
     secondsActive: number;
     startDate: number;
+    percAlloc?: number;
   }
 
   export interface StagingMember {

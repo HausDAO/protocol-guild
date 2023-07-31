@@ -38,6 +38,10 @@ const columns = [
       </ParMd>
     ),
   }),
+  columnHelper.accessor("percAlloc", {
+    header: () => <span>Percent</span>,
+    cell: (info) => <ParMd>{`${info.renderValue()} %`}</ParMd>,
+  }),
 ];
 
 export const MemberTable = ({ memberList }: { memberList: Member[] }) => {

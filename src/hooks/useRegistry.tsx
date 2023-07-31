@@ -11,6 +11,7 @@ import {
   ValidNetwork,
   createViemClient,
 } from "../utils/createContract";
+import { log } from "console";
 
 type FrFetchShape = {
   domainId: string;
@@ -34,6 +35,7 @@ const fetchMembers = async ({
   });
 
   try {
+    // pull home chain data from contract
     const members = (await client.readContract({
       abi: MemberRegistryAbi,
       address: registryAddress,
@@ -58,20 +60,26 @@ const fetchMembers = async ({
       functionName: "lastActivityUpdate",
       args: [],
     })) as number;
-    const membersSorted: String[] = members
-      .map((member: any) => member.account)
-      .sort((a: string, b: string) =>
-        a.toLowerCase() > b.toLowerCase() ? 1 : -1
+    const membersSorted: Member[] = members
+      .sort((a: Member, b: Member) =>
+        a.account.toLowerCase() > b.account.toLowerCase() ? 1 : -1
       );
     const percAlloc = membersSorted.length
       ? ((await client.readContract({
           abi: MemberRegistryAbi,
           address: registryAddress,
           functionName: "calculate",
-          args: [membersSorted],
+          args: [membersSorted.map((m) => m.account)],
         })) as [])
       : [];
 
+
+    membersSorted.forEach((m, idx) => {
+      // 10000 is the multiplier for the contract
+      m.percAlloc = percAlloc[1][idx]/10000;
+    });
+
+    // loop though supported foreign chains in TARGETS to get registries
     const regPromises = TARGETS.REPLICA_CHAIN_ADDRESSES.map(
       async (registry) => {
 
@@ -87,6 +95,11 @@ const fetchMembers = async ({
     const foreignRegistries = (await Promise.all(
       regPromises
     )) as [];
+
+
+    // hydrate foreign registries 
+    // networkRegistry call returns a tuple of [domainId, registryAddress, delegate]
+    // will return zero address if not set
     const hydratedFr: REGISTRY[] = foreignRegistries.map((fr, idx) => {
       const obj = {
         NETWORK_ID: TARGETS.REPLICA_CHAIN_ADDRESSES[idx].NETWORK_ID,
@@ -97,7 +110,7 @@ const fetchMembers = async ({
       return obj;
   });
 
-
+    // loop through foreign registries and get data from each
     for (let i = 0; i < hydratedFr.length; i++) {
       const registryData = hydratedFr[i];
       // if this is zero address, skip

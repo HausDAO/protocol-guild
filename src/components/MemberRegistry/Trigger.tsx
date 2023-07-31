@@ -71,7 +71,7 @@ export const Trigger = ({ onSuccess }: { onSuccess: () => void }) => {
       rules={[isConnectedToDao]}
       onClick={handleTrigger}
     >
-      {isDataLoading ? <Spinner size="2rem" strokeWidth=".2rem" /> : "Update"}
+      {isDataLoading ? <Spinner size="2rem" strokeWidth=".2rem" /> : "Update Home"}
     </GatedButton>
   );
 };
