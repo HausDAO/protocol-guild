@@ -23,7 +23,7 @@ jobs:
           node-version: 16
           cache: 'npm'
       - run: rm -rf node_modules && yarn install --frozen-lockfile
-      - run: export NODE_OPTIONS=--max-old-space-size=3072
+      - run: export NODE_OPTIONS=--max-old-space-size=8192
       - run: yarn build
       - name: List files in the repository
         run: |
