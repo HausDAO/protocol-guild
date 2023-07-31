@@ -47,6 +47,7 @@ export const Home = () => {
           <MemberRegistry
             membersList={data.membersSorted}
             lastUpdate={data.lastUpdate}
+            refetch={refetch}
           />
         </>
       )}

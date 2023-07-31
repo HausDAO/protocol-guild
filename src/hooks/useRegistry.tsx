@@ -64,6 +64,7 @@ const fetchMembers = async ({
       .sort((a: Member, b: Member) =>
         a.account.toLowerCase() > b.account.toLowerCase() ? 1 : -1
       );
+    
     const percAlloc = membersSorted.length
       ? ((await client.readContract({
           abi: MemberRegistryAbi,
