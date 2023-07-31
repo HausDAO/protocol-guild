@@ -23,6 +23,11 @@ jobs:
           node-version: 16
           cache: 'npm'
       - run: rm -rf node_modules && yarn install --frozen-lockfile
+      - name: Create env file
+        run: |
+          touch .env
+          echo VITE_RIVET_KEY=${{ secrets.VITE_RIVET_KEY }}  >> .env
+          echo VITE_WALLET_CONNECT_ID=${{ secrets.VITE_RIVET_KEY }}  >> .env
       - run: yarn build
       - name: List files in the repository
         run: |
