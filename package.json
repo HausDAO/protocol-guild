@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -22,6 +22,7 @@
     "@daohaus/ui": "^0.2.0-alpha.0",
     "@daohaus/utils": "^0.2.0-alpha.0",
     "@tanstack/react-table": "^8.7.9",
+    "cross-env": "^7.0.3",
     "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
