@@ -4,8 +4,8 @@ import { ValidNetwork } from './utils/createContract';
 
 
 export type REGISTRY = {
-  NETWORK_LOGO: string;
-  NETWORK_NAME: string;
+  NETWORK_LOGO?: string;
+  NETWORK_NAME?: string;
   NETWORK_ID: ValidNetwork;
   DOMAIN_ID?: string;
   REGISTRY_ADDRESS?: EthAddress;

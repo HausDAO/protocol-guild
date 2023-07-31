@@ -70,15 +70,19 @@ const TagSection = styled.div`
 type RegistryProps = {
   home: boolean;
   target?: REGISTRY;
-  owner?: string;
-  foreignRegistries?: REGISTRY[];
+  homeOwner?: string;
+  homeLastUpdate?: number; 
+  homeTotalMembers?: number;
+  foreignRegistry?: REGISTRY;
 };
 
 export const RegistryOverview = ({
   home,
   target,
-  owner,
-  foreignRegistries,
+  homeOwner,
+  homeLastUpdate,
+  homeTotalMembers,
+  foreignRegistry,
 }: RegistryProps) => {
   const daochain = TARGETS.NETWORK_ID;
   const registry = target || TARGETS;
@@ -90,7 +94,11 @@ export const RegistryOverview = ({
           <H4>{registry.NETWORK_NAME}</H4>
           <TagSection>
             <AddressDisplay
-              address={registry.REGISTRY_ADDRESS?.toString() || ZERO_ADDRESS}
+              address={
+                registry.REGISTRY_ADDRESS?.toString() ||
+                foreignRegistry?.REGISTRY_ADDRESS ||
+                ZERO_ADDRESS
+              }
               truncate
               copy
               explorerNetworkId={daochain as keyof Keychain}
@@ -103,31 +111,50 @@ export const RegistryOverview = ({
           </TagSection>
         </div>
         <div className="right-section">
-          <RegistryMenu
-            home={home}
-            foreignRegistry={foreignRegistries?.find(
-              (fr) => fr.NETWORK_ID === registry.NETWORK_ID
-            )}
-          />
+          <RegistryMenu home={home} foreignRegistry={foreignRegistry} />
         </div>
       </VaultCardHeader>
       <DataGrid>
         {!home ? (
           <>
-            <DataIndicator label="Registerd" data={"NA"} />
-            <DataIndicator label="Status" data={"NA"} />
+            <DataIndicator
+              label="Registerd"
+              data={
+                foreignRegistry?.REGISTRY_ADDRESS != ZERO_ADDRESS
+                  ? "true"
+                  : "NA"
+              }
+            />
+            <DataIndicator label="Status" data={"TODO"} />
+            <DataIndicator
+              label="Total Members"
+              data={foreignRegistry?.TOTAL_MEMBERS?.toString()}
+            />
+            <DataIndicator
+              label={`Last Sync`}
+              data={foreignRegistry?.LAST_ACTIVITY_UPDATE || "NA"}
+            />
           </>
         ) : (
-          <DataIndicator
-            label="Owner"
-            data={
-              owner?.toLowerCase() == TARGETS.SAFE_ADDRESS.toLowerCase()
-                ? "DAO"
-                : owner?.toString()
-            }
-          />
+          <>
+            <DataIndicator
+              label="Owner"
+              data={
+                homeOwner?.toLowerCase() == TARGETS.SAFE_ADDRESS.toLowerCase()
+                  ? "DAO"
+                  : homeOwner?.toString()
+              }
+            />
+            <DataIndicator
+              label={`Last ${home ? "Update" : "Sync"}`}
+              data={homeLastUpdate?.toString() || "NA"}
+            />
+            <DataIndicator
+              label="Total Members"
+              data={homeTotalMembers?.toString() || "NA"}
+            />
+          </>
         )}
-        <DataIndicator label={`Last ${home ? "Update" : "Sync"}`} data={"NA"} />
       </DataGrid>
     </VaultOverviewCard>
   );
