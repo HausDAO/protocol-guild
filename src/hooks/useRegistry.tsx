@@ -100,7 +100,6 @@ const fetchMembers = async ({
 
     for (let i = 0; i < hydratedFr.length; i++) {
       const registryData = hydratedFr[i];
-      console.log('registryData: ', registryData);
       // if this is zero address, skip
       if (registryData.REGISTRY_ADDRESS == ZERO_ADDRESS) {
         hydratedFr[i] = Object.assign({}, registryData, {
@@ -114,8 +113,6 @@ const fetchMembers = async ({
       if (!registryData.REGISTRY_ADDRESS) {
         continue;
       }
-      console.log('registryData continue: ', registryData.NETWORK_ID);
-      console.log('registryData continue: ', registryData.REGISTRY_ADDRESS);
 
 
       
