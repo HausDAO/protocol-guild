@@ -6,7 +6,7 @@ export default ({ mode }) => {
   Object.assign(process.env, loadEnv(mode, process.cwd()));
 
   return defineConfig({
-    plugins: [react()],
+    plugins: [react(), viteSingleFile()],
     
     define: {
       "process.env": {
