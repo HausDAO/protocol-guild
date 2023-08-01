@@ -51,9 +51,6 @@ export const ReplicaConfig = () => {
     destinationDomain: domainID || "",
     chainID: chainID || "",
   });
-  
-  console.log("data: ", data);
-
 
   if(!data) return (
     <SingleColumnLayout title="Replicants">
