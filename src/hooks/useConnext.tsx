@@ -5,24 +5,9 @@ import { EthAddress, fromWei } from "@daohaus/utils";
 
 import { create, SdkConfig } from "@connext/sdk";
 import { TARGETS } from "../targetDao";
+import { HAUS_RPC } from "@daohaus/keychain-utils";
 
-const sdkConfig: SdkConfig = {
-  signerAddress: TARGETS.DAO_ADDRESS,
-  // Use `mainnet` when you're ready...
-  network: "testnet",
-  // Add more chains here! Use mainnet domains if `network: mainnet`.
-  // This information can be found at https://docs.connext.network/resources/supported-chains
-  chains: {
-    1735353714: {
-      // Goerli domain ID
-      providers: ["https://rpc.ankr.com/eth_goerli"],
-    },
-    1735356532: {
-      // Optimism-Goerli domain ID
-      providers: ["https://goerli.optimism.io"],
-    },
-  },
-};
+
 
 const fetch = async ({
   originDomain,
@@ -36,6 +21,25 @@ const fetch = async ({
   const params = {
     originDomain: originDomain,
     destinationDomain: destinationDomain,
+  };
+
+  const sdkConfig: SdkConfig = {
+    signerAddress: TARGETS.DAO_ADDRESS,
+    // Use `mainnet` when you're ready...
+    network: "testnet",
+    // Add more chains here! Use mainnet domains if `network: mainnet`.
+    // This information can be found at https://docs.connext.network/resources/supported-chains
+    chains: {
+      [originDomain]: {
+        
+        providers: [HAUS_RPC[TARGETS.NETWORK_ID as keyof typeof HAUS_RPC]],
+        
+
+      },
+      [destinationDomain]: {
+        providers: [HAUS_RPC[chainID as keyof typeof HAUS_RPC]],
+      },
+    },
   };
 
   try {
