@@ -58,9 +58,11 @@ build is a single file see plugin in vite config
 
 this Github action uses web3storage to deploy the signle file build to ipfs. Set env vars in action secrets including your web3storage key. This will automatically deploy when merged to main. IPFS CID can be pulled from the action log after succesfull deploy.
 
+```yaml
 VITE_RIVET_KEY
 VITE_WALLET_CONNECT_ID
 WEB3_STORAGE_TOKEN
+```
 
 get free web3storage token [here](https://web3.storage/)
 
@@ -152,9 +154,9 @@ see config
 ### list of addresses as of testing
 https://docs.google.com/spreadsheets/d/16zS3KiLjc45BjFQii7rLZl4FU17o7iTfJPrilwr_GE4/edit?usp=sharing
 
-### Deploy Foreign Registry 
+## Deploy Foreign Registry 
 
-## replica deployment
+### replica deployment
 
 ### summon registry on 0xsplits
 
