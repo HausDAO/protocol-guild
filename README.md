@@ -1,30 +1,21 @@
-# DAO MiniApp Starter (vite)
+# Protocol Cross Chain Member Registry (vite)
 
-Vite React Starter for a DAO app scoped to a single DAO.
+This is the front end app for the PRotocol Guild DAO to interact with the Cross Chain Member Registries.
 
 ## Development
 
 ### 1. Project Setup
 
-#### SSH
+#### Clone and install
 
 ```bash
-git clone git@github.com:HausDAO/moloch-v3-vite-starter.git
+git clone <this repo>
 
-cd dh-moloch-v3-vite-starter
+cd <into folder>
 
 yarn
 ```
 
-#### HTTPS
-
-```bash
-git clone https://github.com/HausDAO/dh-v3-vite-starter.git
-
-cd dh-moloch-v3-vite-starter
-
-yarn
-```
 
 ### 2. `.env` Setup
 
@@ -34,42 +25,19 @@ cp .env.sample .env
 
 ```yaml
 VITE_RIVET_KEY
+VITE_WALLET_CONNECT_ID
 ```
 
 Get a free Rivet key [here](https://rivet.cloud/)
 
-```yaml
-VITE_EXPLORER_KEY
-```
+Get a free Wallet Connect id [here](https://walletconnect.com/)
 
-Get an Etherscan API key [here](https://etherscan.io/apis)
 
-```yaml
-VITE_GRAPH_API_KEY_MAINNET
-```
-
-If developing for Mainnet or Gnosis Chain you can get an API key [here](https://thegraph.com/explorer/subgraph?id=GfHFdFmiSwW1PKtnDhhcxhArwtTjVuMnXxQ5XcETF1bP&view=Overview). Ignore this one if not worried about mainnet or gnosis chain yet.
-
-```yaml
-VITE_TARGET_KEY
-```
-
-This is the target address for the DAO you are developing the app for. You will get this value in the next step if you do not have an existing DAO.
-
-### 3. Target DAO Set-up
-
-[Summon](https://summon.daohaus.club) a DAO
+### 3. Target DAO and globals Set-up
 
 #### Edit `src/targetDao.ts`
 
-Add your DAO's data to the property and values of the object
-
-#### Edit `.env`
-
-Add the DAO address in the `VITE_TARGET_KEY` variable
-
-- You can add multiple DAOs as new objects in `targetDao.ts` and toggle with this `env` variable
-- You can add other variables to `targetDao.ts` as needed
+Add your DAO's data and other deployed contracts and network meta data here
 
 ### 4. Run the Development Server
 
@@ -77,7 +45,30 @@ Add the DAO address in the `VITE_TARGET_KEY` variable
 yarn dev
 ```
 
-## Reference
+## Build
+
+```bash
+yarn build
+```
+
+### ipfs deploy 
+build is a single file see plugin in vite config
+
+`github/workflows/deploy.yml`
+
+this Github action uses web3storage to deploy the signle file build to ipfs. Set env vars in action secrets including your web3storage key. This will automatically deploy when merged to main. IPFS CID can be pulled from the action log after succesfull deploy.
+
+VITE_RIVET_KEY
+VITE_WALLET_CONNECT_ID
+WEB3_STORAGE_TOKEN
+
+get free web3storage token [here](https://web3.storage/)
+
+### ENS routing
+add record to your ENS pointing to IPFS gateway with CID
+
+
+## DAOhaus Components
 
 ### `main.tsx`
 
@@ -86,87 +77,104 @@ yarn dev
 - Sets up `HausThemeProvider` - that provides the styling theme to the app
 - Adds the router to the app
 
-### `HomeContainer.tsx`
+### `LayoutContainer.tsx`
 
 - Parent component wrapping all routes/pages
 - Sets up `DHLayout` which adds the connect button and navigation to the app
   - You can update the navigation in `navLinks`
 - Sets up `TXBuilder` which enables easy transaction creation
 
-### `FormTest.tsx`
-
-- Example of how to add `FormBuilder` to the app
-- See the legos it is using at `legos/forms.ts`, `legos/fields.ts`, and `legos/tx.ts`
-  - These are recipes for creating forms and contract function interactions
-
-### ToDo
-
-- Ad routes/pages for dao overview, vaults, settings
-  - proposals, members and profile coming soon
-- show hook data fetch
-- show macro ui addition
-- `moloch-v3-fields` package
-  - coming soon
 
 ### Adding UI Components
 
 - [Storybook](https://storybook.js.org/)
 
-### Methods for Accessing `daoid` and `daochain`
-
-These values are used in most hooks and components and you have some options:
-
-Get them from `targetDao.ts`
-
-```tsx
-const daoChain = TARGETS.NETWORK_ID;
-const daoId = TARGETS.DAO_ADDRESS;
-```
-
-or load them into a context from the `@daohaus/moloch-v3-hooks` library and then there is a hook you can use.
-
-Wrap your tree in this context:
-
-```tsx
-import { CurrentDaoProvider } from "@daohaus/moloch-v3-hooks";
-
-...
-
-<CurrentDaoProvider
-  targetDao={{
-    daoChain: TARGETS.NETWORK_ID,
-    daoId: TARGETS.DAO_ADDRESS,
-  }}
->
-  {children}
-</CurrentDaoProvider>;
-```
-
-Then access this hook:
-
-```tsx
-import { useCurrentDao } from "@daohaus/moloch-v3-hooks";
- ...
-
-const { daoChain, daoId } = useCurrentDao();
-```
-
-- Future: `urlParams` in a multi DAO app
-
-### Adding Custom Fields
-
-tbd
-
 ### Editing the Theme
 
 tbd
 
-### Router Example for Multi DAO App
 
-tbd
-
-## Resources
+### Resources
 
 - [DAO Toolbox](https://toolbox.daohaus.fun/) docs
 - HausDAO monorepo [libs](https://github.com/HausDAO/monorepo/tree/develop/libs)
 - monorepo admin/admin-new
+
+
+## Network Registry
+these are the instructions if setting up and deploying new registries
+
+### Contract Repo
+[protocol-guild-contract](https://github.com/HausDAO/protocol-guild-contracts)
+
+### Deploy Home Registry 
+
+
+### Collect addresses for 3 initial members 
+- [ ] addr 1 
+- [ ] addr 2 
+- [ ] addr 3 
+
+
+### Deploy initial DAO
+https://summon.daohaus.fun/
+>  3 initial members can be set as summoners, setup DAO config and vote for initial new member proposals. 
+
+- [ ] DAO address 
+- [ ] Safe treasury address 
+
+### setup initial split in 0xsplits dapp
+https://app.0xsplits.xyz/
+> create new split with 3 members, split can be equal they will be updated in the first proposals. Set controller as shared Safe address or eoa (needs to transfer ownership). Threshold and fee probably does not matter.
+
+- [ ] 0xsplits address 
+
+### Deploy registry contracts
+- update config files (constants/config)
+- deploy registry instance
+
+`pnpm hardhat --network goerli deploy --tags PGNetworkRegistry`
+- confirm ownership of registry is with safe`
+
+- [ ] registry address 
+
+### transfer control of 0xsplits
+- from 0xsplits app transfer control to **network registry** not safe
+- DAO proposal to accept control
+- alternative, dao uses wallet connect proposal type to accept control
+    - not now
+
+### addresses
+
+see config
+
+
+### list of addresses as of testing
+https://docs.google.com/spreadsheets/d/16zS3KiLjc45BjFQii7rLZl4FU17o7iTfJPrilwr_GE4/edit?usp=sharing
+
+### Deploy Foreign Registry 
+
+## replica deployment
+
+### summon registry on 0xsplits
+
+setup initial 0x splits with 3 addresses
+
+splits addr: 
+
+**update config**
+
+### deploy registry
+
+`pnpm hardhat --network optimismGoerli deploy --tags PGNetworkRegistry`
+
+registry addr: 
+
+### update foreign registry members
+if you want to save gas you should update members from l2 chain. this needs to be done before transfer of updater/owner
+
+### transfer ownership
+- begin 0xsplit controller transfer to registry
+- change registry updater
+
+
