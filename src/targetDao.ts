@@ -34,7 +34,7 @@ export const TARGETS: TARGET = {
       NETWORK_LOGO: "",
       NETWORK_NAME: "Optimism Goerli",
       NETWORK_ID: "0x1a4",
-      DOMAIN_ID: "1735356532"
+      DOMAIN_ID: "1735356532" // Connext domain id
     },
 
     { // arbitrum goerli
