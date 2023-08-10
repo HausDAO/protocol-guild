@@ -5,11 +5,12 @@ import { MemberInfo } from "../MemberInfo";
 import { MemberTable } from "../MemberTable/MemberTable";
 import { Trigger } from "./Trigger";
 import { CSVDownloader } from "../CsvDownloader";
-import { ParLg } from "@daohaus/ui";
+import { Button, ParLg } from "@daohaus/ui";
 
 type MemberRegistryProps = {
   membersList: Member[];
   lastUpdate: number;
+  refetch: () => void;
 };
 
 const ActionContainer = styled.div`
@@ -20,7 +21,7 @@ const ActionContainer = styled.div`
 `;
 
 const MemberRegistry = (props: MemberRegistryProps) => {
-  const { membersList, lastUpdate } = props;
+  const { membersList, lastUpdate, refetch } = props;
   return (
     <>
       <MemberInfo memberList={membersList} lastUpdate={lastUpdate}></MemberInfo>
@@ -28,11 +29,14 @@ const MemberRegistry = (props: MemberRegistryProps) => {
         {membersList.length > 0 && (
           <Trigger
             onSuccess={() => {
-              alert("yay trigger");
+              // TODO: update table
+              // alert user
+              refetch();
             }}
           />
         )}
         <CSVDownloader></CSVDownloader>
+        <Button>Update All (todo)</Button>
       </ActionContainer>
 
       {membersList.length ? (

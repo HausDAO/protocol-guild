@@ -11,6 +11,7 @@ import { fromWei } from "@daohaus/utils";
 import { useParams } from "react-router-dom";
 import { MolochFields } from "@daohaus/moloch-v3-fields";
 import { AppFieldLookup } from "../legos/fieldConfig";
+import { useConnext } from "../hooks/useConnext";
 
 const sdkConfig: SdkConfig = {
   signerAddress: "0x2b8aA42fFb2c9c7B9f0B1e1b935F7D8331b6dC7c",
@@ -39,26 +40,19 @@ export const ReplicaConfig = () => {
     destinationDomain: "1735356532",
   }
 
+  const originDomainID = TARGETS.DOMAIN_ID;
+
   const domainID = TARGETS.REPLICA_CHAIN_ADDRESSES.find(
     (r) => r.NETWORK_ID === chainID
   )?.DOMAIN_ID;
 
-  console.log('domainID: ', domainID);
-  
+  const { isIdle, isLoading, error, data, refetch } = useConnext({
+    originDomain: originDomainID,
+    destinationDomain: domainID || "",
+    chainID: chainID || "",
+  });
 
-
-  useEffect(() => {
-    const run = async () => {
-      const { sdkBase } = await create(sdkConfig);
-      console.log('sdkBase: ', sdkBase);
-      const rFee = await sdkBase.estimateRelayerFee(params);
-      console.log('relayerFee: ', fromWei(rFee.toString()));
-      setRelayerFee(rFee.toString());
-    }
-    run();
-  })
-
-  if(!relayerFee || !chainID) return (
+  if(!data) return (
     <SingleColumnLayout title="Replicants">
       <ParLg>Loading...</ParLg> 
     </SingleColumnLayout>
@@ -72,7 +66,7 @@ export const ReplicaConfig = () => {
         targetNetwork={TARGETS.NETWORK_ID}
         customFields={{ ...MolochFields, ...AppFieldLookup }}
         defaultValues={{
-          relayFee: relayerFee,
+          relayFee: data?.relayerFee,
           chainID: chainID,
           domainID: domainID,
         }

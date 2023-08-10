@@ -1,25 +1,10 @@
 export function convertSeconds(secondsActive: number) {
-  const dateObj = new Date(secondsActive * 1000);
-  const days = dateObj.getUTCDay();
-  const hours = dateObj.getUTCHours();
-  const minutes = dateObj.getUTCMinutes();
-  const seconds = dateObj.getSeconds();
+  const d = Math.floor(secondsActive / (3600 * 24));
+  const h = Math.floor((secondsActive % (3600 * 24)) / 3600);
+  const m = Math.floor((secondsActive % 3600) / 60);
+  const s = Math.floor(secondsActive % 60);
 
-  //   TODO: Finish up styling and a good format for time
 
-  const timeActive =
-    days.toString().padStart(2, "0") +
-    ":" +
-    hours.toString().padStart(2, "0") +
-    ":" +
-    minutes.toString().padStart(2, "0") +
-    ":" +
-    seconds.toString().padStart(2, "0");
-  return timeActive;
-  // return {
-  //     days,
-  //     hours,
-  //     minutes,
-  //     seconds
-  // }
+  return `${d}d ${h}h ${m}m ${s}s`;
+
 }

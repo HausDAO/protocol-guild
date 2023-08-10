@@ -45,8 +45,9 @@ export const Home = () => {
       {!isLoading && data && (
         <>
           <MemberRegistry
-            membersList={data.members}
+            membersList={data.membersSorted}
             lastUpdate={data.lastUpdate}
+            refetch={refetch}
           />
         </>
       )}

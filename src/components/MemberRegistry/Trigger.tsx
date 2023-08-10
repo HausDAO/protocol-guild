@@ -36,8 +36,9 @@ export const Trigger = ({ onSuccess }: { onSuccess: () => void }) => {
           targetAddress: TARGETS.REGISTRY_ADDRESS,
         },
         method: "updateAll",
+        disablePoll: true,
         args: [
-          { type: "static", value: data?.membersSorted as [] },
+          { type: "static", value: data?.membersSorted.map((m) => m.account) as [] },
           { type: "static", value: "0" }, // split distribution fee
         ],
       },
@@ -52,9 +53,11 @@ export const Trigger = ({ onSuccess }: { onSuccess: () => void }) => {
         onTxSuccess: () => {
           defaultToast({
             title: "Trigger Success",
-            description: "Please wait table to update",
+            description: "Please wait for table to update",
           });
+          refetch();
           setIsDataLoading(false);
+
         },
       },
     });
@@ -71,7 +74,7 @@ export const Trigger = ({ onSuccess }: { onSuccess: () => void }) => {
       rules={[isConnectedToDao]}
       onClick={handleTrigger}
     >
-      {isDataLoading ? <Spinner size="2rem" strokeWidth=".2rem" /> : "Update"}
+      {isDataLoading ? <Spinner size="2rem" strokeWidth=".2rem" /> : "Update Home"}
     </GatedButton>
   );
 };
