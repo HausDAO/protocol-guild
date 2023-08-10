@@ -61,7 +61,6 @@ export const RegistryMenu = ({ home, foreignRegistry }: RegistryMenuProps) => {
 
   if (!enableActions) return null;
 
-  console.log("foreignRegistry from menu", foreignRegistry);
 
   return (
     <DropdownMenu>
