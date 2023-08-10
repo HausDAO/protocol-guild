@@ -15,7 +15,6 @@ export function convertSeconds(secondsActive: number) {
     minutes.toString().padStart(2, "0") +
     ":" +
     seconds.toString().padStart(2, "0");
-  console.log(timeActive);
   return timeActive;
   // return {
   //     days,
