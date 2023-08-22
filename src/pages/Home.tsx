@@ -38,7 +38,7 @@ export const Home = () => {
 
   return (
     <SingleColumnLayout
-      title="Protocol Guild Member Registry"
+      title="🛡️ Protocol Guild Member Registry"
       description={`Protocol guild keeps a onchain registry of active members which is updated periodically to track member activity. This registry informs the automatic compensation distro.`}
     >
       {isLoading && <Spinner />}
