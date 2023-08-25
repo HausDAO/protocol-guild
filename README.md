@@ -123,14 +123,14 @@ these are the instructions if setting up and deploying new registries
 https://summon.daohaus.fun/
 >  3 initial members can be set as summoners, setup DAO config and vote for initial new member proposals. 
 
-- [ ] DAO address 
-- [ ] Safe treasury address 
+- [ ] DAO address 0x1df24e0463dd40dc5a6be8034e90cf434686c9a4
+- [ ] Safe treasury address 0xf44803400e641abe86e1cfecfb82118800136d60
 
 ### setup initial split in 0xsplits dapp
 https://app.0xsplits.xyz/
 > create new split with 3 members, split can be equal they will be updated in the first proposals. Set controller as shared Safe address or eoa (needs to transfer ownership). Threshold and fee probably does not matter.
 
-- [ ] 0xsplits address 
+- [ ] 0xsplits address 0xE6bD75288bF450f2aB4F4EB3F44CAf0371AA8584
 
 ### Deploy registry contracts
 - update config files (constants/config)
@@ -139,13 +139,11 @@ https://app.0xsplits.xyz/
 `pnpm hardhat --network goerli deploy --tags PGNetworkRegistry`
 - confirm ownership of registry is with safe`
 
-- [ ] registry address 
+- [ ] registry address 0x0BcA4bfDe464Aec3F23b5E78647954952fdd6081
 
 ### transfer control of 0xsplits
 - from 0xsplits app transfer control to **network registry** not safe
-- DAO proposal to accept control
-- alternative, dao uses wallet connect proposal type to accept control
-    - not now
+- in app use DAO proposal to accept control
 
 ### addresses
 
@@ -172,6 +170,8 @@ splits addr:
 `pnpm hardhat --network optimismGoerli deploy --tags PGNetworkRegistry`
 
 registry addr: 
+optimisticGoerli: 0x6B67d35D0B93F0a5C8ADFca64d50F14D6A5cb1D6
+split: 0x41F757dC2122bD72967Cc6124345a3526200C472
 
 ### update foreign registry members
 if you want to save gas you should update members from l2 chain. this needs to be done before transfer of updater/owner

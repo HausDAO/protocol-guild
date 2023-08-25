@@ -86,7 +86,7 @@ export const APP_FIELD: Record<string, CustomFieldLego> = {
   },
   RELAY_FEE: {
     id: 'relayFee',
-    type: 'input',
+    type: 'toWeiInput',
     label: 'Connext Relay Fee',
     disabled: true,
   },
