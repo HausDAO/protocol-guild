@@ -12,6 +12,7 @@ import {
 import { TARGETS, REGISTRY } from "../../targetDao";
 import { ZERO_ADDRESS } from "@daohaus/utils";
 import { RegistryMenuLink, StyledExternalLink } from "./RegistryOverview.styles";
+import { log } from "console";
 
 
 type RegistryMenuProps = {
@@ -27,7 +28,8 @@ export const RegistryMenu = ({ home, foreignRegistry }: RegistryMenuProps) => {
   }, []);
 
   if (!enableActions) return null;
-
+  
+  console.log("foreignRegistry", foreignRegistry);
 
   return (
     <DropdownMenu>
@@ -65,8 +67,8 @@ export const RegistryMenu = ({ home, foreignRegistry }: RegistryMenuProps) => {
           <DropdownItem key="split" asChild>
             <StyledExternalLink
               href={`https://app.0xsplits.xyz/accounts/${
-                foreignRegistry?.SPLIT_ADDRESS
-              }/?chainId=${Number(foreignRegistry?.NETWORK_ID)}`}
+                foreignRegistry?.SPLIT_ADDRESS || TARGETS.SPLIT_ADDRESS
+              }/?chainId=${Number(foreignRegistry?.NETWORK_ID || TARGETS.NETWORK_ID)}`}
             >
               Split
             </StyledExternalLink>

@@ -1,17 +1,19 @@
-
-import {
-  AddressDisplay,
-  H4,
-  DataIndicator,
-  Tag,
-} from "@daohaus/ui";
+import { AddressDisplay, H4, DataIndicator, Tag } from "@daohaus/ui";
 import {
   ZERO_ADDRESS,
+  formatDateFromSeconds,
+  formatDateTimeFromSeconds,
+  formatShortDateTimeFromSeconds,
 } from "@daohaus/utils";
 import { Keychain } from "@daohaus/keychain-utils";
 import { REGISTRY, TARGETS } from "../../targetDao";
 import { RegistryMenu } from "./RegistryMenu";
-import { DataGrid, TagSection, RegistryCardHeader, RegistryOverviewCard } from "./RegistryOverview.styles";
+import {
+  DataGrid,
+  TagSection,
+  RegistryCardHeader,
+  RegistryOverviewCard,
+} from "./RegistryOverview.styles";
 
 type RegistryProps = {
   target?: REGISTRY;
@@ -58,6 +60,10 @@ export const RegistryHomeOverview = ({
       <DataGrid>
         <>
           <DataIndicator
+            label="Total Members"
+            data={totalMembers?.toString() || "NA"}
+          />
+          <DataIndicator
             label="Owner"
             data={
               owner?.toLowerCase() == TARGETS.SAFE_ADDRESS.toLowerCase()
@@ -66,12 +72,11 @@ export const RegistryHomeOverview = ({
             }
           />
           <DataIndicator
+            size="sm"
             label={`Last Update`}
-            data={lastUpdate?.toString() || "NA"}
-          />
-          <DataIndicator
-            label="Total Members"
-            data={totalMembers?.toString() || "NA"}
+            data={
+              formatShortDateTimeFromSeconds(lastUpdate?.toString()) || "NA"
+            }
           />
         </>
       </DataGrid>

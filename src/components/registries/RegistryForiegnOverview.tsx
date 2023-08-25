@@ -1,18 +1,15 @@
-
-import {
-  AddressDisplay,
-  H4,
-  DataIndicator,
-  Tag,
-} from "@daohaus/ui";
-import {
-  ZERO_ADDRESS,
-} from "@daohaus/utils";
+import { AddressDisplay, H4, DataIndicator, Tag } from "@daohaus/ui";
+import { ZERO_ADDRESS } from "@daohaus/utils";
 import { Keychain } from "@daohaus/keychain-utils";
 import { REGISTRY, TARGETS } from "../../targetDao";
 import { RegistryMenu } from "./RegistryMenu";
-import { DataGrid, TagSection, RegistryCardHeader, RegistryOverviewCard } from "./RegistryOverview.styles";
-
+import {
+  DataGrid,
+  TagSection,
+  RegistryCardHeader,
+  RegistryOverviewCard,
+} from "./RegistryOverview.styles";
+import { RiCheckboxCircleFill, } from "react-icons/ri";
 
 type RegistryProps = {
   target?: REGISTRY;
@@ -44,6 +41,16 @@ export const RegistryForiegnOverview = ({
             />
 
             <Tag tagColor="blue">Foreign</Tag>
+            {foreignRegistry?.REGISTRY_ADDRESS != ZERO_ADDRESS ? (
+              <Tag tagColor="green">
+                {/* registered? */}
+                <RiCheckboxCircleFill />
+              </Tag>
+            ) : (
+              <Tag tagColor="red">
+                <RiCheckboxCircleFill />
+              </Tag>
+            )}
           </TagSection>
         </div>
         <div className="right-section">
@@ -53,16 +60,11 @@ export const RegistryForiegnOverview = ({
       <DataGrid>
         <>
           <DataIndicator
-            label="Registerd"
-            data={
-              foreignRegistry?.REGISTRY_ADDRESS != ZERO_ADDRESS ? "true" : "NA"
-            }
-          />
-          <DataIndicator label="Status" data={"TODO"} />
-          <DataIndicator
             label="Total Members"
             data={foreignRegistry?.TOTAL_MEMBERS?.toString()}
           />
+          <DataIndicator label="Status" data={"..."} />
+
           <DataIndicator
             label={`Last Sync`}
             data={foreignRegistry?.LAST_ACTIVITY_UPDATE || "NA"}

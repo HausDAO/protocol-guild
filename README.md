@@ -110,6 +110,7 @@ these are the instructions if setting up and deploying new registries
 [protocol-guild-contract](https://github.com/HausDAO/protocol-guild-contracts)
 
 ### Deploy Home Registry 
+### Testing setup notes:
 
 
 ### Collect addresses for 3 initial members 

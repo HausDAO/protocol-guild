@@ -34,7 +34,7 @@ export const DataGrid = styled.div`
   align-content: space-between;
   div {
     padding: 2rem 0;
-    width: 19.7rem;
+    width: 25rem;
 
     @media ${widthQuery.sm} {
       min-width: 100%;
