@@ -167,11 +167,20 @@ splits addr:
 
 ### deploy registry
 
+**optimisticGoerli** foriegn registry addrs: 
+split: 0x41F757dC2122bD72967Cc6124345a3526200C472 (update contract config before running this)
+registry: ~~0x6B67d35D0B93F0a5C8ADFca64d50F14D6A5cb1D6~~
+new: 0x0b19D9cDF9172A8D760605357B5331ce802BfB91
+
 `pnpm hardhat --network optimismGoerli deploy --tags PGNetworkRegistry`
 
-registry addr: 
-optimisticGoerli: 0x6B67d35D0B93F0a5C8ADFca64d50F14D6A5cb1D6
-split: 0x41F757dC2122bD72967Cc6124345a3526200C472
+**arbitrumGoerli** foriegn registry addrs: 
+split: 0x7C80Fd0C51E6eb02d14B9bBaf6a916E4C4fE2ded
+registry:0x16465c10D98FB97d2adA84e5C19E08060085240c
+
+`pnpm hardhat --network arbitrumGoerli deploy --tags PGNetworkRegistry`
+
+
 
 ### update foreign registry members
 if you want to save gas you should update members from l2 chain. this needs to be done before transfer of updater/owner

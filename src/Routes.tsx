@@ -18,7 +18,7 @@ export const Routes = () => {
         <Route index element={<Home />} />
         <Route path={`newmember`} element={<NewMember />} />
         <Route path={`editmember`} element={<EditMember />} />
-        <Route path={`controller/`} element={<ControllerConfig />} />
+        <Route path={`controller/:chainID`} element={<ControllerConfig />} />
         <Route path={`replica/:chainID`} element={<ReplicaConfig />} />       
          <Route path={`registries/`} element={<Registries />} />
         <Route path={`upload/`} element={<CsvUpload />} />
