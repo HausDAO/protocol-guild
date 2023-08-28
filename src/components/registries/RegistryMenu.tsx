@@ -74,7 +74,7 @@ export const RegistryMenu = ({ home, foreignRegistry }: RegistryMenuProps) => {
             </StyledExternalLink>
           </DropdownItem>
           <DropdownItem key="control" asChild>
-            <RegistryMenuLink to={`/controller`}>Manage Controller</RegistryMenuLink>
+            <RegistryMenuLink to={`/controller/${foreignRegistry?.NETWORK_ID || TARGETS.NETWORK_ID}`}>Manage Controller</RegistryMenuLink>
           </DropdownItem>
         </>
       </DropdownContent>

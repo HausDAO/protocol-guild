@@ -35,6 +35,8 @@ export function Registries() {
     rpcs: HAUS_RPC,
   });
 
+  
+
   if (isLoading) return <ParLg>Loading...</ParLg>;
   return (
     <SingleColumnLayout title="Registries">

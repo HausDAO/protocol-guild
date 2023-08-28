@@ -61,8 +61,32 @@ export const APP_TX = {
       },
     ],
   }),
-  REPLICA: buildMultiCallTX({
-    id: "REPLICA",
+  REPLICA_REGISTER: buildMultiCallTX({
+    id: "REPLICA_REGISTER",
+    JSONDetails: {
+      type: "JSONDetails",
+      jsonSchema: {
+        title: `.formValues.title`,
+        description: `.formValues.description`,
+        contentURI: `.formValues.link`,
+        contentURIType: { type: "static", value: "url" },
+        proposalType: { type: "static", value: ProposalTypeIds.MultiCall },
+      },
+    },
+    actions: [
+      {
+        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        method: "updateNetworkRegistry",
+        args: [
+          '.formValues.chainID',
+          '.formValues.replicaData', // TODO: this needs to be a tuple (uint32 domainId; address registryAddress; address delegate;)
+        ],
+      },
+    ],
+
+  }),
+  BATCH_REPLICA_CLAIM: buildMultiCallTX({
+    id: "BATCH_REPLICA_CLAIM",
     JSONDetails: {
       type: "JSONDetails",
       jsonSchema: {
@@ -111,6 +135,30 @@ export const APP_TX = {
         contract: APP_CONTRACT.MEMBER_REGISTRY,
         method: "acceptSplitControl",
         args: [],
+      },
+    ],
+  }),
+  REPLICA_ACCEPT_CONTROL: buildMultiCallTX({
+    id: "REPLICA_ACCEPT_CONTROL",
+    JSONDetails: {
+      type: "JSONDetails",
+      jsonSchema: {
+        title: `.formValues.title`,
+        description: `.formValues.description`,
+        contentURI: `.formValues.link`,
+        contentURIType: { type: "static", value: "url" },
+        proposalType: { type: "static", value: ProposalTypeIds.MultiCall },
+      },
+    },
+    actions: [
+      {
+        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        method: "acceptNetworkSplitControl",
+        args: [
+          nestInArray('.formValues.chainID'),
+          nestInArray('.formValues.relayFee'),
+        ],
+        value: '.formValues.relayFee',      
       },
     ],
   }),
