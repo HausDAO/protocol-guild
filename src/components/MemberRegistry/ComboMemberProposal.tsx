@@ -1,5 +1,5 @@
 import React from "react";
-import { handleErrorMessage, TXLego } from "@daohaus/utils";
+import { fromWei, handleErrorMessage, TXLego } from "@daohaus/utils";
 import { useDHConnect } from "@daohaus/connect";
 import { buildMultiCallTX, useTxBuilder } from "@daohaus/tx-builder";
 import {
@@ -20,6 +20,7 @@ import MEMBER_REGISTRY from "../../abis/memberRegistry.json";
 import { TARGETS } from "../../targetDao";
 import { APP_CONTRACT } from "../../legos/contract";
 import { Member, StagingMember } from "../../types/Member.types";
+import { useConnextMulti } from "../../hooks/useConnextMulti";
 
 export const ComboMemberProposal = ({
   onSuccess,
@@ -34,8 +35,23 @@ export const ComboMemberProposal = ({
   const { fireTransaction } = useTxBuilder();
   const { chainId, address } = useDHConnect();
   const { errorToast, defaultToast, successToast } = useToast();
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isTxLoading, setIsTxLoading] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
+
+  const { isIdle, isLoading, error, data, refetch } = useConnextMulti({
+    originDomain: TARGETS.DOMAIN_ID,
+    destinationDomains: TARGETS.REPLICA_CHAIN_ADDRESSES.map(
+      (r) => r.DOMAIN_ID || ""
+    ),
+    chainID: TARGETS.NETWORK_ID || "",
+  });
+
+  console.log("multi data: ", data);
+  const totalRelayerFees = data?.relayerFeesWei.reduce(
+    (a: any, b: any) => BigInt(a) + BigInt(b),
+    0
+  );
+  console.log("totalRelayerFees: ", totalRelayerFees);
 
   const newMembers = stageMemberList.filter(
     (member: StagingMember) => member.newMember
@@ -65,12 +81,13 @@ export const ComboMemberProposal = ({
   );
 
   const handleTrigger = () => {
-    setIsLoading(true);
+    setIsTxLoading(true);
     setIsSuccess(false);
 
     fireTransaction({
       tx: buildMultiCallTX({
         id: "NEW_AND_EDIT_MEMBER",
+
         JSONDetails: {
           type: "JSONDetails",
           jsonSchema: {
@@ -84,20 +101,36 @@ export const ComboMemberProposal = ({
         actions: [
           {
             contract: APP_CONTRACT.MEMBER_REGISTRY,
-            method: "batchUpdateMember",
+            method: "syncBatchUpdateMember",
             args: [
               { type: "static", value: editMemberAccounts },
               { type: "static", value: editMemberActivityMods },
+              {
+                type: "static",
+                value: TARGETS.REPLICA_CHAIN_ADDRESSES.map(
+                  (r) => r.NETWORK_ID || ""
+                ),
+              },
+              { type: "static", value: data?.relayerFeesWei || [] },
             ],
+            value: { type: "static", value: totalRelayerFees },
           },
           {
             contract: APP_CONTRACT.MEMBER_REGISTRY,
-            method: "batchNewMember",
+            method: "syncBatchNewMember",
             args: [
               { type: "static", value: newMemberAccounts },
               { type: "static", value: newMemberActivityMods },
               { type: "static", value: newMemberStartDates },
+              {
+                type: "static",
+                value: TARGETS.REPLICA_CHAIN_ADDRESSES.map(
+                  (r) => r.NETWORK_ID || ""
+                ),
+              },
+              { type: "static", value: data?.relayerFeesWei || [] },
             ],
+            value: { type: "static", value: totalRelayerFees },
           },
           {
             contract: APP_CONTRACT.CURRENT_DAO,
@@ -115,14 +148,14 @@ export const ComboMemberProposal = ({
             error,
           });
           errorToast({ title: "Trigger Failed", description: errMsg });
-          setIsLoading(false);
+          setIsTxLoading(false);
         },
         onTxSuccess: () => {
           defaultToast({
             title: "Trigger Success",
             description: "Please wait table to update",
           });
-          setIsLoading(false);
+          setIsTxLoading(false);
           setIsSuccess(true);
         },
       },
@@ -134,11 +167,15 @@ export const ComboMemberProposal = ({
       ? true
       : "You are not connected to the same network as the DAO";
 
+  if (!data) {
+    return <Spinner size="2rem" strokeWidth=".2rem" />;
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
         <GatedButton color="primary" rules={[isConnectedToDao]}>
-          {isLoading ? (
+          {isTxLoading ? (
             <Spinner size="2rem" strokeWidth=".2rem" />
           ) : (
             "Submit Proposal"
@@ -150,7 +187,7 @@ export const ComboMemberProposal = ({
         {!isSuccess ? (
           <>
             <ParMd>
-              This will submit a proposal to the DAO to update the home member
+              This will submit a proposal to the DAO to update the home and foreign member
               registry.
             </ParMd>
             <ParMd>
@@ -158,15 +195,16 @@ export const ComboMemberProposal = ({
               modifiers for existing members.
             </ParMd>
             <ParMd>
-              TODO: update so this syncs all foreign registries as well.
+              Total Relayer Fees: {fromWei(totalRelayerFees)}
             </ParMd>
+
             <GatedButton
               color="primary"
               rules={[isConnectedToDao]}
               onClick={handleTrigger}
               style={{ marginTop: "2rem" }}
             >
-              {isLoading ? (
+              {isTxLoading ? (
                 <Spinner size="2rem" strokeWidth=".2rem" />
               ) : (
                 "Submit Proposal"
