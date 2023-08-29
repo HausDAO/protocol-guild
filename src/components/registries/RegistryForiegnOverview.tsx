@@ -1,5 +1,5 @@
 import { AddressDisplay, H4, DataIndicator, Tag } from "@daohaus/ui";
-import { ZERO_ADDRESS } from "@daohaus/utils";
+import { ZERO_ADDRESS, formatShortDateTimeFromSeconds } from "@daohaus/utils";
 import { Keychain } from "@daohaus/keychain-utils";
 import { REGISTRY, TARGETS } from "../../targetDao";
 import { RegistryMenu } from "./RegistryMenu";
@@ -70,7 +70,8 @@ export const RegistryForiegnOverview = ({
 
           <DataIndicator
             label={`Last Sync`}
-            data={foreignRegistry?.LAST_ACTIVITY_UPDATE || "NA"}
+            size="sm"
+            data={formatShortDateTimeFromSeconds(foreignRegistry?.LAST_ACTIVITY_UPDATE) || "NA"}
           />
         </>
       </DataGrid>

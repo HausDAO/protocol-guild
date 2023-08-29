@@ -1,8 +1,6 @@
 import { AddressDisplay, H4, DataIndicator, Tag } from "@daohaus/ui";
 import {
   ZERO_ADDRESS,
-  formatDateFromSeconds,
-  formatDateTimeFromSeconds,
   formatShortDateTimeFromSeconds,
 } from "@daohaus/utils";
 import { Keychain } from "@daohaus/keychain-utils";
