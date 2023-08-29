@@ -21,7 +21,7 @@ export const Routes = () => {
         <Route path={`controller/:chainID`} element={<ControllerConfig />} />
         <Route path={`replica/:chainID`} element={<ReplicaConfig />} />       
          <Route path={`registries/`} element={<Registries />} />
-        <Route path={`upload/`} element={<CsvUpload />} />
+        <Route path={`membership/`} element={<CsvUpload />} />
       </Route>
     </Router>
   );

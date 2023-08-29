@@ -39,7 +39,7 @@ export const RegistryMenu = ({ home, foreignRegistry }: RegistryMenuProps) => {
           {home && (
             <>
               <DropdownItem key="upload" asChild>
-                <RegistryMenuLink to={`/upload`}>
+                <RegistryMenuLink to={`/membership`}>
                   Manage Membership
                 </RegistryMenuLink>
               </DropdownItem>
