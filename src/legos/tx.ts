@@ -162,6 +162,95 @@ export const APP_TX = {
       },
     ],
   }),
+  TRANSFER_CONTROL: buildMultiCallTX({
+    id: "TRANSFER_CONTROL",
+    JSONDetails: {
+      type: "JSONDetails",
+      jsonSchema: {
+        title: `.formValues.title`,
+        description: `.formValues.description`,
+        contentURI: `.formValues.link`,
+        contentURIType: { type: "static", value: "url" },
+        proposalType: { type: "static", value: ProposalTypeIds.MultiCall },
+      },
+    },
+    actions: [
+      {
+        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        method: "transferSplitControl",
+        args: [".formValues.newOwner"],
+      },
+    ],
+  }),
+  REPLICA_TRANSFER_CONTROL: buildMultiCallTX({
+    id: "REPLICA_TRANSFER_CONTROL",
+    JSONDetails: {
+      type: "JSONDetails",
+      jsonSchema: {
+        title: `.formValues.title`,
+        description: `.formValues.description`,
+        contentURI: `.formValues.link`,
+        contentURIType: { type: "static", value: "url" },
+        proposalType: { type: "static", value: ProposalTypeIds.MultiCall },
+      },
+    },
+    actions: [
+      {
+        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        method: "transferNetworkSplitControl",
+        args: [
+          nestInArray('.formValues.chainID'),
+          nestInArray('.formValues.newOwners'),
+          nestInArray('.formValues.relayFee'),
+        ],
+        value: '.formValues.relayFee',      
+      },
+    ],
+  }),
+  CANCEL_TRANSFER: buildMultiCallTX({
+    id: "CANCEL_TRANSFER",
+    JSONDetails: {
+      type: "JSONDetails",
+      jsonSchema: {
+        title: `.formValues.title`,
+        description: `.formValues.description`,
+        contentURI: `.formValues.link`,
+        contentURIType: { type: "static", value: "url" },
+        proposalType: { type: "static", value: ProposalTypeIds.MultiCall },
+      },
+    },
+    actions: [
+      {
+        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        method: "cancelSplitControlTransfer",
+        args: [],
+      },
+    ],
+  }),
+  REPLICA_CANCEL_TRANSFER: buildMultiCallTX({
+    id: "REPLICA_CANCEL_TRANSFER",
+    JSONDetails: {
+      type: "JSONDetails",
+      jsonSchema: {
+        title: `.formValues.title`,
+        description: `.formValues.description`,
+        contentURI: `.formValues.link`,
+        contentURIType: { type: "static", value: "url" },
+        proposalType: { type: "static", value: ProposalTypeIds.MultiCall },
+      },
+    },
+    actions: [
+      {
+        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        method: "cancelNetworkSplitControlTransfer",
+        args: [
+          nestInArray('.formValues.chainID'),
+          nestInArray('.formValues.relayFee'),
+        ],
+        value: '.formValues.relayFee',      
+      },
+    ],
+  }),
   NEW_MEMBER: buildMultiCallTX({
     id: 'NEW_MEMBER',
     JSONDetails: {

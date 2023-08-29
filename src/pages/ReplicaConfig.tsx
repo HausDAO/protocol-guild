@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { ParLg, SingleColumnLayout } from "@daohaus/ui";
+import { ParLg,  SingleColumnLayout } from "@daohaus/ui";
 
 import { FormBuilder } from "@daohaus/form-builder";
 import { APP_FORM } from "../legos/forms";
@@ -14,6 +14,7 @@ import { AppFieldLookup } from "../legos/fieldConfig";
 import { useConnext } from "../hooks/useConnext";
 import { HAUS_RPC } from "@daohaus/keychain-utils";
 import { useMemberRegistry } from "../hooks/useRegistry";
+
 
 const sdkConfig: SdkConfig = {
   signerAddress: "0x2b8aA42fFb2c9c7B9f0B1e1b935F7D8331b6dC7c",
@@ -75,13 +76,14 @@ export const ReplicaConfig = () => {
 
   return (
     <SingleColumnLayout title="Replicants">
-            <FormBuilder
+      <FormBuilder
         form={APP_FORM.REPLICA_REGISTER}
         targetNetwork={TARGETS.NETWORK_ID}
         defaultValues={{
           chainID: chainID,
         }}
       />
+      {/* This was the form to register and accept control on a forign chain. does not work because of preflight fail */}
       {/* <FormBuilder
         form={APP_FORM.BATCH_REPLICA_CLAIM}
         targetNetwork={TARGETS.NETWORK_ID}
