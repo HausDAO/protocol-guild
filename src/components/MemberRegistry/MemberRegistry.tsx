@@ -29,7 +29,7 @@ const MemberRegistry = (props: MemberRegistryProps) => {
         <>
         <MemberInfo memberList={membersList} lastUpdate={lastUpdate}></MemberInfo>
           <ActionContainer>
-            {membersList.length > 0 && (
+            {/* {membersList.length > 0 && (
               <Trigger
                 onSuccess={() => {
                   // TODO: update table
@@ -37,7 +37,7 @@ const MemberRegistry = (props: MemberRegistryProps) => {
                   refetch();
                 }}
               />
-            )}
+            )} */}
             <CSVDownloader></CSVDownloader>
             <SyncUpdateAll
               onSuccess={() => {

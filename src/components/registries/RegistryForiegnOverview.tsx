@@ -9,7 +9,7 @@ import {
   RegistryCardHeader,
   RegistryOverviewCard,
 } from "./RegistryOverview.styles";
-import { RiCheckboxCircleFill, } from "react-icons/ri";
+import { RiCheckboxCircleFill } from "react-icons/ri";
 
 type RegistryProps = {
   target?: REGISTRY;
@@ -37,7 +37,10 @@ export const RegistryForiegnOverview = ({
               }
               truncate
               copy
-              explorerNetworkId={daochain as keyof Keychain}
+              explorerNetworkId={
+                (foreignRegistry?.NETWORK_ID as keyof Keychain) ||
+                (daochain as keyof Keychain)
+              }
             />
 
             <Tag tagColor="blue">Foreign</Tag>

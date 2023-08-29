@@ -40,13 +40,11 @@ const fetch = async ({
 
   try {
     const { sdkBase } = await create(sdkConfig);
-    console.log("sdkBase: ", sdkBase);
     for (const destinationDomain of destinationDomains) {
       const rFee = await sdkBase.estimateRelayerFee({
         originDomain: originDomain,
         destinationDomain: destinationDomain,
       });
-      console.log("relayerFee: ", fromWei(rFee.toString()));
       relayerFeesWei.push(rFee.toString());
       relayerFees.push(fromWei(rFee.toString()));
     }

@@ -12,6 +12,8 @@ import { useMemberRegistry } from "../../hooks/useRegistry";
 import { HAUS_RPC } from "../../pages/Home";
 import { useConnextMulti } from "../../hooks/useConnextMulti";
 
+import { formatEther } from 'viem'
+
 export const SyncUpdateAll = ({ onSuccess }: { onSuccess: () => void }) => {
   const daochain = TARGETS.NETWORK_ID;
   const { fireTransaction } = useTxBuilder();
@@ -37,22 +39,33 @@ export const SyncUpdateAll = ({ onSuccess }: { onSuccess: () => void }) => {
     chainID: TARGETS.NETWORK_ID || "",
   });
 
+  const totalRelayerFees = dataConnext?.relayerFeesWei.reduce(
+    (a: any, b: any) => BigInt(a) + BigInt(b),
+    0
+  );
+  
+  console.log('totalRelayerFees', totalRelayerFees)  
+  console.log('relayerFeesWei', dataConnext?.relayerFeesWei)
+
+
   if (isLoadingConnext || isLoading) return <Spinner />;
 
   const handleTrigger = () => {
     setIsDataLoading(true);
     fireTransaction({
       tx: {
-        id: "TRIGGER",
+        id: "SYNCUPDATEALL",
         contract: {
           type: "static",
           contractName: "MEMBER_REGISTRY",
-          // @ts-ignore
           abi: MEMBER_REGISTRY,
           targetAddress: TARGETS.REGISTRY_ADDRESS,
         },
-        method: "updateAll",
+        method: "syncUpdateAll",
         disablePoll: true,
+        overrides: {
+          value: { type: "static", value: totalRelayerFees || 0 },
+        },
         args: [
           { type: "static", value: data?.membersSorted.map((m) => m.account) as [] },
           { type: "static", value: "0" }, // split distribution fee
@@ -97,7 +110,7 @@ export const SyncUpdateAll = ({ onSuccess }: { onSuccess: () => void }) => {
       rules={[isConnectedToDao]}
       onClick={handleTrigger}
     >
-      {isDataLoading ? <Spinner size="2rem" strokeWidth=".2rem" /> : "Update All"}
+      {isDataLoading ? <Spinner size="2rem" strokeWidth=".2rem" /> : "Update Seconds and Sync 0xSplit"}
     </GatedButton>
   );
 };
