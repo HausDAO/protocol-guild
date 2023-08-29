@@ -18,7 +18,7 @@ import { handleErrorMessage } from "@daohaus/utils";
 import { useParams } from "react-router-dom";
 import { ValidNetwork } from "../utils/createContract";
 
-export const ControllerHomeForm = () => {
+export const ControllerHomeForm = ({option}: {option: string | null}) => {
 
   const { errorToast, defaultToast, successToast } = useToast();
   const [isTxLoading, setIsTxLoading] = React.useState(false);
@@ -30,19 +30,21 @@ export const ControllerHomeForm = () => {
       <SingleColumnLayout title="Home 0xSplits Controller">
 
         <FormBuilder
-          form={APP_FORM.ACCEPT_CONTROLL}
+          form={
+            option === "Cancel Transfer" ? APP_FORM.CANCEL_TRANSFER : option === "Transfer Control" ? APP_FORM.TRANSFER_CONTROL : APP_FORM.ACCEPT_CONTROL
+          }
           targetNetwork={TARGETS.NETWORK_ID}
           lifeCycleFns={{
             onTxError: (error) => {
               const errMsg = handleErrorMessage({
                 error,
               });
-              errorToast({ title: "Trigger Failed", description: errMsg });
+              errorToast({ title: "Action Failed", description: errMsg });
               setIsTxLoading(false);
             },
             onTxSuccess: () => {
               defaultToast({
-                title: "Trigger Success",
+                title: "Action Success",
                 description: "Proposal has been submitted",
               });
               setIsTxLoading(false);

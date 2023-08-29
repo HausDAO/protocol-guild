@@ -11,26 +11,52 @@ import { FormBuilder } from "@daohaus/form-builder";
 import { APP_FORM } from "../legos/forms";
 import { TARGETS } from "../targetDao";
 
-
 import { handleErrorMessage } from "@daohaus/utils";
 
 import { ValidNetwork } from "../utils/createContract";
+import { useConnext } from "../hooks/useConnext";
 
-export const ControllerReplicaForm = ({chainId}:{chainId: string | undefined}) => {
-
+export const ControllerReplicaForm = ({
+  chainId,
+  option,
+}: {
+  chainId: string | undefined;
+  option: string | null;
+}) => {
   const { errorToast, defaultToast, successToast } = useToast();
   const [isTxLoading, setIsTxLoading] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
 
   const daochain = TARGETS.NETWORK_ID as ValidNetwork;
 
+  const originDomainID = TARGETS.DOMAIN_ID;
+
+  const domainID = TARGETS.REPLICA_CHAIN_ADDRESSES.find(
+    (r) => r.NETWORK_ID === chainId
+  )?.DOMAIN_ID;
+
+  const { isIdle, isLoading, error, data, refetch } = useConnext({
+    originDomain: originDomainID,
+    destinationDomain: domainID || "",
+    chainID: chainId || "",
+  });
 
   return (
     <>
       <SingleColumnLayout title="Replica 0xSplits Controller">
-
         <FormBuilder
-          form={APP_FORM.REPLICA_ACCEPT_CONTROLL}
+          form={
+            option === "Cancel Transfer"
+              ? APP_FORM.REPLICA_CANCEL_TRANSFER
+              : option === "Transfer Control"
+              ? APP_FORM.REPLICA_TRANSFER_CONTROL
+              : APP_FORM.REPLICA_ACCEPT_CONTROL
+          }
+          defaultValues={{
+            relayFee: data?.relayerFee,
+            chainID: chainId,
+            domainID: domainID,
+          }}
           targetNetwork={TARGETS.NETWORK_ID}
           lifeCycleFns={{
             onTxError: (error) => {
