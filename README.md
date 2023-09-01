@@ -210,9 +210,17 @@ Output:
 
 #### 3. Transfer + Accept control of the 0xSplit to Replica NetworkRegistry
 
-- Follow the same instructions in Steps 5 & 6 from above but for the replica network. Remember that you might set your deployer address (EOA) as the 0xSplit controller.
+- You can follow the same instructions in Steps 5 & 6 from above but for the replica network. Remember that you might set your deployer address (EOA) as the 0xSplit controller.
 
-- Make sure the replica `registry` address is set as the new controller.
+- You can also use the UI to batch the two actions required to add a new replica in the main registry (`updateNetworkRegistry` + `acceptNetworkSplitControl`). See the next section for instructions.
+
+- In the end, make sure the replica `registry` address is set as the new controller.
+
+#### 4. Enable a foreign registry + acept 0xSplit control in the frontend
+
+1. Open the [targetDao.ts](./src/targetDao.ts) config file and add a new record under `REPLICA_CHAIN_ADDRESSES` in the `TARGETS` object.
+2. Make sure the [keychain.ts](./src/utils/keychain.ts) config file supports the network where you deployed the new registry.
+2. Navigate to the `Registries` page, open the menu for the new network registry and click on `Register`. This proposal form will batch the two actions required to enable a new replica in the main registry (`updateNetworkRegistry` + `acceptNetworkSplitControl`).
 
 
 ### Notes of deployed Foreign Registries
@@ -231,8 +239,8 @@ registry:0x16465c10D98FB97d2adA84e5C19E08060085240c
 `pnpm hardhat --network arbitrumGoerli deploy --tags PGNetworkRegistry`
 
 **mumbai** foreign registry addrs
-split: 0x9391f28b4cd96bcecde49e9facdba6def21a23fb
-registry: 0x2C6369A54E6a0A3A6a7e1a3c482Ee401e0D56502
+split: 0xb2686820c23d266d74bfe46dab3f9faa3e04f27b
+registry: 0x28C57030923f781861852C01371624ed50C8F1aE
 
 ### update foreign registry members
 if you want to save gas you should update members from l2 chain. this needs to be done before transfer of updater/owner
