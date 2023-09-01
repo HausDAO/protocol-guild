@@ -59,7 +59,7 @@ export const RegistryMenu = ({ home, foreignRegistry }: RegistryMenuProps) => {
                 <RegistryMenuLink
                   to={`/replica/${foreignRegistry?.NETWORK_ID}`}
                 >
-                  Register
+                  Register Replica
                 </RegistryMenuLink>
               </DropdownItem>
             </>

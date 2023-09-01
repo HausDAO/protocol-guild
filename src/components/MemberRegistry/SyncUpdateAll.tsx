@@ -1,18 +1,17 @@
 import React from "react";
-import { handleErrorMessage, TXLego } from "@daohaus/utils";
+import { formatEther } from 'viem'
 import { useDHConnect } from "@daohaus/connect";
 import { useTxBuilder } from "@daohaus/tx-builder";
 import { Spinner, useToast, GatedButton, Button } from "@daohaus/ui";
-
-import { ACTION_TX } from "../../legos/tx";
+import { handleErrorMessage, TXLego } from "@daohaus/utils";
 
 import MEMBER_REGISTRY from "../../abis/memberRegistry.json";
-import { TARGETS } from "../../targetDao";
-import { useMemberRegistry } from "../../hooks/useRegistry";
-import { HAUS_RPC } from "../../pages/Home";
 import { useConnextMulti } from "../../hooks/useConnextMulti";
+import { useMemberRegistry } from "../../hooks/useRegistry";
+import { ACTION_TX } from "../../legos/tx";
+import { TARGETS } from "../../targetDao";
 
-import { formatEther } from 'viem'
+import { HAUS_RPC } from "../../utils/keychain";
 
 export const SyncUpdateAll = ({ onSuccess }: { onSuccess: () => void }) => {
   const daochain = TARGETS.NETWORK_ID;

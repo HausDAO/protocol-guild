@@ -1,17 +1,16 @@
+import { log } from "console";
 import { useDebugValue } from "react";
 import { useQuery } from "react-query";
+import { EthAddress, ZERO_ADDRESS } from "@daohaus/utils";
 
 import MemberRegistryAbi from "../abis/memberRegistry.json";
-
-import { Member } from "../types/Member.types";
-import { EthAddress, ZERO_ADDRESS } from "@daohaus/utils";
 import { REGISTRY, TARGETS } from "../targetDao";
+import { Member } from "../types/Member.types";
+import { createViemClient } from "../utils/createContract";
 import {
   AddressKeyChain,
   ValidNetwork,
-  createViemClient,
-} from "../utils/createContract";
-import { log } from "console";
+} from "../utils/keychain";
 
 type FrFetchShape = {
   domainId: string;
@@ -109,7 +108,7 @@ const fetchMembers = async ({
         DELEGATE: fr[2] as EthAddress,
       }
       return obj;
-  });
+    });
 
     // loop through foreign registries and get data from each
     for (let i = 0; i < hydratedFr.length; i++) {

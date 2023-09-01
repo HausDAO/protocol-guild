@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import styled from "styled-components";
 import {
   Divider,
   HelperText,
@@ -10,13 +10,12 @@ import {
 } from "@daohaus/ui";
 
 import { CsvUploader } from "../components/CsvUploader";
-import { Member, StagingMember } from "../types/Member.types";
+import { ComboMemberProposal } from "../components/MemberRegistry/ComboMemberProposal";
 import { MemberImportTable } from "../components/MemberTable/MemberImportTable";
 import { useMemberRegistry } from "../hooks/useRegistry";
 import { TARGETS } from "../targetDao";
-import { HAUS_RPC } from "./Home";
-import { ComboMemberProposal } from "../components/MemberRegistry/ComboMemberProposal";
-import styled from "styled-components";
+import { Member, StagingMember } from "../types/Member.types";
+import { HAUS_RPC } from "../utils/keychain";
 
 const StyledDivider = styled(Divider)`
   margin-bottom: 2rem;
