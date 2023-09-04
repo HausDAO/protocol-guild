@@ -1,19 +1,19 @@
 
 import { EthAddress } from '@daohaus/utils';
-import { ValidNetwork } from './utils/createContract';
+import { ValidNetwork } from './utils/keychain';
 
 
 export type REGISTRY = {
   NETWORK_LOGO?: string;
   NETWORK_NAME?: string;
-  NETWORK_ID: ValidNetwork;
-  DOMAIN_ID?: string;
-  REGISTRY_ADDRESS?: EthAddress;
+  NETWORK_ID: ValidNetwork; // Network Chain ID
+  DOMAIN_ID?: string; // Connext Network Domain ID 
+  REGISTRY_ADDRESS?: EthAddress; // NetworkRegistry
   DELEGATE?: EthAddress;
   TOTAL_MEMBERS?: string;
   UPDATER?: EthAddress;
   LAST_ACTIVITY_UPDATE?: string;
-  SPLIT_ADDRESS?: EthAddress;
+  SPLIT_ADDRESS?: EthAddress; // 0xSplit
 };
 
 export type TARGET = {
@@ -36,12 +36,17 @@ export const TARGETS: TARGET = {
       NETWORK_ID: "0x1a4",
       DOMAIN_ID: "1735356532" // Connext domain id
     },
-
     { // arbitrum goerli
       NETWORK_LOGO: "",
       NETWORK_NAME: "Arbitrum Goerli",
       NETWORK_ID: "0x66eed",
       DOMAIN_ID: "1734439522"
+    },
+    {
+      NETWORK_LOGO: "",
+      NETWORK_NAME: "Polygon Mumbai",
+      NETWORK_ID: "0x13881",
+      DOMAIN_ID: "9991"
     },
   ],
   DAO_ADDRESS: "0x1df24e0463dd40dc5a6be8034e90cf434686c9a4",

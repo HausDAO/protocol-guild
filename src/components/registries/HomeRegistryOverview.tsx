@@ -1,5 +1,8 @@
 import { AddressDisplay, H4, DataIndicator, Tag } from "@daohaus/ui";
-import { ZERO_ADDRESS, formatShortDateTimeFromSeconds } from "@daohaus/utils";
+import {
+  ZERO_ADDRESS,
+  formatShortDateTimeFromSeconds,
+} from "@daohaus/utils";
 import { Keychain } from "@daohaus/keychain-utils";
 import { REGISTRY, TARGETS } from "../../targetDao";
 import { RegistryMenu } from "./RegistryMenu";
@@ -9,15 +12,20 @@ import {
   RegistryCardHeader,
   RegistryOverviewCard,
 } from "./RegistryOverview.styles";
-import { RiCheckboxCircleFill } from "react-icons/ri";
 
 type RegistryProps = {
   target?: REGISTRY;
+  owner?: string;
+  lastUpdate?: number;
+  totalMembers?: number;
   foreignRegistry?: REGISTRY;
 };
 
-export const RegistryForiegnOverview = ({
+export const HomeRegistryOverview = ({
   target,
+  owner,
+  lastUpdate,
+  totalMembers,
   foreignRegistry,
 }: RegistryProps) => {
   const daochain = TARGETS.NETWORK_ID;
@@ -37,41 +45,36 @@ export const RegistryForiegnOverview = ({
               }
               truncate
               copy
-              explorerNetworkId={
-                (foreignRegistry?.NETWORK_ID as keyof Keychain) ||
-                (daochain as keyof Keychain)
-              }
+              explorerNetworkId={daochain as keyof Keychain}
             />
 
-            <Tag tagColor="blue">Foreign</Tag>
-            {foreignRegistry?.REGISTRY_ADDRESS != ZERO_ADDRESS ? (
-              <Tag tagColor="green">
-                {/* registered? */}
-                <RiCheckboxCircleFill />
-              </Tag>
-            ) : (
-              <Tag tagColor="red">
-                <RiCheckboxCircleFill />
-              </Tag>
-            )}
+            <Tag tagColor="pink">Home</Tag>
           </TagSection>
         </div>
         <div className="right-section">
-          <RegistryMenu home={false} foreignRegistry={foreignRegistry} />
+          <RegistryMenu home={true} foreignRegistry={foreignRegistry} />
         </div>
       </RegistryCardHeader>
       <DataGrid>
         <>
           <DataIndicator
             label="Total Members"
-            data={foreignRegistry?.TOTAL_MEMBERS?.toString()}
+            data={totalMembers?.toString() || "NA"}
           />
-          <DataIndicator label="Status" data={"..."} />
-
           <DataIndicator
-            label={`Last Sync`}
+            label="Owner"
+            data={
+              owner?.toLowerCase() == TARGETS.SAFE_ADDRESS.toLowerCase()
+                ? "DAO"
+                : owner?.toString()
+            }
+          />
+          <DataIndicator
             size="sm"
-            data={formatShortDateTimeFromSeconds(foreignRegistry?.LAST_ACTIVITY_UPDATE) || "NA"}
+            label={`Last Update`}
+            data={
+              formatShortDateTimeFromSeconds(lastUpdate?.toString()) || "NA"
+            }
           />
         </>
       </DataGrid>

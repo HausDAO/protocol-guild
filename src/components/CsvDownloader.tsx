@@ -1,11 +1,10 @@
 import React from "react";
 import { useCSVDownloader } from "react-papaparse";
-import { useMemberRegistry } from "../hooks/useRegistry";
-import { TARGETS } from "../targetDao";
-import { HAUS_RPC } from "../pages/Home";
 import { Button } from "@daohaus/ui";
 
-
+import { useMemberRegistry } from "../hooks/useRegistry";
+import { TARGETS } from "../targetDao";
+import { HAUS_RPC } from "../utils/keychain";
 
 export const CSVDownloader = () => {
   const { CSVDownloader, Type } = useCSVDownloader();

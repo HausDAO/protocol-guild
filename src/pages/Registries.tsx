@@ -1,5 +1,4 @@
 import styled from "styled-components";
-
 import {
   Card,
   Divider,
@@ -7,11 +6,12 @@ import {
   SingleColumnLayout,
   widthQuery,
 } from "@daohaus/ui";
-import { REGISTRY, TARGETS } from "../targetDao";
+
+import { HomeRegistryOverview } from "../components/registries/HomeRegistryOverview";
+import { ForeignRegistryOverview } from "../components/registries/ForeignRegistryOverview";
 import { useMemberRegistry } from "../hooks/useRegistry";
-import { HAUS_RPC } from "./Home";
-import { RegistryHomeOverview } from "../components/registries/RegistryHomeOverview";
-import { RegistryForiegnOverview } from "../components/registries/RegistryForiegnOverview";
+import { REGISTRY, TARGETS } from "../targetDao";
+import { HAUS_RPC } from "../utils/keychain";
 
 const RegistryContainer = styled(Card)`
   padding: 3rem;
@@ -41,7 +41,7 @@ export function Registries() {
   return (
     <SingleColumnLayout title="Registries">
       <RegistryContainer>
-        <RegistryHomeOverview
+        <HomeRegistryOverview
           owner={data?.owner}
           lastUpdate={data?.lastUpdate}
           totalMembers={data?.totalMembers}
@@ -50,7 +50,7 @@ export function Registries() {
       <CardDivider />
       {TARGETS.REPLICA_CHAIN_ADDRESSES.map((registry: REGISTRY) => (
         <RegistryContainer key={registry.NETWORK_ID}>
-          <RegistryForiegnOverview
+          <ForeignRegistryOverview
             target={registry}
             foreignRegistry={data?.foreignRegistries?.find(
               (fr) => fr.NETWORK_ID === registry.NETWORK_ID

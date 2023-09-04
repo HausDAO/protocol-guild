@@ -116,12 +116,12 @@ export const APP_FORM: Record<string, CustomFormLego> = {
     ],
   },
   BATCH_REPLICA_CLAIM: {
+    log: true,
     id: "BATCH_REPLICA_CLAIM",
     title: "Register Replica",
     subtitle: "foreign chain registries",
     description: "Register a replica for a foreign chain and set 0xsplits controller",
     requiredFields: { title: true, description: true },
-    log: true,
     tx: APP_TX.BATCH_REPLICA_CLAIM,
     fields: [
       FIELD.TITLE,
