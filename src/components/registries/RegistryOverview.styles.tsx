@@ -1,10 +1,10 @@
-import { Button, Card, DropdownLinkStyles, Link, Theme, font, widthQuery } from "@daohaus/ui";
+import { Button, Card, DropdownLinkStyles, Link, font, widthQuery } from "@daohaus/ui";
 import styled from "styled-components";
 import { Link as RouterLink } from "react-router-dom";
 
 export const RegistryOverviewCard = styled(Card)`
-  background-color: ${({ theme }: { theme: Theme }) => theme.secondary.step3};
-  border: none;
+  background-color: ${({ theme }) => theme.secondary.step3};
+  border: 1px solid white;
   padding: 3rem;
   width: 100%;
 `;
@@ -22,7 +22,7 @@ export const RegistryCardHeader = styled.div`
 
   .safe-link {
     padding: 0.9rem;
-    background-color: ${({ theme }: { theme: Theme }) => theme.secondary.step5};
+    background-color: ${({ theme }) => theme.secondary.step5};
     border-radius: 4px;
   }
 `;
@@ -59,7 +59,7 @@ export const RegistryMenuTrigger = styled(Button)`
   }
 
   svg.icon-right {
-    color: ${({ theme }: { theme: Theme }) => theme.primary.step9};
+    color: ${({ theme }) => theme.primary.step9};
   }
 
   svg.icon-left {
