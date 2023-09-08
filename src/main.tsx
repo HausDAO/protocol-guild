@@ -9,6 +9,8 @@ import { Buffer } from "buffer";
 import { Routes } from "./Routes";
 import { TARGETS } from "./targetDao";
 
+import { pgDarkTheme } from "./themes/dark";
+
 // This solves an issue when using WalletConnect and intercept Txs to create dao proposals
 // Related open issue: https://github.com/WalletConnect/walletconnect-monorepo/issues/748
 window.Buffer = window.Buffer || Buffer;
@@ -22,7 +24,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <DHConnectProvider
           daoChainId={TARGETS.NETWORK_ID}
         >
-          <HausThemeProvider>
+          <HausThemeProvider themeOverrides={pgDarkTheme}>
             <Routes />
           </HausThemeProvider>
         </DHConnectProvider>
