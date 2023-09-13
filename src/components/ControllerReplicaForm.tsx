@@ -13,8 +13,8 @@ import { TARGETS } from "../targetDao";
 
 import { handleErrorMessage } from "@daohaus/utils";
 
-import { ValidNetwork } from "../utils/createContract";
 import { useConnext } from "../hooks/useConnext";
+import { ValidNetwork } from "../utils/keychain";
 
 export const ControllerReplicaForm = ({
   chainId,
