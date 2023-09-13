@@ -4,12 +4,10 @@ import { useDHConnect } from "@daohaus/connect";
 import { useTxBuilder } from "@daohaus/tx-builder";
 import { Spinner, useToast, GatedButton, Button } from "@daohaus/ui";
 
-import { ACTION_TX } from "../../legos/tx";
-
 import MEMBER_REGISTRY from "../../abis/memberRegistry.json";
 import { TARGETS } from "../../targetDao";
 import { useMemberRegistry } from "../../hooks/useRegistry";
-import { HAUS_RPC } from "../../pages/Home";
+import { HAUS_RPC } from "../../utils/keychain";
 
 export const Trigger = ({ onSuccess }: { onSuccess: () => void }) => {
   const daochain = TARGETS.NETWORK_ID;

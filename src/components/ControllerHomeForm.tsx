@@ -10,13 +10,8 @@ import {
 import { FormBuilder } from "@daohaus/form-builder";
 import { APP_FORM } from "../legos/forms";
 import { TARGETS } from "../targetDao";
-import { HAUS_RPC } from "../pages/Home";
-import { useMemberRegistry } from "../hooks/useRegistry";
 
 import { handleErrorMessage } from "@daohaus/utils";
-
-import { useParams } from "react-router-dom";
-import { ValidNetwork } from "../utils/createContract";
 
 export const ControllerHomeForm = ({option}: {option: string | null}) => {
 
