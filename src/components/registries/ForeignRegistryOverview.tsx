@@ -1,7 +1,10 @@
+import { useEffect, useState } from "react";
+import { RiCheckboxCircleFill } from "react-icons/ri";
+
+import { Keychain } from "@daohaus/keychain-utils";
 import { AddressDisplay, H4, DataIndicator, Tag } from "@daohaus/ui";
 import { ZERO_ADDRESS, formatShortDateTimeFromSeconds } from "@daohaus/utils";
-import { Keychain } from "@daohaus/keychain-utils";
-import { REGISTRY, TARGETS } from "../../targetDao";
+
 import { RegistryMenu } from "./RegistryMenu";
 import {
   DataGrid,
@@ -9,19 +12,32 @@ import {
   RegistryCardHeader,
   RegistryOverviewCard,
 } from "./RegistryOverview.styles";
-import { RiCheckboxCircleFill } from "react-icons/ri";
+import { REGISTRY } from "../../targetDao";
+import { RegistryState, checkRegistryState } from "../../utils/registry";
 
 type RegistryProps = {
-  target?: REGISTRY;
-  foreignRegistry?: REGISTRY;
+  target: REGISTRY;
+  data?: REGISTRY;
 };
 
 export const ForeignRegistryOverview = ({
   target,
-  foreignRegistry,
+  data,
 }: RegistryProps) => {
-  const daochain = TARGETS.NETWORK_ID;
-  const registry = target || TARGETS;
+  const [replicaState , setReplicaState] = useState<RegistryState>();
+  const registry = target;
+  const updated = !!Number(data?.LAST_ACTIVITY_UPDATE);
+
+  useEffect(() => {
+    const checkReplicaPendingState = async () => {
+      if (data && data?.REGISTRY_ADDRESS != ZERO_ADDRESS) {
+        setReplicaState(
+          await checkRegistryState({ hydratedRegistryData: data })
+        );
+      }
+    };
+    checkReplicaPendingState();
+  }, []);
 
   return (
     <RegistryOverviewCard>
@@ -31,22 +47,21 @@ export const ForeignRegistryOverview = ({
           <TagSection>
             <AddressDisplay
               address={
+                data?.REGISTRY_ADDRESS ||
                 registry.REGISTRY_ADDRESS?.toString() ||
-                foreignRegistry?.REGISTRY_ADDRESS ||
                 ZERO_ADDRESS
               }
               truncate
               copy
               explorerNetworkId={
-                (foreignRegistry?.NETWORK_ID as keyof Keychain) ||
-                (daochain as keyof Keychain)
+                (data?.NETWORK_ID as keyof Keychain) ||
+                (registry?.NETWORK_ID as keyof Keychain)
               }
             />
 
-            <Tag tagColor="blue">Foreign</Tag>
-            {foreignRegistry?.REGISTRY_ADDRESS != ZERO_ADDRESS ? (
-              <Tag tagColor="green">
-                {/* registered? */}
+            <Tag tagColor="blue">Replica</Tag>
+            {data?.REGISTRY_ADDRESS != ZERO_ADDRESS ? (
+              <Tag tagColor={replicaState?.warningMsg ? "yellow" : "green"}>
                 <RiCheckboxCircleFill />
               </Tag>
             ) : (
@@ -54,24 +69,29 @@ export const ForeignRegistryOverview = ({
                 <RiCheckboxCircleFill />
               </Tag>
             )}
+            {replicaState?.warningMsg && (
+              <Tag tagColor="yellow">{replicaState?.warningMsg}</Tag>
+            )}
           </TagSection>
         </div>
         <div className="right-section">
-          <RegistryMenu home={false} foreignRegistry={foreignRegistry} />
+          <RegistryMenu foreignRegistry={data} />
         </div>
       </RegistryCardHeader>
       <DataGrid>
         <>
           <DataIndicator
             label="Total Members"
-            data={foreignRegistry?.TOTAL_MEMBERS?.toString()}
+            data={data?.TOTAL_MEMBERS?.toString()}
           />
           <DataIndicator label="Status" data={"..."} />
 
           <DataIndicator
             label={`Last Sync`}
-            size="sm"
-            data={formatShortDateTimeFromSeconds(foreignRegistry?.LAST_ACTIVITY_UPDATE) || "NA"}
+            size={updated ? "sm" : "lg"}
+            data={updated
+              ? formatShortDateTimeFromSeconds(data?.LAST_ACTIVITY_UPDATE)
+              : "..."}
           />
         </>
       </DataGrid>

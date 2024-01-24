@@ -1,5 +1,8 @@
+import { Link as RouterLink } from 'react-router-dom';
 import styled from "styled-components";
+
 import {
+  Button,
   Card,
   Divider,
   ParLg,
@@ -9,9 +12,17 @@ import {
 
 import { HomeRegistryOverview } from "../components/registries/HomeRegistryOverview";
 import { ForeignRegistryOverview } from "../components/registries/ForeignRegistryOverview";
-import { useMemberRegistry } from "../hooks/useRegistry";
-import { REGISTRY, TARGETS } from "../targetDao";
-import { HAUS_RPC } from "../utils/keychain";
+import { useCurrentRegistry } from '../hooks/context/RegistryContext';
+import { useNetworkRegistry } from "../hooks/useRegistry";
+import { REGISTRY } from "../targetDao";
+import { HAUS_RPC, ValidNetwork } from "../utils/keychain";
+
+const ControlsContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  padding: 2rem;
+`;
 
 const RegistryContainer = styled(Card)`
   padding: 3rem;
@@ -29,31 +40,39 @@ const CardDivider = styled(Divider)`
 `;
 
 export function Registries() {
-  const { isIdle, isLoading, error, data, refetch } = useMemberRegistry({
-    registryAddress: TARGETS.REGISTRY_ADDRESS,
-    chainId: TARGETS.NETWORK_ID,
+  const mainRegistry = useCurrentRegistry();
+  const { daoChain, registryAddress, replicaChains } = mainRegistry;
+  const { isIdle, isLoading, error, data, refetch } = useNetworkRegistry({
+    registryAddress,
+    replicaChains,
+    chainId: daoChain as ValidNetwork,
     rpcs: HAUS_RPC,
   });
 
-  
+  if (isLoading || !data) return <ParLg>Loading...</ParLg>;
 
-  if (isLoading) return <ParLg>Loading...</ParLg>;
   return (
     <SingleColumnLayout title="Registries">
+      <ControlsContainer>
+        <RouterLink to="/settings">
+          <Button>Settings</Button>
+        </RouterLink>
+      </ControlsContainer>
       <RegistryContainer>
         <HomeRegistryOverview
+          target={mainRegistry}
           owner={data?.owner}
-          lastUpdate={data?.lastUpdate}
+          lastUpdate={data?.lastActivityUpdate}
           totalMembers={data?.totalMembers}
         />
       </RegistryContainer>
       <CardDivider />
-      {TARGETS.REPLICA_CHAIN_ADDRESSES.map((registry: REGISTRY) => (
-        <RegistryContainer key={registry.NETWORK_ID}>
+      {replicaChains.map((replicaRegistry: REGISTRY) => (
+        <RegistryContainer key={replicaRegistry.NETWORK_ID}>
           <ForeignRegistryOverview
-            target={registry}
-            foreignRegistry={data?.foreignRegistries?.find(
-              (fr) => fr.NETWORK_ID === registry.NETWORK_ID
+            target={replicaRegistry}
+            data={data?.replicaRegistries?.find(
+              (r) => r.NETWORK_ID === replicaRegistry.NETWORK_ID
             )}
           />
         </RegistryContainer>

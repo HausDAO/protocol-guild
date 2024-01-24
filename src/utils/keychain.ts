@@ -1,21 +1,14 @@
 import {
-    arbitrum,
-    mainnet,
-    polygon,
-    gnosis,
-    goerli,
-    optimism,
-    polygonMumbai,
-    Chain,
-  } from 'wagmi/chains';
+  arbitrumGoerli,
+  optimismGoerli,
+  polygonMumbai,
+  Chain,
+} from 'wagmi/chains';
 import { HAUS_RPC as RPC_DEFAULT } from "@daohaus/keychain-utils";
+import { ValidNetwork as BaseValidNetworks, VIEM_CHAINS as VIEM_CHAINS_BASE } from "@daohaus/keychain-utils";
 
 export type ValidNetwork =
-  | "0x1"
-  | "0x5"
-  | "0x64"
-  | "0xa"
-  | "0x89"
+  | BaseValidNetworks
   | "0xa4b1"
   | "0x1a4"
   | "0x66eed"
@@ -33,15 +26,27 @@ export type AddressKeyChain = {
   "0x13881"?: string;
 };
 
+export const MainnetKeyChains = [
+  '0x1',
+  '0xa',
+  '0x64',
+  '0x89',
+  '0xa4b1',
+];
+
+export const TestnetKeyChains = [
+  '0x5',
+  '0x1a4',
+  '0x66eed',
+  '0x13881'
+];
+
 export type Keychain<T = string> = { [key in ValidNetwork]?: T };
 
 export const VIEM_CHAINS: Keychain<Chain> = {
-  '0x1': mainnet,
-  '0x5': goerli,
-  '0x64': gnosis,
-  '0x89': polygon,
-  '0xa': optimism,
-  '0xa4b1': arbitrum,
+  ...VIEM_CHAINS_BASE,
+  '0x1a4': optimismGoerli,
+  '0x66eed': arbitrumGoerli,
   '0x13881': polygonMumbai,
 };
 

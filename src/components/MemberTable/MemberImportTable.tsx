@@ -9,14 +9,14 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { StagingMember } from "../../types/Member.types";
 import { MemberProfile } from "./MemberProfile";
 import { Table, TableData, TableHead, TableRow } from "./MemberTable.styles";
+import { StagingMember } from "../../types/Member.types";
 
 const columnHelper = createColumnHelper<StagingMember>();
 
 const columns = [
-  columnHelper.accessor("newMember", {
+  columnHelper.accessor("isNewMember", {
     header: () => "New",
     cell: (info) => (
       <>
@@ -59,8 +59,6 @@ export const MemberImportTable = ({
 }: {
   memberList: StagingMember[];
 }) => {
-  console.log("memberList table", memberList);
-
   const [data] = React.useState(() => [...memberList]);
   const table = useReactTable({
     data,

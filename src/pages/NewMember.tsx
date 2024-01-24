@@ -1,21 +1,17 @@
 import { FormBuilder } from "@daohaus/form-builder";
-import { MolochFields } from "@daohaus/moloch-v3-fields";
 
-import { AppFieldLookup } from "../legos/fieldConfig";
-
+import { useCurrentRegistry } from "../hooks/context/RegistryContext";
+import { RegistryFields } from "../legos/fieldConfig";
 import { APP_FORM } from "../legos/forms";
-import { TARGETS } from "../targetDao";
 
 export const NewMember = () => {
-
+  const { daoChain } = useCurrentRegistry();
 
   return (
-
-      <FormBuilder
-        form={APP_FORM.NEWMEMBER}
-        targetNetwork={TARGETS.NETWORK_ID}
-        customFields={{ ...MolochFields, ...AppFieldLookup }}
-      />
-
+    <FormBuilder
+      form={APP_FORM.NEW_MEMBER}
+      targetNetwork={daoChain}
+      customFields={{ ...RegistryFields }}
+    />
   );
 };

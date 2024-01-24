@@ -4,11 +4,11 @@ export interface Member {
     secondsActive: number;
     startDate: number;
     percAlloc?: number;
-  }
+  };
 
-  export interface StagingMember {
+  export type StagingMember = {
     account: string;
     activityMultiplier: number;
     startDate: number;
-    newMember: boolean;
-  }
+    isNewMember: boolean;
+  };

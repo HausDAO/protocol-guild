@@ -1,18 +1,17 @@
 import { FormBuilder } from "@daohaus/form-builder";
-import { AppFieldLookup } from "../legos/fieldConfig";
 
+import { useCurrentRegistry } from "../hooks/context/RegistryContext";
+import { RegistryFields } from "../legos/fieldConfig";
 import { APP_FORM } from "../legos/forms";
-import { TARGETS } from "../targetDao";
 
 export const EditMember = () => {
+  const { daoChain } = useCurrentRegistry();
 
   return (
-
-      <FormBuilder
-        form={APP_FORM.EDITMEMBER}
-        targetNetwork={TARGETS.NETWORK_ID}
-        customFields={AppFieldLookup}
-      />
-
+    <FormBuilder
+      form={APP_FORM.EDIT_MEMBER}
+      targetNetwork={daoChain}
+      customFields={RegistryFields}
+    />
   );
 };

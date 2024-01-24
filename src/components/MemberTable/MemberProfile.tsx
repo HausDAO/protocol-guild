@@ -1,6 +1,8 @@
 import styled from "styled-components";
+
 import { ParMd, ProfileAvatar } from "@daohaus/ui";
 import { truncateAddress } from "@daohaus/utils";
+
 import { useMemberProfile } from "../../hooks/useMemberProfile";
 
 const MemberBox = styled.div`
@@ -24,10 +26,10 @@ export const MemberProfile = ({
     <MemberBox className={className}>
       <ProfileAvatar
         address={address}
-        image={profile?.image}
+        image={profile?.avatar}
         className="avatar"
       />
-      <ParMd>{profile?.name || profile?.ens || truncateAddress(address)}</ParMd>
+      <ParMd>{profile?.ens || truncateAddress(address)}</ParMd>
     </MemberBox>
   );
 };

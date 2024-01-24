@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { HttpTransport, http, PublicClient, createPublicClient } from "viem";
+
 import { ABI } from "@daohaus/utils";
 
 import { AddressKeyChain, HAUS_RPC, ValidNetwork, VIEM_CHAINS } from "./keychain";

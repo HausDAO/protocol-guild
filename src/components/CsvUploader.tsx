@@ -1,8 +1,11 @@
-import React, { CSSProperties, useState } from "react";
+import { CSSProperties, useState } from "react";
 import { useCSVReader } from "react-papaparse";
-import { Member } from "../types/Member.types";
-import { Button, ErrorText, HelperText } from "@daohaus/ui";
 import styled from "styled-components";
+import { Button, ErrorText, HelperText } from "@daohaus/ui";
+
+import { StagingMember } from "../types/Member.types";
+import { RegistryData } from "../utils/registry";
+
 interface CsvData {
   address: string;
   modifier: number;
@@ -18,15 +21,20 @@ const styles = {
 const ActionContainer = styled.div`
   align-self: flex-end;
   display: flex;
+  align-items: center;
   gap: 2rem;
   margin-bottom: 2rem;
 `;
 
 interface CsvUploaderProps {
-  setMemberList: (memberList: Member[]) => void;
+  registryData: RegistryData;
+  setMemberList: (memberList: Array<StagingMember>) => void;
 }
 
-export const CsvUploader = (props: CsvUploaderProps) => {
+export const CsvUploader = ({
+  registryData,
+  setMemberList,
+}: CsvUploaderProps) => {
   const { CSVReader } = useCSVReader();
   const [csvData, setCsvData] = useState<CsvData[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -59,13 +67,17 @@ export const CsvUploader = (props: CsvUploaderProps) => {
     return null;
   };
 
-  const hydrateMemberList = (csvData: []): Member[] => {
-    const memberList: Member[] = csvData.slice(1).map((row) => {
+  const hydrateMemberList = (csvData: []): StagingMember[] => {
+    const memberList: StagingMember[] = csvData.slice(1).map((row) => {
+      const account = String(row[0]);
+      const member = registryData.members.find(
+        (m) => m.account === account
+      );
       return {
-        account: String(row[0]),
+        account,
         activityMultiplier: Number(row[1]),
-        secondsActive: 0,
         startDate: Number(row[2]),
+        isNewMember: !member,
       };
     });
     return memberList;
@@ -74,7 +86,7 @@ export const CsvUploader = (props: CsvUploaderProps) => {
   const uploadRejected = () => {
     setCsvData([]);
     setRejected(true);
-    props.setMemberList([]);
+    setMemberList([]);
     setError(null);
   };
 
@@ -90,7 +102,7 @@ export const CsvUploader = (props: CsvUploaderProps) => {
             setError(validationError);
           } else {
             setCsvData(csvData);
-            props.setMemberList(hydrateMemberList(results.data));
+            setMemberList(hydrateMemberList(results.data));
             setError(null);
           }
         } catch (error) {
@@ -107,16 +119,11 @@ export const CsvUploader = (props: CsvUploaderProps) => {
         return (
           <>
             <ActionContainer>
+              {!rejected && <HelperText>{acceptedFile && acceptedFile.name}</HelperText>}
               <Button {...getRootProps()}>Browse File</Button>
-              {!rejected && (
-                <>
-
-                  <HelperText>{acceptedFile && acceptedFile.name}</HelperText>
-                  <Button onClick={uploadRejected} variant="outline">
-                    Clear
-                  </Button>
-                </>
-              )}
+              <Button onClick={uploadRejected} variant="outline" disabled={!acceptedFile}>
+                Clear
+              </Button>
             </ActionContainer>
             <ProgressBar style={styles.progressBarBackgroundColor} />
             {error && <ErrorText>{error}</ErrorText>}

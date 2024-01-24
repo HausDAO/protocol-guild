@@ -1,6 +1,7 @@
-import { Button, Card, DropdownLinkStyles, Link, font, widthQuery } from "@daohaus/ui";
-import styled from "styled-components";
 import { Link as RouterLink } from "react-router-dom";
+import styled from "styled-components";
+
+import { Button, Card, DropdownLinkStyles, Link, font, widthQuery } from "@daohaus/ui";
 
 export const RegistryOverviewCard = styled(Card)`
   background-color: ${({ theme }) => theme.secondary.step3};
@@ -15,6 +16,7 @@ export const RegistryCardHeader = styled.div`
   align-items: flex-start;
   flex-wrap: wrap;
   margin-bottom: 3rem;
+  text-align: justify;
 
   .right-section {
     display: flex;

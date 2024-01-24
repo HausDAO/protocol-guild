@@ -21,12 +21,6 @@ export const APP_FIELD: Record<string, CustomFieldLego> = {
     placeholder: "http://",
     expectType: "url",
   },
-  TEST_FIELD: {
-    id: "testField",
-    type: "testField",
-    label: "Test Field",
-    placeholder: "Enter something",
-  },
   ARRAY: {
     id: 'array',
     type: 'textarea',
@@ -65,7 +59,7 @@ export const APP_FIELD: Record<string, CustomFieldLego> = {
   },
   REPLICA: {
     id: 'replica',
-    type: 'input',
+    type: 'replicaValidatorField',
     label: 'Replica',
     placeholder: '0x...',
     expectType: 'ethAddress',

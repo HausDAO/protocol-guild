@@ -1,56 +1,83 @@
 import { useDebugValue } from "react";
 import { useQuery } from "react-query";
 
+import { create, SdkConfig } from "@connext/sdk";
+import { HAUS_RPC } from "@daohaus/keychain-utils";
 import { EthAddress, fromWei } from "@daohaus/utils";
 
-import { create, SdkConfig } from "@connext/sdk";
-import { TARGETS } from "../targetDao";
-import { HAUS_RPC } from "@daohaus/keychain-utils";
+import { createViemClient } from "../utils/createContract";
+import { ValidNetwork } from "../utils/keychain";
+import { ConnextEnv } from "../targetDao";
 
-
-
-const fetch = async ({
+const fetchRelayFee = async ({
+  network,
+  destinationChainIds,
+  destinationDomains,
+  originChainId,
   originDomain,
-  destinationDomain,
-  chainID,
+  signerAddress,
 }: {
+  network: ConnextEnv;
+  destinationChainIds: Array<string>;
+  destinationDomains: Array<string>;
+  originChainId: string;
   originDomain: string;
-  destinationDomain: string;
-  chainID: string;
+  signerAddress: EthAddress;
 }) => {
-  const params = {
-    originDomain: originDomain,
-    destinationDomain: destinationDomain,
-  };
+  const destinationsConfig = Array
+    .apply(null, Array(destinationChainIds.length))
+    .map((_, idx) =>
+      Object.fromEntries([
+        ['destinationChainId', destinationChainIds[idx]],
+        ['destinationDomain', destinationDomains[idx]],
+      ])
+    ) as Array<{ destinationChainId: string; destinationDomain: string }>;
 
   const sdkConfig: SdkConfig = {
-    signerAddress: TARGETS.DAO_ADDRESS,
+    signerAddress,
     // Use `mainnet` when you're ready...
-    network: "testnet",
+    network,
     // Add more chains here! Use mainnet domains if `network: mainnet`.
     // This information can be found at https://docs.connext.network/resources/supported-chains
     chains: {
       [originDomain]: {
-        
-        providers: [HAUS_RPC[TARGETS.NETWORK_ID as keyof typeof HAUS_RPC]],
-        
-
-      },
-      [destinationDomain]: {
-        providers: [HAUS_RPC[chainID as keyof typeof HAUS_RPC]],
+        providers: [HAUS_RPC[originChainId as keyof typeof HAUS_RPC]],
       },
     },
   };
 
+  for (const { destinationChainId, destinationDomain } of destinationsConfig) {
+    sdkConfig.chains[destinationDomain] = {
+      providers: [HAUS_RPC[destinationChainId as keyof typeof HAUS_RPC]],
+    };
+  }
+
   try {
     const { sdkBase } = await create(sdkConfig);
-    console.log("sdkBase: ", sdkBase);
-    const rFee = await sdkBase.estimateRelayerFee(params);
-    console.log("relayerFee: ", fromWei(rFee.toString()));
+
+    const relayerFees = await Promise.all(
+      destinationsConfig.map(async ({ destinationDomain }) => {
+        return await sdkBase.estimateRelayerFee({
+          originDomain: originDomain,
+          destinationDomain: destinationDomain,
+        });
+      }),
+    );
+    const relayerFeeWei = relayerFees.reduce((acc, val) => acc + val.toBigInt(), BigInt(0));
+    const relayerFee = fromWei(relayerFeeWei.toString());
+
+    const client = createViemClient({
+      chainId: originChainId as ValidNetwork,
+      rpcs: HAUS_RPC
+    });
+    const signerCurrentBalance = await client.getBalance({ address: signerAddress });
 
     return {
-      relayerFeeWei: rFee.toString() || "0",
-      relayerFee: fromWei(rFee.toString() || "0") ,
+      feesPerDestination: relayerFees,
+      relayerFeeWei,
+      relayerFee,
+      signerHasBalance: signerCurrentBalance >= relayerFeeWei,
+      signerBalanceWei: signerCurrentBalance,
     };
   } catch (error: any) {
     console.error(error);
@@ -59,23 +86,32 @@ const fetch = async ({
 };
 
 export const useConnext = ({
+  network,
+  destinationChainIds,
+  destinationDomains,
+  originChainId,
   originDomain,
-  destinationDomain,
-  chainID,
+  signerAddress,
 }: {
+  network: ConnextEnv;
+  destinationChainIds: Array<string>;
+  destinationDomains: Array<string>;
+  originChainId: string;
   originDomain: string;
-  destinationDomain: string;
-  chainID: string;
+  signerAddress: EthAddress;
 }) => {
   const { data, ...rest } = useQuery(
-    ["connextData", { chainID, destinationDomain }],
+    ["connextData", { destinationChainIds, destinationDomains }],
     () =>
-      fetch({
+      fetchRelayFee({
+        network,
+        destinationChainIds,
+        destinationDomains,
+        originChainId,
         originDomain,
-        destinationDomain,
-        chainID,
+        signerAddress,
       }),
-    { enabled: !!destinationDomain }
+    { enabled: destinationChainIds.length === destinationDomains.length }
   );
 
   useDebugValue(data ?? "Loading");

@@ -1,97 +1,74 @@
-import React, { useEffect } from "react";
-
-import { ParLg,  SingleColumnLayout } from "@daohaus/ui";
-
 import { useParams } from "react-router-dom";
-import { create, SdkConfig } from "@connext/sdk";
+
 import { FormBuilder } from "@daohaus/form-builder";
-import { MolochFields } from "@daohaus/moloch-v3-fields";
-import { fromWei, ZERO_ADDRESS } from "@daohaus/utils";
+import { ErrorText, ParLg,  SingleColumnLayout } from "@daohaus/ui";
 
+import { useCurrentRegistry } from "../hooks/context/RegistryContext";
 import { useConnext } from "../hooks/useConnext";
-import { useMemberRegistry } from "../hooks/useRegistry";
-import { AppFieldLookup } from "../legos/fieldConfig";
+import { useNetworkRegistry } from "../hooks/useRegistry";
+import { RegistryFields } from "../legos/fieldConfig";
 import { APP_FORM } from "../legos/forms";
-import { TARGETS } from "../targetDao";
-import { HAUS_RPC } from "../utils/keychain";
-
-// const sdkConfig: SdkConfig = {
-//   signerAddress: "0x2b8aA42fFb2c9c7B9f0B1e1b935F7D8331b6dC7c",
-//   // Use `mainnet` when you're ready...
-//   network: "testnet",
-//   // Add more chains here! Use mainnet domains if `network: mainnet`.
-//   // This information can be found at https://docs.connext.network/resources/supported-chains
-//   chains: {
-//     1735353714: {
-//       // Goerli domain ID
-//       providers: ["https://rpc.ankr.com/eth_goerli"],
-//     },
-//     1735356532: {
-//       // Optimism-Goerli domain ID
-//       providers: ["https://goerli.optimism.io"],
-//     },
-//   },
-// };
+import { HAUS_RPC, ValidNetwork } from "../utils/keychain";
 
 export const ReplicaConfig = () => {
   // get chain id from useParams hook
   const { chainID } = useParams<{ chainID: string }>();
+  const {
+    connextEnv,
+    daoChain,
+    domainId,
+    registryAddress,
+    replicaChains,
+    safeAddress,
+  } = useCurrentRegistry();
 
-  const originDomainID = TARGETS.DOMAIN_ID;
+  const originDomainID = domainId;
 
-  const domainID = TARGETS.REPLICA_CHAIN_ADDRESSES.find(
+  const domainID = replicaChains.find(
     (r) => r.NETWORK_ID === chainID
   )?.DOMAIN_ID;
 
-  const { isIdle, isLoading, error, data, refetch } = useConnext({
+  const { isIdle, isLoading, error, data: connextFeeData, refetch } = useConnext({
+    network: connextEnv,
+    destinationChainIds: [chainID || ""],
+    destinationDomains: [domainID || ""],
+    originChainId: daoChain || "",
     originDomain: originDomainID,
-    destinationDomain: domainID || "",
-    chainID: chainID || "",
+    signerAddress: safeAddress,
   });
 
-  const { data: dataRegistry } = useMemberRegistry({
-    registryAddress: TARGETS.REGISTRY_ADDRESS,
-    chainId: TARGETS.NETWORK_ID,
+  const { data: dataRegistry } = useNetworkRegistry({
+    registryAddress: registryAddress,
+    chainId: daoChain as ValidNetwork,
     rpcs: HAUS_RPC,
   });
 
-  if (!data)
+  if (!connextFeeData)
     return (
-      <SingleColumnLayout title="Replicants">
+      <SingleColumnLayout title="NetworkRegistry - Replica Management">
         <ParLg>Loading...</ParLg>
       </SingleColumnLayout>
     );
 
-  const foreignRegistryAddress = dataRegistry?.foreignRegistries.find(
-    (r) => r.NETWORK_ID === chainID
-  )?.REGISTRY_ADDRESS;
-
-  // if (foreignRegistryAddress == ZERO_ADDRESS)
-  //   return (
-  //     <SingleColumnLayout title="Replicants">
-  //       <ParLg>Must register network first</ParLg>
-  //     </SingleColumnLayout>
-  //   );
-
   return (
-    <SingleColumnLayout title="Replicants">
-      {/* <FormBuilder
-        form={APP_FORM.REPLICA_REGISTER}
-        targetNetwork={TARGETS.NETWORK_ID}
-        defaultValues={{
-          chainID: chainID,
-        }}
-      /> */}
-      <FormBuilder
-        form={APP_FORM.BATCH_REPLICA_CLAIM}
-        targetNetwork={TARGETS.NETWORK_ID}
-        customFields={{ ...MolochFields, ...AppFieldLookup }}
-        defaultValues={{
-          relayFee: data?.relayerFee,
-          chainID: chainID,
-          domainID: domainID,
-        }}
-      />
+    <SingleColumnLayout title="NetworkRegistry - Replica Management">
+      <div style={{textAlign: 'left'}}>
+        <FormBuilder
+          form={APP_FORM.BATCH_REPLICA_CLAIM}
+          targetNetwork={daoChain}
+          customFields={{ ...RegistryFields }}
+          defaultValues={{
+            relayFee: connextFeeData.relayerFee,
+            chainID: chainID,
+            domainID: domainID,
+          }}
+        />
+      </div>
+      {!connextFeeData.signerHasBalance && (
+        <div style={{padding: "3rem 0"}}>
+          <ErrorText>DAO Vault does not have enough balance to cover Connext Relayer Fees</ErrorText>
+        </div>
+      )}
     </SingleColumnLayout>
   );
 };

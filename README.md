@@ -123,8 +123,11 @@ git clone https://github.com/HausDAO/protocol-guild-contracts.git
 ### Deploy a Home Registry
 
 #### 1. Collect addresses for at least 2 initial members 
-- [ ] addr 1
-- [ ] addr 2
+
+Output
+
+- `Addr_1`
+- `Addr_2`
 
 
 #### 2. Deploy initial DAO
@@ -137,14 +140,14 @@ Output:
 
 #### 3. Setup initial Split contract through the 0xSplits dApp
 
-- Go to this [link](https://app.0xsplits.xyz/) to create new Split with initial members, split amounts can be equal as these will be updated in the first split proposals. You can either set the DAO Safe address or an EOA as the split controller (you must transfer ownership later). You can freely set the distribution threshold and sponsorship fee.
+- Go to the [0xSplit dApp](https://app.0xsplits.xyz/) to create new Split with initial members (at least two), split amounts can be equal as these will be updated in the first split proposals. You can either set the DAO Safe address or an EOA as the split controller (you must transfer ownership later). You can freely set the distribution threshold and sponsorship fee.
 
 Output:
   - `split` address (`SPLIT_ADDRESS`)
 
-#### 4. Deploy a NetworkRegistry contract in the home network
+#### 4. Deploy a NetworkRegistry contract in the Home network
 
-- Before running the deployment script in the `protocol-guild-contract` repository you download locally, go to the `constants/config.ts` directory, find the `home network` you plan to work with and set the `moloch` `safe` & `split` addresses to the contract addresses you deployed in the previous steps.
+- Before running the deployment script in the `protocol-guild-contract` repository you download locally, go to the `constants/config.ts` directory, find the chainID of the `home network` you plan to work with and set the `moloch`, `safe` & `split` addresses to the contract addresses you deployed in the previous steps.
 - Open a terminal, go to the directory where `protocol-guild-contract` is located and run the following command line (example uses Goerli):
 
 ```bash
@@ -152,7 +155,7 @@ pnpm hardhat --network goerli deploy --tags PGNetworkRegistry
 ```
 
 - Confirm the DAO Safe has ownership over the registry contract
-- Finally, set the new `registry` address within the `home network` in the `constants/config.ts` file.
+- Finally, set the new `pgRegistry` address within the `home network` in the `constants/config.ts` file.
 
 Output:
 
@@ -160,20 +163,22 @@ Output:
 
 #### 5. Transfer control of the 0xSplit to NetworkRegistry
 
-- If you set the 0xSplit controller to an EOA, you can both `transferControl` to the `registry` contract through 0xSplits dApp. Alternatively, you can run the following script in the `protocol-guild-contract` repo:
+- If you set the 0xSplit controller to an EOA, you can `transferControl` to the `registry` contract through 0xSplits dApp. Alternatively, you can run the following script in the `protocol-guild-contract` repo:
 
 ```bash
 pnpm hardhat --network goerli registry:ownSplit
 ```
 
- If you initially set the 0xSplit controller to the DAO's Safe, you'll need to submit a DAO proposal using the DAOHaus `Multicall Proposal Builder`. For this, you need the `splitMain` address to craft a tx to call the `transferControl(<split>, <new_controller>)`
+ If you initially set the 0xSplit controller to the DAO's Safe, you'll need to submit a DAO proposal using the DAOHaus `Multicall Proposal Builder`. For this, you need the `splitMain` address to craft a tx that calls `transferControl(<split>, <new_controller>)`
 - If you set the 0xSplit controller to an external smart contract wallet, try using wallet connect or a vendor tx builder dApp.
 
-- Make sure the `registry` address is set as the new potential controller.
+- Make sure the `registry` address is set as the new potential 0xSplit controller.
 
 #### 6. NetworkRegistry accepts control of the 0xSplit
 
-- Now the new controller must accept the role for the 0xSplit contract. If the replica `registry` has an EOA as a fallback owner, you just need to call `acceptSplitControl()`. Otherview, you'll need to submit a DAO proposal using the DAOHaus `Multicall Proposal Builder` to craft a cross-chain tx by calling the `acceptNetworkSplitControl([<chainId>], [<relayerFee>])`.
+- Now the new controller must accept the role for the 0xSplit contract, so you need to submit a DAO proposal using the DAOHaus `Multicall Proposal Builder` to craft a tx that calls `acceptSplitControl()` in the `registry` contract.
+
+- Make sure the `registry` address is set as the 0xSplit controller: you verify that in the 0xSplit dApp or by opening the `splitMain` contract in the block explorer and look for the `getController(split)` function.
 
 ### Deploy a Foreign Registry
 
@@ -210,17 +215,17 @@ Output:
 
 #### 3. Transfer + Accept control of the 0xSplit to Replica NetworkRegistry
 
-- You can follow the same instructions in Steps 5 & 6 from above but for the replica network. Remember that you might set your deployer address (EOA) as the 0xSplit controller.
+- You can follow the same instructions in Steps 5 & 6 from above but for the replica network. Remember that you might set your deployer address (EOA) as the 0xSplit controller, so you might just need to call `acceptSplitControl()`. Otherwise, you'll to craft a cross-chain tx by calling the `acceptNetworkSplitControl([<chainId>], [<relayerFee>])` through the main `registry` contract.
 
-- You can also use the UI to batch the two actions required to add a new replica in the main registry (`updateNetworkRegistry` + `acceptNetworkSplitControl`). See the next section for instructions.
+- However,you can also use the UI to batch the two actions required to add a new replica in the main registry (`updateNetworkRegistry` + `acceptNetworkSplitControl`). See the next section for instructions.
 
 - In the end, make sure the replica `registry` address is set as the new controller.
 
-#### 4. Enable a foreign registry + acept 0xSplit control in the frontend
+#### 4. Enable a foreign registry + accept 0xSplit control in the frontend
 
-1. Open the [targetDao.ts](./src/targetDao.ts) config file and add a new record under `REPLICA_CHAIN_ADDRESSES` in the `TARGETS` object.
+1. Open the [targetDao.ts](./src/targetDao.ts) config file and add a new record (if not exists) under `REPLICA_CHAINS` in the `TARGETS` object.
 2. Make sure the [keychain.ts](./src/utils/keychain.ts) config file supports the network where you deployed the new registry.
-2. Navigate to the `Registries` page, open the menu for the new network registry and click on `Register`. This proposal form will batch the two actions required to enable a new replica in the main registry (`updateNetworkRegistry` + `acceptNetworkSplitControl`).
+2. In the frontend, navigate to the `Registries` page, open the menu for the new network registry and click on `Register`. This proposal form will batch the two actions required to enable a new replica in the main registry (`updateNetworkRegistry` + `acceptNetworkSplitControl`).
 
 
 ### Notes of deployed Foreign Registries
