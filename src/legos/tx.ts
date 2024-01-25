@@ -2,7 +2,6 @@ import { NestedArray, POSTER_TAGS, TXLegoBase, ValidArgType } from "@daohaus/uti
 import { buildMultiCallTX } from "@daohaus/tx-builder";
 import { APP_CONTRACT } from "./contract";
 import { CONTRACT } from "@daohaus/moloch-v3-legos";
-import { TARGETS } from "../targetDao";
 
 export enum ProposalTypeIds {
   Signal = "SIGNAL",
@@ -75,7 +74,7 @@ export const APP_TX = {
     },
     actions: [
       {
-        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        contract: APP_CONTRACT.NETWORK_REGISTRY,
         method: "updateNetworkRegistry",
         args: [
           '.formValues.chainID',
@@ -99,15 +98,15 @@ export const APP_TX = {
     },
     actions: [
       {
-        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        contract: APP_CONTRACT.NETWORK_REGISTRY,
         method: "updateNetworkRegistry",
         args: [
           '.formValues.chainID',
-          '.formValues.replicaData', // TODO: this needs to be a tuple (uint32 domainId; address registryAddress; address delegate;)
+          '.formValues.replicaData', // this needs to be a tuple (uint32 domainId; address registryAddress; address delegate;)
         ],
       },
       {
-        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        contract: APP_CONTRACT.NETWORK_REGISTRY,
         method: "acceptNetworkSplitControl",
         args: [
           nestInArray('.formValues.chainID'),
@@ -116,7 +115,6 @@ export const APP_TX = {
         value: '.formValues.relayFee',      
       },
     ],
-
   }),
   ACCEPT_CONTROL: buildMultiCallTX({
     id: "ACCEPT_CONTROL",
@@ -132,7 +130,7 @@ export const APP_TX = {
     },
     actions: [
       {
-        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        contract: APP_CONTRACT.NETWORK_REGISTRY,
         method: "acceptSplitControl",
         args: [],
       },
@@ -152,7 +150,7 @@ export const APP_TX = {
     },
     actions: [
       {
-        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        contract: APP_CONTRACT.NETWORK_REGISTRY,
         method: "acceptNetworkSplitControl",
         args: [
           nestInArray('.formValues.chainID'),
@@ -176,7 +174,7 @@ export const APP_TX = {
     },
     actions: [
       {
-        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        contract: APP_CONTRACT.NETWORK_REGISTRY,
         method: "transferSplitControl",
         args: [".formValues.newOwner"],
       },
@@ -196,7 +194,7 @@ export const APP_TX = {
     },
     actions: [
       {
-        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        contract: APP_CONTRACT.NETWORK_REGISTRY,
         method: "transferNetworkSplitControl",
         args: [
           nestInArray('.formValues.chainID'),
@@ -221,7 +219,7 @@ export const APP_TX = {
     },
     actions: [
       {
-        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        contract: APP_CONTRACT.NETWORK_REGISTRY,
         method: "cancelSplitControlTransfer",
         args: [],
       },
@@ -241,7 +239,7 @@ export const APP_TX = {
     },
     actions: [
       {
-        contract: APP_CONTRACT.MEMBER_REGISTRY,
+        contract: APP_CONTRACT.NETWORK_REGISTRY,
         method: "cancelNetworkSplitControlTransfer",
         args: [
           nestInArray('.formValues.chainID'),
@@ -260,7 +258,7 @@ export const APP_TX = {
         description: `.formValues.description`,
         contentURI: `.formValues.link`,
         contentURIType: { type: 'static', value: 'url' },
-        proposalType: { type: 'static', value: ProposalTypeIds.NewMember },
+        proposalType: { type: 'static', value: ProposalTypeIds.MultiCall },
       },
     },
     actions: [
@@ -273,13 +271,14 @@ export const APP_TX = {
         ],
       },
       {
-        contract: APP_CONTRACT.MEMBER_REGISTRY,
-        method: 'batchNewMember',
+        contract: APP_CONTRACT.NETWORK_REGISTRY,
+        method: 'syncBatchNewMembers',
         args: [
           '.formValues.members',
           '.formValues.activitymods',
           '.formValues.startdates',
-          //{ type: 'static', value: POSTER_TAGS.signalProposal }, //hardcoded
+          { type: 'static', value: [] }, // TODO: chainIds
+          { type: 'static', value: [] }, // TODO: relayerFees
         ],
       },
     ],
@@ -293,17 +292,18 @@ export const APP_TX = {
         description: `.formValues.description`,
         contentURI: `.formValues.link`,
         contentURIType: { type: 'static', value: 'url' },
-        proposalType: { type: 'static', value: ProposalTypeIds.EditMember },
+        proposalType: { type: 'static', value: ProposalTypeIds.MultiCall },
       },
     },
     actions: [
       {
-        contract: APP_CONTRACT.MEMBER_REGISTRY,
-        method: 'batchUpdateMember',
+        contract: APP_CONTRACT.NETWORK_REGISTRY,
+        method: 'syncBatchUpdateMembersActivity',
         args: [
           '.formValues.members',
           '.formValues.activitymods',
-          //{ type: 'static', value: POSTER_TAGS.signalProposal }, //hardcoded
+          { type: 'static', value: [] }, // TODO: chainIds
+          { type: 'static', value: [] }, // TODO: relayerFees
         ],
       },
     ],

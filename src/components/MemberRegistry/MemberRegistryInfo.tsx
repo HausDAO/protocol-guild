@@ -1,9 +1,9 @@
-import React from "react";
-import styled from "styled-components";
 import moment from "moment";
-import { DataIndicator, H3, Link } from "@daohaus/ui";
+import styled from "styled-components";
 
-import { Member } from "../types/Member.types";
+import { DataIndicator } from "@daohaus/ui";
+
+import { Member } from "../../types/Member.types";
 
 const MemberInfoContainer = styled.div`
   display: flex;
@@ -16,7 +16,7 @@ const RightAligned = styled(DataIndicator)`
   align-items: end;
 `;
 
-export const MemberInfo = ({
+export const MemberRegistryInfo = ({
   memberList,
   lastUpdate,
 }: {
@@ -27,8 +27,8 @@ export const MemberInfo = ({
     <MemberInfoContainer>
       <DataIndicator label="Members" data={memberList.length} />
       <RightAligned
-        label="Last Updated"
-        data={moment.unix(lastUpdate).format("llll")}
+        label="Last Update"
+        data={lastUpdate ? moment.unix(lastUpdate).format("llll") : '---'}
         size="sm"
       />
     </MemberInfoContainer>

@@ -2,8 +2,7 @@ import { LOCAL_ABI } from "@daohaus/abis";
 import { ContractLego } from "@daohaus/utils";
 import { CONTRACT_KEYCHAINS } from "@daohaus/keychain-utils";
 
-import MEMBER_REGISTRY from '../abis/memberRegistry.json'
-import { TARGETS } from "../targetDao";
+import { APP_ABIS } from "./abis";
 
 export const APP_CONTRACT: Record<string, ContractLego> = {
   POSTER: {
@@ -52,11 +51,11 @@ export const APP_CONTRACT: Record<string, ContractLego> = {
     abi: LOCAL_ABI.LOOT,
     targetAddress: ".dao.sharesAddress",
   },
-  MEMBER_REGISTRY: {
+  NETWORK_REGISTRY: {
     type: 'static',
-    contractName: 'MEMBER_REGISTRY',
+    contractName: 'NETWORK_REGISTRY',
     // @ts-ignore
-    abi: MEMBER_REGISTRY,
-    targetAddress: TARGETS.REGISTRY_ADDRESS,
+    abi: APP_ABIS.NETWORK_REGISTRY,
+    targetAddress: '.registryAddress',
   },
 };

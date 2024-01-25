@@ -1,58 +1,80 @@
-import React from "react";
+import { useState } from "react";
+import styled from "styled-components";
 
+import { FormBuilder } from "@daohaus/form-builder";
 import {
+  Button,
   Dialog,
   DialogContent,
-  ParLg,
+  Link,
+  ParMd,
   SingleColumnLayout,
   useToast,
 } from "@daohaus/ui";
-import { FormBuilder } from "@daohaus/form-builder";
-import { APP_FORM } from "../legos/forms";
-import { TARGETS } from "../targetDao";
-
 import { handleErrorMessage } from "@daohaus/utils";
 
+import { useCurrentRegistry } from "../hooks/context/RegistryContext";
+import { RegistryFields } from "../legos/fieldConfig";
+import { APP_FORM } from "../legos/forms";
+
+const DialogActions = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 export const ControllerHomeForm = ({option}: {option: string | null}) => {
+  const { errorToast, defaultToast } = useToast();
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  const { errorToast, defaultToast, successToast } = useToast();
-  const [isTxLoading, setIsTxLoading] = React.useState(false);
-  const [isSuccess, setIsSuccess] = React.useState(false);
+  const { daoChain, daoId } = useCurrentRegistry();
 
+  const formLego = option === "Cancel Transfer"
+    ? APP_FORM.CANCEL_TRANSFER
+    : option === "Transfer Control"
+      ? APP_FORM.TRANSFER_CONTROL
+      : APP_FORM.ACCEPT_CONTROL;
 
   return (
     <>
-      <SingleColumnLayout title="Home 0xSplits Controller">
-
+      <SingleColumnLayout>
         <FormBuilder
-          form={
-            option === "Cancel Transfer" ? APP_FORM.CANCEL_TRANSFER : option === "Transfer Control" ? APP_FORM.TRANSFER_CONTROL : APP_FORM.ACCEPT_CONTROL
-          }
-          targetNetwork={TARGETS.NETWORK_ID}
+          form={formLego}
+          targetNetwork={daoChain}
+          customFields={{ ...RegistryFields }}
+          defaultValues={{
+            title: `0xSplit: ${option}`,
+            description: `Main registry`,
+          }}
           lifeCycleFns={{
             onTxError: (error) => {
               const errMsg = handleErrorMessage({
                 error,
               });
               errorToast({ title: "Action Failed", description: errMsg });
-              setIsTxLoading(false);
             },
             onTxSuccess: () => {
               defaultToast({
                 title: "Action Success",
-                description: "Proposal has been submitted",
+                description: "A Proposal has been submitted to the DAO",
               });
-              setIsTxLoading(false);
               setIsSuccess(true);
             },
           }}
         />
       </SingleColumnLayout>
       {isSuccess && (
-        <Dialog>
+        <Dialog defaultOpen>
           <DialogContent title="Success">
-            <ParLg>Success!</ParLg>
-            <ParLg>Go to DAO and vote on proposal</ParLg>
+            <DialogActions>
+            <ParMd>Proposal Submitted: The DAO can now vote to execute.</ParMd>
+              <Link
+                href={`https://admin.daohaus.fun/#/molochv3/${daoChain}/${daoId}`}  
+                target="_blank"
+              >
+                <Button>Go to DAO Admin</Button>
+              </Link>
+            </DialogActions>
           </DialogContent>
         </Dialog>
       )}

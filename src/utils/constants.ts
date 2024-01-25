@@ -1,0 +1,1 @@
+export const MAX_RECORDS_PER_PROPOSAL = 50;

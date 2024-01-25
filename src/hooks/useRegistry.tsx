@@ -1,203 +1,29 @@
-import { log } from "console";
 import { useDebugValue } from "react";
 import { useQuery } from "react-query";
-import { EthAddress, ZERO_ADDRESS } from "@daohaus/utils";
 
-import MemberRegistryAbi from "../abis/memberRegistry.json";
-import { REGISTRY, TARGETS } from "../targetDao";
-import { Member } from "../types/Member.types";
-import { createViemClient } from "../utils/createContract";
-import {
-  AddressKeyChain,
-  ValidNetwork,
-} from "../utils/keychain";
+import { EthAddress } from "@daohaus/utils";
 
-type FrFetchShape = {
-  domainId: string;
-  registryAddress: EthAddress;
-  delegate: EthAddress;
-};
+import { REGISTRY } from "../targetDao";
+import { AddressKeyChain, ValidNetwork } from "../utils/keychain";
+import { fetchRegistryData } from "../utils/registry";
 
-const fetchMembers = async ({
+export const useNetworkRegistry = ({
   registryAddress,
+  replicaChains,
   chainId,
   rpcs,
 }: {
-  registryAddress: EthAddress;
+  registryAddress?: EthAddress;
+  replicaChains?: Array<REGISTRY>;
   chainId: ValidNetwork;
   rpcs?: AddressKeyChain;
 }) => {
-
-  const client = createViemClient({
-    chainId,
-    rpcs,
-  });
-
-  try {
-    // pull home chain data from contract
-    const members = (await client.readContract({
-      abi: MemberRegistryAbi,
-      address: registryAddress,
-      functionName: "getMembers",
-      args: [],
-    })) as Member[];
-    const totalembers = (await client.readContract({
-      abi: MemberRegistryAbi,
-      address: registryAddress,
-      functionName: "totalMembers",
-      args: [],
-    })) as number;
-    const owner = (await client.readContract({
-      abi: MemberRegistryAbi,
-      address: registryAddress,
-      functionName: "owner",
-      args: [],
-    })) as string;
-    const lastUpdate = (await client.readContract({
-      abi: MemberRegistryAbi,
-      address: registryAddress,
-      functionName: "lastActivityUpdate",
-      args: [],
-    })) as number;
-    const membersSorted: Member[] = members
-      .sort((a: Member, b: Member) =>
-        a.account.toLowerCase() > b.account.toLowerCase() ? 1 : -1
-      );
-    
-    const percAlloc = membersSorted.length
-      ? ((await client.readContract({
-          abi: MemberRegistryAbi,
-          address: registryAddress,
-          functionName: "calculate",
-          args: [membersSorted.map((m) => m.account)],
-        })) as [])
-      : [];
-
-
-    membersSorted.forEach((m, idx) => {
-      // 10000 is the multiplier for the contract
-      m.percAlloc = percAlloc[1][idx]/10000;
-    });
-
-    // loop though supported foreign chains in TARGETS to get registries
-    const regPromises = TARGETS.REPLICA_CHAIN_ADDRESSES.map(
-      async (registry) => {
-
-        return await client.readContract({
-          abi: MemberRegistryAbi,
-          address: TARGETS.REGISTRY_ADDRESS || ZERO_ADDRESS,
-          functionName: "networkRegistry",
-          args: [registry.NETWORK_ID],
-        });
-
-      }
-    );
-    const foreignRegistries = (await Promise.all(
-      regPromises
-    )) as [];
-
-
-    // hydrate foreign registries 
-    // networkRegistry call returns a tuple of [domainId, registryAddress, delegate]
-    // will return zero address if not set
-    const hydratedFr: REGISTRY[] = foreignRegistries.map((fr, idx) => {
-      const obj = {
-        NETWORK_ID: TARGETS.REPLICA_CHAIN_ADDRESSES[idx].NETWORK_ID,
-        DOMAIN_ID: fr[0] as string,
-        REGISTRY_ADDRESS: fr[1] as EthAddress,
-        DELEGATE: fr[2] as EthAddress,
-      }
-      return obj;
-    });
-
-    // loop through foreign registries and get data from each
-    for (let i = 0; i < hydratedFr.length; i++) {
-      const registryData = hydratedFr[i];
-      // if this is zero address, skip
-      if (registryData.REGISTRY_ADDRESS == ZERO_ADDRESS) {
-        hydratedFr[i] = Object.assign({}, registryData, {
-          TOTAL_MEMBERS: "0",
-          UPDATER: ZERO_ADDRESS,
-          LAST_ACTIVITY_UPDATE: "0",
-          SPLIT_ADDRESS: ZERO_ADDRESS,
-        });
-        continue;
-      }
-      if (!registryData.REGISTRY_ADDRESS) {
-        continue;
-      }
-
-
-      
-      const frClient = createViemClient({
-        chainId: registryData.NETWORK_ID,
-        rpcs,
-      });
-
-      const getters = [
-        "totalMembers",
-        "updater",
-        "lastActivityUpdate",
-        "split",
-      ];
-      const registryData2 = await Promise.all(
-        getters.map(async (getter) => {
-          return (await frClient.readContract({
-            abi: MemberRegistryAbi,
-            address: registryData.REGISTRY_ADDRESS as EthAddress,
-            functionName: getter,
-            args: [],
-          }));
-        })
-      ) as string[];
-      
-      hydratedFr[i] = Object.assign(
-        {},
-        {
-          NETWORK_ID: registryData.NETWORK_ID,
-          DOMAIN_ID: registryData.DOMAIN_ID,
-          REGISTRY_ADDRESS: registryData.REGISTRY_ADDRESS,
-          DELEGATE: registryData.DELEGATE,
-        },
-        {
-          TOTAL_MEMBERS: registryData2[0],
-          UPDATER: registryData2[1] as EthAddress,
-          LAST_ACTIVITY_UPDATE: registryData2[2],
-          SPLIT_ADDRESS: registryData2[3] as EthAddress,
-        }
-      );
-    }
-
-
-    return {
-      members: members,
-      owner: owner,
-      lastUpdate: lastUpdate,
-      totalMembers: totalembers,
-      membersSorted: membersSorted,
-      percAlloc: percAlloc,
-      foreignRegistries: hydratedFr as REGISTRY[],
-    };
-  } catch (error: any) {
-    console.error(error);
-    throw new Error(error?.message as string);
-  }
-};
-
-export const useMemberRegistry = ({
-  registryAddress,
-  chainId,
-  rpcs,
-}: {
-  registryAddress: EthAddress;
-  chainId: ValidNetwork;
-  rpcs?: AddressKeyChain;
-}) => {
-  const { data, ...rest } = useQuery(
-    ["memberData", { registryAddress }],
+  const { data, error, ...statusProps } = useQuery(
+    ["networkRegistryData", { registryAddress }],
     () =>
-      fetchMembers({
+      fetchRegistryData({
         registryAddress,
+        replicaChains,
         chainId,
         rpcs,
       }),
@@ -206,5 +32,5 @@ export const useMemberRegistry = ({
 
   useDebugValue(data ?? "Loading");
 
-  return { data, ...rest };
+  return { data, error, ...statusProps };
 };

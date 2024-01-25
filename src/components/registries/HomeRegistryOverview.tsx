@@ -1,10 +1,10 @@
-import { AddressDisplay, H4, DataIndicator, Tag } from "@daohaus/ui";
-import {
-  ZERO_ADDRESS,
-  formatShortDateTimeFromSeconds,
-} from "@daohaus/utils";
+import { useEffect, useState } from "react";
+import { RiCheckboxCircleFill } from "react-icons/ri";
+
 import { Keychain } from "@daohaus/keychain-utils";
-import { REGISTRY, TARGETS } from "../../targetDao";
+import { AddressDisplay, H4, DataIndicator, Tag } from "@daohaus/ui";
+import { formatShortDateTimeFromSeconds, truncateAddress } from "@daohaus/utils";
+
 import { RegistryMenu } from "./RegistryMenu";
 import {
   DataGrid,
@@ -12,13 +12,16 @@ import {
   RegistryCardHeader,
   RegistryOverviewCard,
 } from "./RegistryOverview.styles";
+import { Registry } from "../../hooks/context/RegistryContext";
+import { RegistryState, checkRegistryState } from "../../utils/registry";
+import { REGISTRY } from "../../targetDao";
+
 
 type RegistryProps = {
-  target?: REGISTRY;
+  target: Registry;
   owner?: string;
   lastUpdate?: number;
   totalMembers?: number;
-  foreignRegistry?: REGISTRY;
 };
 
 export const HomeRegistryOverview = ({
@@ -26,33 +29,53 @@ export const HomeRegistryOverview = ({
   owner,
   lastUpdate,
   totalMembers,
-  foreignRegistry,
 }: RegistryProps) => {
-  const daochain = TARGETS.NETWORK_ID;
-  const registry = target || TARGETS;
+  const [registryState , setRegistryState] = useState<RegistryState>();
+  const { daoChain, networkName, registryAddress, safeAddress } = target;
+  const isDAO =
+    owner?.toLowerCase() === safeAddress.toLowerCase();
+  
+  useEffect(() => {
+    const checkRegistryPendingState = async () => {
+      if (daoChain && registryAddress) {
+        const hydratedRegistryData: REGISTRY = {
+          NETWORK_ID: daoChain,
+          REGISTRY_ADDRESS: registryAddress,
+        };
+        setRegistryState(
+          await checkRegistryState({ hydratedRegistryData })
+        );
+      }
+    };
+    checkRegistryPendingState();
+  }, [daoChain, registryAddress]);
+
+  console.log('Registry state', registryState);
 
   return (
     <RegistryOverviewCard>
       <RegistryCardHeader>
         <div>
-          <H4>{registry.NETWORK_NAME}</H4>
+          <H4>{networkName}</H4>
           <TagSection>
             <AddressDisplay
-              address={
-                registry.REGISTRY_ADDRESS?.toString() ||
-                foreignRegistry?.REGISTRY_ADDRESS ||
-                ZERO_ADDRESS
-              }
+              address={registryAddress}
               truncate
               copy
-              explorerNetworkId={daochain as keyof Keychain}
+              explorerNetworkId={daoChain as keyof Keychain}
             />
 
             <Tag tagColor="pink">Home</Tag>
+            <Tag tagColor={registryState?.warningMsg ? "yellow" : "green"}>
+              <RiCheckboxCircleFill />
+            </Tag>
+            {registryState?.warningMsg && (
+              <Tag tagColor="yellow">{registryState?.warningMsg}</Tag>
+            )}
           </TagSection>
         </div>
         <div className="right-section">
-          <RegistryMenu home={true} foreignRegistry={foreignRegistry} />
+          <RegistryMenu homeRegistry={target} />
         </div>
       </RegistryCardHeader>
       <DataGrid>
@@ -63,18 +86,18 @@ export const HomeRegistryOverview = ({
           />
           <DataIndicator
             label="Owner"
-            data={
-              owner?.toLowerCase() == TARGETS.SAFE_ADDRESS.toLowerCase()
-                ? "DAO"
-                : owner?.toString()
+            size={!isDAO ? "sm" : "lg"}
+            data={isDAO
+              ? "DAO"
+              : truncateAddress(owner?.toString() || '')
             }
           />
           <DataIndicator
-            size="sm"
+            size={lastUpdate ? "sm" : "lg"}
             label={`Last Update`}
-            data={
-              formatShortDateTimeFromSeconds(lastUpdate?.toString()) || "NA"
-            }
+            data={lastUpdate
+              ? formatShortDateTimeFromSeconds(lastUpdate.toString())
+              : "..."}
           />
         </>
       </DataGrid>

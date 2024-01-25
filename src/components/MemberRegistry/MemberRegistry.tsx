@@ -1,17 +1,21 @@
 import styled from "styled-components";
 
+import { ParLg } from "@daohaus/ui";
+
+import { MemberRegistryInfo } from "./MemberRegistryInfo";
+import { SyncUpdateAllDialog } from "./SyncUpdateAllDialog";
+import { MemberTable } from "../MemberTable";
+import { CSVDownloaderButton } from "../molecules/CsvDownloaderButton";
 import { Member } from "../../types/Member.types";
-import { MemberInfo } from "../MemberInfo";
-import { MemberTable } from "../MemberTable/MemberTable";
-import { Trigger } from "./Trigger";
-import { CSVDownloader } from "../CsvDownloader";
-import { Button, ParLg } from "@daohaus/ui";
-import { SyncUpdateAll } from "./SyncUpdateAll";
+import { RegistryData } from "../../utils/registry";
+import { Registry } from "../../hooks/context/RegistryContext";
 
 type MemberRegistryProps = {
   membersList: Member[];
   lastUpdate: number;
   refetch: () => void;
+  registry: Registry;
+  registryData: RegistryData;
 };
 
 const ActionContainer = styled.div`
@@ -21,28 +25,22 @@ const ActionContainer = styled.div`
   margin-bottom: 2rem;
 `;
 
-const MemberRegistry = (props: MemberRegistryProps) => {
-  const { membersList, lastUpdate, refetch } = props;
+export const MemberRegistry = (props: MemberRegistryProps) => {
+  const { membersList, lastUpdate, refetch, registry, registryData } = props;
+
   return (
     <>
       {membersList.length ? (
         <>
-        <MemberInfo memberList={membersList} lastUpdate={lastUpdate}></MemberInfo>
+          <MemberRegistryInfo memberList={membersList} lastUpdate={lastUpdate} />
           <ActionContainer>
-            {/* {membersList.length > 0 && (
-              <Trigger
-                onSuccess={() => {
-                  // TODO: update table
-                  // alert user
-                  refetch();
-                }}
-              />
-            )} */}
-            <CSVDownloader></CSVDownloader>
-            <SyncUpdateAll
+            <CSVDownloaderButton registryData={registryData} />
+            <SyncUpdateAllDialog
               onSuccess={() => {
                 refetch();
               }}
+              registry={registry}
+              registryData={registryData}
             />
           </ActionContainer>
 
@@ -54,5 +52,3 @@ const MemberRegistry = (props: MemberRegistryProps) => {
     </>
   );
 };
-
-export { MemberRegistry };

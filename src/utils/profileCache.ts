@@ -1,10 +1,10 @@
+import { getProfileForAddress } from "@daohaus/profile-data";
 import {
   AccountProfile,
   ArbitraryState,
   CACHE_CONFIG,
   CacheStoreName,
 } from "@daohaus/utils";
-import { getProfileForAddress } from "@daohaus/profile-data";
 
 const localforage = import("localforage").then(async (localforage) => {
   // workaround for https://github.com/localForage/localForage/issues/1038
@@ -75,7 +75,7 @@ export const fetchProfile = async (
 ): Promise<AccountProfile> => {
   const cachedProfile = await getCachedProfile({ address });
   if (cachedProfile) return cachedProfile;
-  const profile = await getProfileForAddress(address);
+  const profile = await getProfileForAddress({ address });
   cacheProfile({
     address,
     profile,
