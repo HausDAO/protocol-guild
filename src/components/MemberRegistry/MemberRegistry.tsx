@@ -27,7 +27,7 @@ const ActionContainer = styled.div`
 
 export const MemberRegistry = (props: MemberRegistryProps) => {
   const { membersList, lastUpdate, refetch, registry, registryData } = props;
-  console.log('MemberRegistry', lastUpdate, membersList);
+
   return (
     <>
       {membersList.length ? (

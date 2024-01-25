@@ -29,8 +29,21 @@ export interface Member {
   activeSeconds: number;
 };
 
+export interface MemberAction {
+  action: string;
+  memberAddress: EthAddress;
+  timestamp: BigInt;
+  txHash: string;
+}
+
+export interface ActivityUpdate {
+ timestamp: BigInt;
+ totalMembers: BigInt;
+ txHash: string;
+}
+
 export interface Subscription {
-  // chainId: 5 | 1;
+  aggregateByTxHash: boolean;
   chainId: number;
   address: EthAddress;
   event: AbiEvent;
@@ -44,19 +57,21 @@ export class NetworkRegistryDB extends Dexie {
   subscriptions!: Table<Subscription>;
   replicas!: Table<ReplicaRegistry>;
   members!: Table<Member>;
+  memberActions!: Table<MemberAction>;
+  activityUpdates!: Table<ActivityUpdate>;
   syncActions!: Table<SyncAction>;
   keyvals!: Table<any>;
 
   constructor() {
     super("networkRegistryDb");
     this.version(1).stores({
-      // cookieJars: "&address, address, type, chainId", // Primary key and indexed props
       subscriptions:
         "[chainId+address+event.name], address, lastBlock, event.name, chainId",
       replicas: "[chainId+address]",
       members: "&address",
-      syncActions: "[transferId+replicaAddress], replicaAddress",
-      // ratings: "[assessTag+user], assessTag, user, isGood",
+      memberActions: "[txHash+action+memberAddress], timestamp",
+      activityUpdates: "&txHash",
+      syncActions: "[transferId+replicaAddress], replicaAddress, timestamp",
       keyvals: "",
     });
   }

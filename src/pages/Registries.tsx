@@ -49,8 +49,6 @@ export function Registries() {
     rpcs: HAUS_RPC,
   });
 
-  if (isLoading || !data) return <ParLg>Loading...</ParLg>;
-
   return (
     <SingleColumnLayout title="Registries">
       <ControlsContainer>
@@ -58,25 +56,31 @@ export function Registries() {
           <Button>Settings</Button>
         </RouterLink>
       </ControlsContainer>
-      <RegistryContainer>
-        <HomeRegistryOverview
-          target={mainRegistry}
-          owner={data?.owner}
-          lastUpdate={data?.lastActivityUpdate}
-          totalMembers={data?.totalMembers}
-        />
-      </RegistryContainer>
-      <CardDivider />
-      {replicaChains.map((replicaRegistry: REGISTRY) => (
-        <RegistryContainer key={replicaRegistry.NETWORK_ID}>
-          <ForeignRegistryOverview
-            target={replicaRegistry}
-            data={data?.replicaRegistries?.find(
-              (r) => r.NETWORK_ID === replicaRegistry.NETWORK_ID
-            )}
-          />
-        </RegistryContainer>
-      ))}
+      {(isLoading || !data) ? (
+        <ParLg>Loading...</ParLg>
+      ) : (
+        <>
+          <RegistryContainer>
+            <HomeRegistryOverview
+              target={mainRegistry}
+              owner={data?.owner}
+              lastUpdate={data?.lastActivityUpdate}
+              totalMembers={data?.totalMembers}
+            />
+          </RegistryContainer>
+          <CardDivider />
+          {replicaChains.map((replicaRegistry: REGISTRY) => (
+            <RegistryContainer key={replicaRegistry.NETWORK_ID}>
+              <ForeignRegistryOverview
+                target={replicaRegistry}
+                data={data?.replicaRegistries?.find(
+                  (r) => r.NETWORK_ID === replicaRegistry.NETWORK_ID
+                )}
+              />
+            </RegistryContainer>
+          ))}
+        </>
+      )}
     </SingleColumnLayout>
   );
 }

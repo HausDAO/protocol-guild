@@ -1,4 +1,4 @@
-import { AbiEvent } from "abitype";
+import { Abi, AbiEvent } from "abitype";
 import { debounce } from "lodash";
 import { PublicClient } from "viem";
 
@@ -11,6 +11,7 @@ import { ValidNetwork } from "../keychain";
 interface NetworkRegistryIndexerInterface {
   db: NetworkRegistryDB;
   subscribe: (
+    aggregateByTxHash: boolean,
     chainId: ValidNetwork,
     address: EthAddress,
     event: AbiEvent,
@@ -47,7 +48,6 @@ class NetworkRegistryIndexer implements NetworkRegistryIndexerInterface {
 
     this.updating = true;
     const currentBlockNo = await this._publicClient.getBlockNumber();
-    const block = await this._publicClient.getBlock({ blockNumber: currentBlockNo });
     const chainId = await this._publicClient.getChainId();
     // await this.db.subscriptions.clear();
     const subscriptions = await this.db.subscriptions
@@ -82,9 +82,18 @@ class NetworkRegistryIndexer implements NetworkRegistryIndexerInterface {
               `Got event for ${s.address} on ${s.event.name}`,
               events
             );
-            await Promise.all(
-              events.map(async (e) => eventHandler(e, this._publicClient, block.timestamp))
-            );
+
+            // TODO: get block ranges
+            const block = await this._publicClient.getBlock({ blockNumber: currentBlockNo });
+
+            if (s.aggregateByTxHash) {
+              // TODO: skip for now
+              console.log("Skipping event with aggregateByTxHash=true")
+            } else {
+              await Promise.all(
+                events.map(async (e) => eventHandler(s.event.name, e, this._publicClient, block.timestamp))
+              );
+            }
           }
 
           //TODO debounce/throttle this; currently calls update 3x
@@ -150,7 +159,7 @@ class NetworkRegistryIndexer implements NetworkRegistryIndexerInterface {
   };
 
   subscribe = async (
-    // chainId: 5 | 1,
+    aggregateByTxHash: boolean,
     chainId: ValidNetwork,
     address: EthAddress,
     event: AbiEvent,
@@ -173,6 +182,7 @@ class NetworkRegistryIndexer implements NetworkRegistryIndexerInterface {
 
     try {
       const id = await this.db.subscriptions.add({
+        aggregateByTxHash,
         chainId: Number(chainId),
         address,
         event,
@@ -182,7 +192,7 @@ class NetworkRegistryIndexer implements NetworkRegistryIndexerInterface {
       });
 
       console.log(
-        `Subscribed to ${address} ${event} events at id ${id} on chain ${chainId}`
+        `Subscribed to ${address} ${event.name} events at id ${id} on chain ${chainId}`
       );
     } catch (e) {
       console.error("Failed to subscribe to event", event.name, address, e);

@@ -26,25 +26,44 @@ const NetworkRegistryDecodedAbi = APP_ABIS.NETWORK_REGISTRY
   }));
 
 export type EventHandler =
-  "StoreNetworkRegistry" | "StoreMember" | "StoreSyncAction";
+  "StoreNetworkRegistry" | "StoreMember" | "StoreSyncAction" | "StoreMemberAction" | "StoreRegistryUpdate";
 
 export type EventHandlerType = {
+  aggregateByTxHash: boolean;
   event: string;
   handler: EventHandler;
 };
 
 export const NETWORK_REGISTRY_EVENTS: Array<EventHandlerType> = [
   {
+    aggregateByTxHash: false,
     event: "event NetworkRegistryUpdated(uint32 indexed _chainId, address indexed _registryAddress, uint32 indexed _domainId, address _delegate)",
     handler: "StoreNetworkRegistry" as EventHandler,
   },
   {
+    aggregateByTxHash: false,
     event: "event SyncMessageSubmitted(bytes32 indexed _transferId, uint32 indexed _chainId, bytes4 indexed _action, address _registryAddress)",
     handler: "StoreSyncAction" as EventHandler,
   },
   {
+    aggregateByTxHash: false,
     event: "event SyncActionPerformed(bytes32 indexed _transferId, uint32 indexed _originDomain, bytes4 indexed _action, bool _success, address _originSender)",
     handler: "StoreSyncAction" as EventHandler, // TODO: own handler
+  },
+  {
+    aggregateByTxHash: false, // TODO:
+    event: "event NewMember(address indexed _memberAddress, uint32 _startDate, uint32 _activityMultiplier)",
+    handler: "StoreMemberAction" as EventHandler,
+  },
+  {
+    aggregateByTxHash: false, // TODO:
+    event: "event UpdateMember(address indexed _memberAddress, uint32 _activityMultiplier, uint32 _startDate, uint32 _secondsActive)",
+    handler: "StoreMemberAction" as EventHandler,
+  },
+  {
+    aggregateByTxHash: false,
+    event: "event RegistryActivityUpdate(uint32 _timestamp, uint256 _totalMemberUpdates)",
+    handler: "StoreRegistryUpdate" as EventHandler,
   },
 
   // TODO: events
@@ -53,10 +72,7 @@ export const NETWORK_REGISTRY_EVENTS: Array<EventHandlerType> = [
 
   // event SplitsDistributionUpdated(address _split, bytes32 _splitHash, uint32 _splitDistributorFee)
 
-  // event NewMember(address indexed _memberAddress, uint32 _startDate, uint32 _activityMultiplier)
-  // event UpdateMember(address indexed _memberAddress, uint32 _activityMultiplier, uint32 _startDate, uint32 _secondsActive)
   // event UpdateMemberSeconds(address indexed _memberAddress, uint32 _secondsActive)
-  // event RegistryActivityUpdate(uint32 _timestamp, uint256 _totalMemberUpdates)
 ];
 
 type ReplicaRegistryLog = {
@@ -78,6 +94,7 @@ const hasArgs = (obj: unknown): obj is { args: unknown } => {
 };
 
 const storeNetworkRegistry = async (
+  _: string,
   networkRegistryLog: Log,
   publicClient: PublicClient,
   timestamp: BigInt
@@ -138,6 +155,7 @@ const storeNetworkRegistry = async (
 };
 
 const storeSyncAction = async (
+  _: string,
   syncActionLog: Log,
   publicClient: PublicClient,
   timestamp: BigInt
@@ -182,9 +200,9 @@ const storeSyncAction = async (
       const id = await db.syncActions
         .put(decodedSyncAction, uid);
   
-      console.log(`Stored sync action ${decodedSyncAction} at ${id}`);
+      console.log(`Stored sync action at ${id}`);
     } catch (e) {
-      console.error("Failed to store syc action", e);
+      console.error("Failed to store sync action", e);
     }
   }
 
@@ -192,6 +210,7 @@ const storeSyncAction = async (
 };
 
 const storeMember = async (
+  eventName: string,
   memberLog: Log,
   publicClient: PublicClient,
   timestamp: BigInt
@@ -204,6 +223,86 @@ const storeMember = async (
   console.log('storeMember', storeMember);
 };
 
+const storeMemberUpdateActions = async (
+  eventName: string,
+  memberActionLog: Log,
+  _: PublicClient,
+  timestamp: BigInt
+) => {
+  if (!hasArgs(memberActionLog)) {
+    console.error("Invalid log");
+    return;
+  }
+
+  console.log('storeMemberUpdateActions', memberActionLog);
+
+  const logArgs = memberActionLog.args;
+
+  if (
+    typeof logArgs === "object" &&
+    logArgs !== null &&
+    "_memberAddress" in logArgs &&
+    "_startDate" in logArgs &&
+    "_activityMultiplier" in logArgs
+  ) {
+    const decodedMemberAction = {
+      action: eventName,
+      memberAddress: logArgs._memberAddress as EthAddress,
+      timestamp,
+      txHash: memberActionLog.transactionHash as string,
+    }
+    const uid = decodedMemberAction.txHash + decodedMemberAction.action + decodedMemberAction.memberAddress;
+    try {
+      console.log("Storing memberAction", uid, decodedMemberAction);
+      const id = await db.memberActions
+        .put(decodedMemberAction, uid);
+  
+      console.log(`Stored member action at ${id}`);
+    } catch (e) {
+      console.error("Failed to store member action", e);
+    }
+  }
+};
+
+const storeRegistryUpdate = async (
+  eventName: string,
+  activityUpdateLog: Log,
+  _: PublicClient,
+  timestamp: BigInt
+) => {
+  if (!hasArgs(activityUpdateLog)) {
+    console.error("Invalid log");
+    return;
+  }
+
+  console.log('storeRegistryUpdate', activityUpdateLog);
+
+  const logArgs = activityUpdateLog.args;
+
+  if (
+    typeof logArgs === "object" &&
+    logArgs !== null &&
+    "_timestamp" in logArgs &&
+    "_totalMemberUpdates" in logArgs
+  ) {
+    const decodedActivityUpdate = {
+      timestamp: BigInt(logArgs._timestamp as string),
+      totalMembers: BigInt(logArgs._totalMemberUpdates as string),
+      txHash: activityUpdateLog.transactionHash as string,
+    };
+    const uid = decodedActivityUpdate.txHash;
+    try {
+      console.log("Storing activityUpdate", decodedActivityUpdate);
+      const id = await db.activityUpdates
+        .put(decodedActivityUpdate, uid);
+  
+      console.log(`Stored activity update at ${id}`);
+    } catch (e) {
+      console.error("Failed to store activity update", e);
+    }
+  }
+};
+
 export const getEventHandler = (handler: EventHandler) => {
   switch (handler) {
     case "StoreNetworkRegistry":
@@ -212,6 +311,10 @@ export const getEventHandler = (handler: EventHandler) => {
       return storeMember;
     case "StoreSyncAction":
       return storeSyncAction;
+    case "StoreMemberAction":
+      return storeMemberUpdateActions;
+    case "StoreRegistryUpdate":
+      return storeRegistryUpdate;
     default:
       console.error(`No event handler found for ${handler}`);
       return undefined;

@@ -22,10 +22,14 @@ const useIndexer = () => {
         setIndexer(indexer);
 
         // NOTICE: uncomment this to reboot the indexer
-        // // await indexer.db.delete();
         // await indexer.db.subscriptions.clear();
         // await indexer.db.syncActions.clear();
+        // await indexer.db.activityUpdates.clear();
+        // await indexer.db.memberActions.clear();
         // await indexer.db.keyvals.clear();
+
+        // // NOTICE: run this once if you change the db schema
+        // await indexer.db.delete();
         
         // await indexer.db.keyvals.update(`posterState-${chainId}`);
 
@@ -56,6 +60,7 @@ const useIndexer = () => {
 
       NETWORK_REGISTRY_EVENTS.forEach((registryEvent: EventHandlerType) => {
         indexer.subscribe(
+          registryEvent.aggregateByTxHash,
           target.CHAIN_ID,
           target.REGISTRY_ADDRESS,
           parseAbiItem(registryEvent.event) as AbiEvent,
