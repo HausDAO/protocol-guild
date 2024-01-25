@@ -22,9 +22,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <HashRouter>
       <QueryClientProvider client={queryClient}>
-          <HausThemeProvider defaultDark={protocolGuildDarkTheme}>
+        <HausThemeProvider defaultDark={protocolGuildDarkTheme}>
           <App />
-          </HausThemeProvider>
+        </HausThemeProvider>
       </QueryClientProvider>
     </HashRouter>
   </React.StrictMode>

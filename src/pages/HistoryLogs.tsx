@@ -40,10 +40,6 @@ const EventContainer = styled.div`
 const ScrollableContainer = styled.div`
   max-height: 500px;
   overflow: scroll;
-`
-
-const StyledExplorerLink = styled(ExplorerLink)`
-  color: yellow;
 `;
 
 type AggMemberEvent = {
@@ -137,13 +133,13 @@ export const HistoryLogs = () => {
                     <div style={{margin: '0 2rem'}}>
                       <ParMd>{e.newMembers > 0 ? `${e.newMembers} new members`: ''}</ParMd>
                       <ParMd>{e.updateMembers > 0 ? `${e.updateMembers} updated members` : ''}</ParMd>
-                      <StyledExplorerLink
+                      <ExplorerLink
                         address={e.txHash}
                         chainId={daoChain as ValidNetworkBase}
                         type="tx"
                       >
                         View Transaction
-                      </StyledExplorerLink>
+                      </ExplorerLink>
                     </div>
                   </EventContainer>
                 ))}
@@ -159,13 +155,13 @@ export const HistoryLogs = () => {
                   <ParSm>{new Date(Number(e.timestamp) * 1000).toLocaleDateString()}</ParSm>
                   <div style={{margin: '0 2rem'}}>
                     <ParSm>Total Members: {Number(e.totalMembers)}</ParSm>
-                    <StyledExplorerLink
+                    <ExplorerLink
                       address={e.txHash}
                       chainId={daoChain as ValidNetworkBase}
                       type="tx"
                     >
                       View Transaction
-                    </StyledExplorerLink>
+                    </ExplorerLink>
                   </div>
                 </EventContainer>
               ))
