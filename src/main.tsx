@@ -9,7 +9,7 @@ import { App } from "./App";
 
 import "./App.css";
 
-import { pgDarkTheme } from "./themes/dark";
+import { protocolGuildDarkTheme } from "./themes/dark";
 
 // import { Buffer } from "buffer";
 // // This solves an issue when using WalletConnect and intercept Txs to create dao proposals
@@ -22,9 +22,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <HashRouter>
       <QueryClientProvider client={queryClient}>
-        <HausThemeProvider themeOverrides={pgDarkTheme}>
+          <HausThemeProvider defaultDark={protocolGuildDarkTheme}>
           <App />
-        </HausThemeProvider>
+          </HausThemeProvider>
       </QueryClientProvider>
     </HashRouter>
   </React.StrictMode>
