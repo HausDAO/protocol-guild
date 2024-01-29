@@ -6,6 +6,8 @@ import {
   CacheStoreName,
 } from "@daohaus/utils";
 
+import { HAUS_RPC } from "./keychain";
+
 const localforage = import("localforage").then(async (localforage) => {
   // workaround for https://github.com/localForage/localForage/issues/1038
   if (typeof window === "object") await localforage.default.ready();
@@ -75,7 +77,7 @@ export const fetchProfile = async (
 ): Promise<AccountProfile> => {
   const cachedProfile = await getCachedProfile({ address });
   if (cachedProfile) return cachedProfile;
-  const profile = await getProfileForAddress({ address });
+  const profile = await getProfileForAddress({ address, rpcUri: HAUS_RPC["0x1"] });
   cacheProfile({
     address,
     profile,
