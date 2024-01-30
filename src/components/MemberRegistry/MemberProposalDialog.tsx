@@ -1,7 +1,8 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import { useDHConnect } from "@daohaus/connect";
+import { ValidNetwork } from "@daohaus/keychain-utils";
 import { buildMultiCallTX, useTxBuilder } from "@daohaus/tx-builder";
 import {
   Spinner,
@@ -12,14 +13,15 @@ import {
   Link,
   ErrorText,
 } from "@daohaus/ui";
-import { handleErrorMessage, MulticallAction, ValidArgType } from "@daohaus/utils";
+import { EthAddress, handleErrorMessage, MulticallAction, ValidArgType } from "@daohaus/utils";
 
+import { ProposalDialog } from "../ProposalDialog";
 import { Registry } from "../../hooks/context/RegistryContext";
 import { useConnext } from "../../hooks/useConnext";
 import { APP_CONTRACT } from "../../legos/contract";
 import { ProposalTypeIds } from "../../legos/tx";
 import { StagingMember } from "../../types/Member.types";
-import { ProposalDialog } from "../ProposalDialog";
+import { fetchMembersShares } from "../../utils/dao";
 
 const ContentParagraph = styled.div`
   margin-bottom: 2rem;
@@ -52,6 +54,7 @@ export const MemberProposalDialog = ({
   const { errorToast, defaultToast, successToast } = useToast();
   const [isTxLoading, setIsTxLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [sharesToBurn, setSharesToBurn] = useState<Array<string>>([]);
 
   const { isIdle, isLoading, error, data: connextFeeData, refetch } = useConnext({
     network: registry.connextEnv,
@@ -80,6 +83,12 @@ export const MemberProposalDialog = ({
     );
   }, [stageMemberList]);
 
+  const inactiveMembers: Array<StagingMember> = useMemo(() => {
+    return editMembers.filter(
+      (member: StagingMember) => member.activityMultiplier === 0
+    );
+  }, [editMembers]);
+
   // NOTICE: multiplier that accounts for the total No. of cross-chain calls that will be performed on each replica
   const relayerFeesMultiplier = useMemo(() => {
     return BigInt(Number(newMembers.length > 0) + Number(editMembers.length > 0));
@@ -95,6 +104,20 @@ export const MemberProposalDialog = ({
     `${connextFeeData?.relayerFee} x ${relayerFeesMultiplier}`,
     `Balance: ${signerHasBalance}`
   );
+
+  useEffect(() => {
+    const fetchInactiveMemberShares = async() => {
+      const currentMemberShares = await fetchMembersShares({
+        dao: registry.daoId,
+        memberAddresses: inactiveMembers.map((m: StagingMember) => m.account as EthAddress),
+        networkId: registry.daoChain as ValidNetwork,
+      });
+      setSharesToBurn(currentMemberShares);
+    };
+    if (inactiveMembers.length) {
+      fetchInactiveMemberShares();
+    }
+  }, [inactiveMembers]);
 
   const handleTrigger = useCallback(() => {
     setIsTxLoading(true);
@@ -123,6 +146,10 @@ export const MemberProposalDialog = ({
       (member: StagingMember) => member.account
     );
 
+    const inactiveMemberAccounts = inactiveMembers.map(
+      (member: StagingMember) => member.account
+    );
+
     const registryActions: MulticallAction[] = [];
     if (editMemberAccounts.length) {
       const batchArgs: Array<ValidArgType> = [
@@ -142,6 +169,17 @@ export const MemberProposalDialog = ({
         method: "syncBatchUpdateMembersActivity",
         args: batchArgs,
         value: { type: "static", value: connextFeeData?.relayerFeeWei || "0" },
+      });
+    }
+
+    if (inactiveMemberAccounts.length) {
+      registryActions.push({
+        contract: APP_CONTRACT.CURRENT_DAO,
+        method: "burnShares",
+        args: [
+          { type: "static", value: inactiveMemberAccounts },
+          { type: "static", value: sharesToBurn },
+        ],
       });
     }
 
@@ -222,7 +260,9 @@ export const MemberProposalDialog = ({
     connextFeeData,
     newMembers,
     editMembers,
+    inactiveMembers,
     registry,
+    sharesToBurn,
   ]);
 
   const isConnectedToTargetChain = chainId === registry.daoChain
@@ -276,7 +316,17 @@ export const MemberProposalDialog = ({
           )}
           {editMembers.length > 0 && (
             <ParMd>
-              Updated Members: {`${editMembers.length}`}
+              Updated Members: {`${editMembers.length - (inactiveMembers.length || 0)}`}
+            </ParMd>
+          )}
+          {inactiveMembers.length > 0 && (
+            <ParMd>
+              Inactive Members: {`${inactiveMembers.length}`}
+            </ParMd>
+          )}
+          {sharesToBurn.length > 0 && (
+            <ParMd>
+              DAO Shares to Burn: {`${sharesToBurn.reduce((a, b) => a + BigInt(b), BigInt(0)) / BigInt(1e18)}`}
             </ParMd>
           )}
         </ContentParagraph>
