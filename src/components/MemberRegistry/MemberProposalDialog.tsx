@@ -289,10 +289,15 @@ export const MemberProposalDialog = ({
         actions: registryActions,
         // TODO:  (x6 for registry actions) +
         //        (x20 for minting shares) +
+        //        (x10 for burning shares) +
         //        (relayerFeesMultiplier * default_gasBufferMultiplier) +
         //        (need at least 150k extra to the 250k default for baal processing)
         // sample tx with 50 new members https://goerli.etherscan.io/tx/0x6922b8dc1c217d5ff88992ed0a60f12a39923300cf47df80ba1900c02859518e
-        gasBufferPercentage: 6 + (newMemberAccounts.length ? 20 : 0) + (Number(relayerFeesMultiplier.toString()) * 1.2) + 0.4,
+        gasBufferPercentage:
+          6 +
+          (accountsToMintShares.length ? 20 : 0) +
+          (inactiveMemberAccounts.length ? 10 : 0) +
+          (Number(relayerFeesMultiplier.toString()) * 1.2) + 0.4,
       }),
       lifeCycleFns: {
         onTxError: (error) => {
