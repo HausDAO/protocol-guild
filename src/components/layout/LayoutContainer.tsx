@@ -1,8 +1,8 @@
-import { useCallback, useMemo } from "react";
-import Particles from "react-particles";
+// import { useCallback, useMemo } from "react";
+// import Particles from "react-particles";
 import { Outlet, useLocation, useParams } from "react-router-dom";
-import type { Container, Engine } from "tsparticles-engine";
-import { loadSlim } from "tsparticles-slim";
+// import type { Container, Engine } from "tsparticles-engine";
+// import { loadSlim } from "tsparticles-slim";
 
 import { DHLayout, useDHConnect } from "@daohaus/connect";
 import { ValidNetwork } from "@daohaus/keychain-utils";
@@ -60,22 +60,22 @@ const Layout = ({
     daoChain: daoChain as string,
   });
 
-  const moreLinks = useMemo(() => {
-    return [
-      {
-        label: 'Bulk Upload',
-        href: `/membership`,
-      },
-      {
-        label: 'New Member',
-        href: `/newMember`,
-      },
-      {
-        label: 'Update Member Activity',
-        href: `/editMember`,
-      },
-    ];
-  }, []);
+  // const moreLinks = useMemo(() => {
+  //   return [
+  //     {
+  //       label: 'Bulk Upload',
+  //       href: `/membership`,
+  //     },
+  //     {
+  //       label: 'New Member',
+  //       href: `/newMember`,
+  //     },
+  //     {
+  //       label: 'Update Member Activity',
+  //       href: `/editMember`,
+  //     },
+  //   ];
+  // }, []);
 
   // const particlesInit = useCallback(async (engine: Engine) => {
   //   // console.log(engine);
@@ -137,11 +137,13 @@ const Layout = ({
         pathname={location.pathname}
         navLinks={[
           { label: "Home", href: `/` },
-          { label: "Registries", href: `registries` },
-          { label: "Activity Logs", href: `history` },
+          { label: "Registries", href: `/registries` },
+          { label: "Activity Logs", href: `/history` },
+          { label: "Bulk Edit", href: `/membership` },
+          { label: "DAO Proposals", href: `/proposals` },
         ]}
-        dropdownTriggerLabel="Membership"
-        dropdownLinks={moreLinks}
+        // dropdownTriggerLabel="Membership"
+        // dropdownLinks={moreLinks}
         leftNav={<H4>📒 Registry Manager 🖊️</H4>}
       >
         <CurrentDaoProvider

@@ -23,9 +23,11 @@ const useIndexer = () => {
 
         // NOTICE: uncomment this to reboot the indexer
         // await indexer.db.subscriptions.clear();
-        // await indexer.db.syncActions.clear();
-        // await indexer.db.activityUpdates.clear();
+        // await indexer.db.replicas.clear();
+        // await indexer.db.members.clear();
         // await indexer.db.memberActions.clear();
+        // await indexer.db.activityUpdates.clear();
+        // await indexer.db.syncActions.clear();
         // await indexer.db.keyvals.clear();
 
         // // NOTICE: run this once if you change the db schema
@@ -61,6 +63,7 @@ const useIndexer = () => {
       NETWORK_REGISTRY_EVENTS.forEach((registryEvent: EventHandlerType) => {
         indexer.subscribe(
           registryEvent.aggregateByTxHash,
+          registryEvent.daoProposal,
           target.CHAIN_ID,
           target.REGISTRY_ADDRESS,
           parseAbiItem(registryEvent.event) as AbiEvent,

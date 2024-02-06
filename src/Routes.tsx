@@ -16,10 +16,12 @@ import { EditMember } from "./pages/EditMember";
 import { Home } from "./pages/Home";
 import { HistoryLogs } from "./pages/HistoryLogs";
 import { NewMember } from "./pages/NewMember";
+import { Proposals } from "./pages/dao/Proposals";
 import { ReplicaConfig } from "./pages/ReplicaConfig";
 import { Registries } from "./pages/Registries";
 import { Settings } from "./pages/Settings";
-
+import { MULTI_DAO_ROUTER } from "@daohaus/moloch-v3-hooks";
+import { Proposal } from "./pages/dao/Proposal";
 
 export const Routes = ({
   setDaoChainId,
@@ -53,6 +55,10 @@ export const Routes = ({
         <Route path={`membership/`} element={<BulkUpload />} />
         <Route path={`settings/`} element={<Settings />} />
         <Route path={`history`} element={<HistoryLogs />} />
+        <Route path={`proposals`} element={<Proposals />} />
+      </Route>
+      <Route path={MULTI_DAO_ROUTER} element={<LayoutContainer />}>
+        <Route path="proposal/:proposalId" element={<Proposal />} />
       </Route>
     </Router>
   );

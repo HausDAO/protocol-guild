@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
+import { RiLinkM } from "react-icons/ri";
 import { useLiveQuery } from "dexie-react-hooks";
 import { groupBy } from "lodash";
 import styled from "styled-components";
 
 import { ExplorerLink } from "@daohaus/connect";
 import { ValidNetwork as ValidNetworkBase } from "@daohaus/keychain-utils";
-import { BiColumnLayout, CollapsibleCard, ParMd, ParSm, SingleColumnLayout } from "@daohaus/ui";
-import { truncateAddress, ZERO_ADDRESS } from "@daohaus/utils";
+import { BiColumnLayout, CollapsibleCard, Link, ParMd, ParSm, SingleColumnLayout } from "@daohaus/ui";
+import { truncateAddress } from "@daohaus/utils";
 
 import { RegistryDisplay } from "../components/molecules/RegistryDisplay";
 import { useCurrentRegistry } from "../hooks/context/RegistryContext";
@@ -43,7 +44,8 @@ const ScrollableContainer = styled.div`
 `;
 
 type AggMemberEvent = {
-  newMembers: number
+  newMembers: number;
+  proposalId?: string;
   updateMembers: number;
   timestamp: BigInt;
   txHash: string;
@@ -51,7 +53,7 @@ type AggMemberEvent = {
 
 export const HistoryLogs = () => {
   const [memberEvents, setMemberEvents] = useState<Array<AggMemberEvent>>([]);
-  const { daoChain, registryAddress, replicaChains } = useCurrentRegistry();
+  const { daoChain, daoId, registryAddress, replicaChains } = useCurrentRegistry();
 
   const syncEvents = useLiveQuery(
     () => db.syncActions.reverse().sortBy('timestamp'), // TODO: is sorting working?
@@ -59,7 +61,7 @@ export const HistoryLogs = () => {
   );
 
   const memberActions = useLiveQuery(
-    () => db.memberActions.toArray(),
+    () => db.memberActions.toArray(), // event data gets sorted later
     []
   );
 
@@ -113,8 +115,9 @@ export const HistoryLogs = () => {
           updateMembers: updateMemberActions.length,
           timestamp: actions[0].timestamp,
           txHash,
+          proposalId: actions[0].daoProposalId,
         }
-      }).sort((a, b) => b.timestamp > a.timestamp ? -1 : 1);
+      }).sort((a, b) => b.timestamp > a.timestamp ? 1 : -1);
       setMemberEvents(aggregatedMemberEvents);
     }
   }, [memberActions]);
@@ -127,12 +130,26 @@ export const HistoryLogs = () => {
           <SingleColumnLayout subtitle="Membership Activity">
             {memberEvents.length ? (
               <ScrollableContainer>
-                {memberEvents.map((e) => (
-                  <EventContainer>
-                    <ParSm>{new Date(Number(e.timestamp) * 1000).toLocaleDateString()}</ParSm>
+                {memberEvents.map((e, idx) => (
+                  <EventContainer key={`member-ev-container-${idx}`}>
+                    <div style={{display: 'flex', alignItems: 'center', maxWidth: '12rem'}}>
+                      <ParSm>{new Date(Number(e.timestamp) * 1000).toLocaleString().replaceAll(',', '')}</ParSm>
+                    </div>
                     <div style={{margin: '0 2rem'}}>
-                      <ParMd>{e.newMembers > 0 ? `${e.newMembers} new members`: ''}</ParMd>
-                      <ParMd>{e.updateMembers > 0 ? `${e.updateMembers} updated members` : ''}</ParMd>
+                      {e.newMembers > 0 && (
+                        <ParMd>{`${e.newMembers} new members`}</ParMd>
+                      )}
+                      {e.updateMembers > 0 && (
+                        <ParMd>{`${e.updateMembers} updated members`}</ParMd>
+                      )}
+                      <Link
+                        target="_self"
+                        href={`#/molochV3/${daoChain}/${daoId}/proposal/${e.proposalId}`}
+                        RightIcon={RiLinkM}
+                        showExternalIcon={false}
+                      >
+                        {`DAO Proposal #${e.proposalId}`}
+                      </Link>
                       <ExplorerLink
                         address={e.txHash}
                         chainId={daoChain as ValidNetworkBase}
@@ -150,21 +167,25 @@ export const HistoryLogs = () => {
           </SingleColumnLayout>
           <SingleColumnLayout subtitle="Registry Updates">
             {updateEvents?.length ? (
-              updateEvents.map((e) => (
-                <EventContainer>
-                  <ParSm>{new Date(Number(e.timestamp) * 1000).toLocaleDateString()}</ParSm>
-                  <div style={{margin: '0 2rem'}}>
-                    <ParSm>Total Members: {Number(e.totalMembers)}</ParSm>
-                    <ExplorerLink
-                      address={e.txHash}
-                      chainId={daoChain as ValidNetworkBase}
-                      type="tx"
-                    >
-                      View Transaction
-                    </ExplorerLink>
-                  </div>
-                </EventContainer>
-              ))
+              <ScrollableContainer>
+                {updateEvents.map((e, idx) => (
+                  <EventContainer key={`update-ev-container-${idx}`}>
+                    <div style={{maxWidth: '12rem'}}>
+                      <ParSm>{new Date(Number(e.timestamp) * 1000).toLocaleString().replaceAll(',', '')}</ParSm>
+                    </div>
+                    <div style={{margin: '0 2rem'}}>
+                      <ParSm>Total Members: {Number(e.totalMembers)}</ParSm>
+                      <ExplorerLink
+                        address={e.txHash}
+                        chainId={daoChain as ValidNetworkBase}
+                        type="tx"
+                      >
+                        View Transaction
+                      </ExplorerLink>
+                    </div>
+                  </EventContainer>
+                ))}
+              </ScrollableContainer>
             ) : (
               <ParMd>Indexing events...</ParMd>
             )}
@@ -211,7 +232,7 @@ export const HistoryLogs = () => {
                 )}
                 width="100%"
               >
-                <ParSm>{new Date(Number(record.timestamp) * 1000).toLocaleDateString()}</ParSm>
+                <ParSm>{new Date(Number(record.timestamp) * 1000).toLocaleString().replaceAll(',', '')}</ParSm>
                 <ParSm>Action: {record.actionId}</ParSm>
               </CollapsibleCard>
             </div>

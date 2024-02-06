@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDHConnect } from "@daohaus/connect";
 import { useTxBuilder } from "@daohaus/tx-builder";
 import { Spinner, useToast, GatedButton, ParMd, ErrorText } from "@daohaus/ui";
@@ -39,6 +39,10 @@ export const SyncUpdateAllDialog = ({
   const [isSuccess, setIsSuccess] = useState(false);
   const [isTxLoading, setIsTxLoading] = useState(false);
   const [registryState , setRegistryState] = useState<RegistryState>({ warningMsg: '' });
+
+  const activeMembersSorted = useMemo(() => {
+    return registryData.membersSorted.filter((m) => m.activityMultiplier > 0);
+  }, [registryData]);
 
   useEffect(() => {
     const checkRegistryPendingState = async () => {
@@ -95,7 +99,7 @@ export const SyncUpdateAllDialog = ({
           value: connextFeeData?.relayerFeeWei || BigInt(0),
         },
         args: [
-          { type: "static", value: registryData.membersSorted.map((m) => m.account) as string[] },
+          { type: "static", value: activeMembersSorted.map((m) => m.account) as string[] },
           { type: "static", value: "0" }, // split distribution fee
           {
             type: "static",
@@ -146,8 +150,9 @@ export const SyncUpdateAllDialog = ({
         <GatedButton
           color="secondary"
           rules={[isConnectedToTargetChain]}
+          style={{ padding: "0 1rem" }}
         >
-          {isLoadingConnext ? <Spinner size="2rem" strokeWidth=".2rem" /> : "Sync Registry + 0xSplit Distribution"}
+          {isLoadingConnext ? <Spinner size="2rem" strokeWidth=".2rem" /> : "Update Registry + 0xSplits"}
         </GatedButton>
       }
       proposalAdditionalInfo={
@@ -173,7 +178,7 @@ export const SyncUpdateAllDialog = ({
       proposalDetails={
         <ContentParagraph>
           <ParMd>
-            Total Members: {`${registryData.totalMembers}`}
+            Total Active Members: {`${activeMembersSorted.length}`}
           </ParMd>
         </ContentParagraph>
       }
@@ -182,12 +187,12 @@ export const SyncUpdateAllDialog = ({
           color="primary"
           rules={[isConnectedToTargetChain, registryStateOk, vaultHasEnoughBalance]}
           onClick={handleTrigger}
-          style={{ marginTop: "2rem" }}
+          style={{ marginTop: "2rem", padding: "0 1rem" }}
         >
           {isTxLoading ? (
             <Spinner size="2rem" strokeWidth=".2rem" />
           ) : (
-            "Submit Proposal"
+            "Submit Tx"
           )}
         </GatedButton>
       }

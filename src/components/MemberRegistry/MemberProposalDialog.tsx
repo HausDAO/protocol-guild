@@ -33,9 +33,9 @@ const DialogActions = styled.div`
 `;
 
 const PROPOSAL_DESCRIPTION = `
-  This action will submit a proposal to the DAO to update the home member registry and any existing
-  replica registries. The proposal will set activity modifiers for new/existing members and will also
-  mint shares for new members.
+  This action will submit a proposal to the DAO to update the main member registry and any existing
+  replica registries. The proposal will set the activity status for new/existing members and will also
+  use this multiplier factor to mint/burn DAO membership shares.
 `;
 
 export const MemberProposalDialog = ({
@@ -55,6 +55,8 @@ export const MemberProposalDialog = ({
   const [isTxLoading, setIsTxLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [sharesToBurn, setSharesToBurn] = useState<Array<string>>([]);
+  const [newMemberShares, setNewMemberShares] = useState<Array<EthAddress>>([]);
+  const [accountsToRestoreShares, setAccountsToRestoreShares] = useState<Array<EthAddress>>([]);
 
   const { isIdle, isLoading, error, data: connextFeeData, refetch } = useConnext({
     network: registry.connextEnv,
@@ -76,6 +78,17 @@ export const MemberProposalDialog = ({
       (member: StagingMember) => member.isNewMember
     );
   }, [stageMemberList]);
+  
+  const noNewMembersError = useMemo(() => {
+    if (
+      newMembers.some(
+        (member: StagingMember) => member.activityMultiplier === 0
+      )
+    ) {
+      return 'New members cannot have activityMultiplier set to zero';
+    }
+    return true;
+  }, [newMembers]);
 
   const editMembers = useMemo(() => {
     return stageMemberList.filter(
@@ -106,7 +119,28 @@ export const MemberProposalDialog = ({
   );
 
   useEffect(() => {
-    const fetchInactiveMemberShares = async() => {
+    const fetchMemberShares = async () => {
+      const memberAddresses: Array<EthAddress> = newMembers
+        .filter(
+          (m: StagingMember) => m.activityMultiplier > 0
+        ).map((m: StagingMember) => m.account as EthAddress);
+      const currentMemberShares = await fetchMembersShares({
+        dao: registry.daoId,
+        memberAddresses: memberAddresses,
+        networkId: registry.daoChain as ValidNetwork,
+      });
+      const toMintAddresses = memberAddresses.filter(
+        (_, idx) => BigInt(currentMemberShares[idx]) === BigInt(0)
+      );
+      setNewMemberShares(toMintAddresses);
+    };
+    if (registry.sharesToMint > 0) {
+      fetchMemberShares();
+    }
+  }, [newMembers, registry]);
+
+  useEffect(() => {
+    const fetchInactiveMemberShares = async () => {
       const currentMemberShares = await fetchMembersShares({
         dao: registry.daoId,
         memberAddresses: inactiveMembers.map((m: StagingMember) => m.account as EthAddress),
@@ -119,24 +153,34 @@ export const MemberProposalDialog = ({
     }
   }, [inactiveMembers]);
 
+  useEffect(() => {
+    const fetchMemberShares = async () => {
+      const activeMemberAddresses: Array<EthAddress> = editMembers
+        .filter(
+          (m: StagingMember) => m.activityMultiplier > 0
+        ).map((m: StagingMember) => m.account as EthAddress);
+      const activeMemberShares = await fetchMembersShares({
+        dao: registry.daoId,
+        memberAddresses: activeMemberAddresses,
+        networkId: registry.daoChain as ValidNetwork,
+      });
+      const missingSharesAddresses = activeMemberAddresses.filter(
+        (_, idx) => BigInt(activeMemberShares[idx]) === BigInt(0)
+      );
+      setAccountsToRestoreShares(missingSharesAddresses);
+    }
+    if (editMembers.length) {
+      fetchMemberShares();
+    }
+  }, [editMembers]);
+
+  const accountsToMintShares = useMemo(() => {
+    return [...newMemberShares, ...accountsToRestoreShares];
+  }, [newMemberShares, accountsToRestoreShares]);
+
   const handleTrigger = useCallback(() => {
     setIsTxLoading(true);
     setIsSuccess(false);
-
-    const newMemberActivityMods = newMembers.map(
-      (member: StagingMember) => member.activityMultiplier
-    );
-    const newMemberAccounts = newMembers.map(
-      (member: StagingMember) => member.account
-    );
-    const newMemberStartDates = newMembers.map(
-      (member: StagingMember) => member.startDate
-    );
-    const newMemberShares = registry.sharesToMint > 0
-      ? newMembers.map(
-        () => registry.sharesToMint.toString()
-      )
-      : [];
 
     const editMemberActivityMods = editMembers.map(
       (member: StagingMember) => member.activityMultiplier
@@ -183,6 +227,16 @@ export const MemberProposalDialog = ({
       });
     }
 
+    const newMemberActivityMods: Array<number> = newMembers.map(
+      (member: StagingMember) => member.activityMultiplier
+    );
+    const newMemberAccounts = newMembers.map(
+      (member: StagingMember) => member.account
+    );
+    const newMemberStartDates = newMembers.map(
+      (member: StagingMember) => member.startDate
+    );
+
     if (newMemberAccounts.length) {
       const batchArgs: Array<ValidArgType> = [
         { type: "static", value: newMemberAccounts },
@@ -203,17 +257,20 @@ export const MemberProposalDialog = ({
         args: batchArgs,
         value: { type: "static", value: connextFeeData?.relayerFeeWei || "0" },
       });
+    }
 
-      if (newMemberShares.length > 0) {
-        registryActions.push({
-          contract: APP_CONTRACT.CURRENT_DAO,
-          method: "mintShares",
-          args: [
-            { type: "static", value: newMemberAccounts },
-            { type: "static", value: newMemberShares },
-          ],
-        });
-      }
+    if (accountsToMintShares.length > 0) {
+      const memberShareAmounts = accountsToMintShares.map(
+        () => registry.sharesToMint.toString()
+      );
+      registryActions.push({
+        contract: APP_CONTRACT.CURRENT_DAO,
+        method: "mintShares",
+        args: [
+          { type: "static", value: accountsToMintShares },
+          { type: "static", value: memberShareAmounts },
+        ],
+      });
     }
 
     fireTransaction({
@@ -257,11 +314,14 @@ export const MemberProposalDialog = ({
       },
     });
   }, [
+    accountsToMintShares,
     connextFeeData,
-    newMembers,
     editMembers,
+    hasReplicas,
     inactiveMembers,
+    newMembers,
     registry,
+    relayerFeesMultiplier,
     sharesToBurn,
   ]);
 
@@ -287,6 +347,11 @@ export const MemberProposalDialog = ({
           )}
         </GatedButton>
       }
+      error={
+        noNewMembersError !== true ? (
+            <ErrorText>{noNewMembersError}</ErrorText>
+        ) : null
+      }
       proposalAdditionalInfo={
         <>
           {registry.replicaRegistries.length > 0 && (  
@@ -309,11 +374,6 @@ export const MemberProposalDialog = ({
               New Members: {`${newMembers.length}`}
             </ParMd>
           )}
-          {registry.sharesToMint > 0 && (
-            <ParMd>
-              DAO Shares to Mint: {`${registry.sharesToMint / BigInt(1e18)} per new member`}
-            </ParMd>
-          )}
           {editMembers.length > 0 && (
             <ParMd>
               Updated Members: {`${editMembers.length - (inactiveMembers.length || 0)}`}
@@ -322,6 +382,11 @@ export const MemberProposalDialog = ({
           {inactiveMembers.length > 0 && (
             <ParMd>
               Inactive Members: {`${inactiveMembers.length}`}
+            </ParMd>
+          )}
+          {registry.sharesToMint > 0 && accountsToMintShares.length > 0 && (
+            <ParMd>
+              DAO Shares to Mint: {`${BigInt(accountsToMintShares.length) * registry.sharesToMint / BigInt(1e18)}`}
             </ParMd>
           )}
           {sharesToBurn.length > 0 && (
@@ -334,9 +399,9 @@ export const MemberProposalDialog = ({
       proposalSubmitTrigger={
         <GatedButton
           color="primary"
-          rules={[isConnectedToTargetChain, vaultHasEnoughBalance]}
+          rules={[isConnectedToTargetChain, vaultHasEnoughBalance, noNewMembersError]}
           onClick={handleTrigger}
-          style={{ marginTop: "2rem" }}
+          style={{ marginTop: "2rem", padding: "0 1rem" }}
         >
           {isTxLoading ? (
             <Spinner size="2rem" strokeWidth=".2rem" />

@@ -16,6 +16,7 @@ import {
   db,
 } from "./db";
 import { APP_ABIS } from "../../legos/abis";
+import { MolochV3Proposal } from "@daohaus/moloch-v3-data";
 
 
 const NetworkRegistryDecodedAbi = APP_ABIS.NETWORK_REGISTRY
@@ -30,6 +31,7 @@ export type EventHandler =
 
 export type EventHandlerType = {
   aggregateByTxHash: boolean;
+  daoProposal: boolean;
   event: string;
   handler: EventHandler;
 };
@@ -37,31 +39,37 @@ export type EventHandlerType = {
 export const NETWORK_REGISTRY_EVENTS: Array<EventHandlerType> = [
   {
     aggregateByTxHash: false,
+    daoProposal: true,
     event: "event NetworkRegistryUpdated(uint32 indexed _chainId, address indexed _registryAddress, uint32 indexed _domainId, address _delegate)",
     handler: "StoreNetworkRegistry" as EventHandler,
   },
   {
     aggregateByTxHash: false,
+    daoProposal: true,
     event: "event SyncMessageSubmitted(bytes32 indexed _transferId, uint32 indexed _chainId, bytes4 indexed _action, address _registryAddress)",
     handler: "StoreSyncAction" as EventHandler,
   },
   {
     aggregateByTxHash: false,
+    daoProposal: false,
     event: "event SyncActionPerformed(bytes32 indexed _transferId, uint32 indexed _originDomain, bytes4 indexed _action, bool _success, address _originSender)",
     handler: "StoreSyncAction" as EventHandler, // TODO: own handler
   },
   {
     aggregateByTxHash: false, // TODO:
+    daoProposal: true,
     event: "event NewMember(address indexed _memberAddress, uint32 _startDate, uint32 _activityMultiplier)",
     handler: "StoreMemberAction" as EventHandler,
   },
   {
     aggregateByTxHash: false, // TODO:
+    daoProposal: true,
     event: "event UpdateMember(address indexed _memberAddress, uint32 _activityMultiplier, uint32 _startDate, uint32 _secondsActive)",
     handler: "StoreMemberAction" as EventHandler,
   },
   {
     aggregateByTxHash: false,
+    daoProposal: false,
     event: "event RegistryActivityUpdate(uint32 _timestamp, uint256 _totalMemberUpdates)",
     handler: "StoreRegistryUpdate" as EventHandler,
   },
@@ -158,7 +166,8 @@ const storeSyncAction = async (
   _: string,
   syncActionLog: Log,
   publicClient: PublicClient,
-  timestamp: BigInt
+  timestamp: BigInt,
+  daoProposal: MolochV3Proposal | undefined = undefined
 ) => {
   if (!hasArgs(syncActionLog)) {
     console.error("Invalid log");
@@ -190,6 +199,7 @@ const storeSyncAction = async (
       submitted: true,
       processed: false,
       timestamp,
+      daoProposalId: daoProposal?.proposalId,
     };
 
     const uid =
@@ -213,7 +223,8 @@ const storeMember = async (
   eventName: string,
   memberLog: Log,
   publicClient: PublicClient,
-  timestamp: BigInt
+  timestamp: BigInt,
+  daoProposal: MolochV3Proposal | undefined = undefined
 ) => {
   if (!hasArgs(storeMember)) {
     console.error("Invalid log");
@@ -227,7 +238,8 @@ const storeMemberUpdateActions = async (
   eventName: string,
   memberActionLog: Log,
   _: PublicClient,
-  timestamp: BigInt
+  timestamp: BigInt,
+  daoProposal: MolochV3Proposal | undefined = undefined
 ) => {
   if (!hasArgs(memberActionLog)) {
     console.error("Invalid log");
@@ -250,6 +262,7 @@ const storeMemberUpdateActions = async (
       memberAddress: logArgs._memberAddress as EthAddress,
       timestamp,
       txHash: memberActionLog.transactionHash as string,
+      daoProposalId: daoProposal?.proposalId,
     }
     const uid = decodedMemberAction.txHash + decodedMemberAction.action + decodedMemberAction.memberAddress;
     try {
@@ -268,7 +281,8 @@ const storeRegistryUpdate = async (
   eventName: string,
   activityUpdateLog: Log,
   _: PublicClient,
-  timestamp: BigInt
+  timestamp: BigInt,
+  __: MolochV3Proposal | undefined = undefined
 ) => {
   if (!hasArgs(activityUpdateLog)) {
     console.error("Invalid log");

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { ParLg } from "@daohaus/ui";
+import { Checkbox, ParLg } from "@daohaus/ui";
 
 import { MemberRegistryInfo } from "./MemberRegistryInfo";
 import { SyncUpdateAllDialog } from "./SyncUpdateAllDialog";
@@ -9,6 +9,7 @@ import { CSVDownloaderButton } from "../molecules/CsvDownloaderButton";
 import { Member } from "../../types/Member.types";
 import { RegistryData } from "../../utils/registry";
 import { Registry } from "../../hooks/context/RegistryContext";
+import { useMemo, useState } from "react";
 
 type MemberRegistryProps = {
   membersList: Member[];
@@ -27,13 +28,19 @@ const ActionContainer = styled.div`
 
 export const MemberRegistry = (props: MemberRegistryProps) => {
   const { membersList, lastUpdate, refetch, registry, registryData } = props;
+  const [showAll, toggleShowAll] = useState<boolean | "indeterminate">(false);
+
+  const activeMembers = useMemo(() => {
+    return membersList.filter((m) => m.activityMultiplier > 0);
+  }, [membersList]);
 
   return (
     <>
       {membersList.length ? (
         <>
-          <MemberRegistryInfo memberList={membersList} lastUpdate={lastUpdate} />
+          <MemberRegistryInfo memberList={showAll ? membersList : activeMembers} lastUpdate={lastUpdate} />
           <ActionContainer>
+            <Checkbox title="Show Inactive Members" onCheckedChange={(checked) => toggleShowAll(checked)} />
             <CSVDownloaderButton registryData={registryData} />
             <SyncUpdateAllDialog
               onSuccess={() => {
@@ -44,7 +51,7 @@ export const MemberRegistry = (props: MemberRegistryProps) => {
             />
           </ActionContainer>
 
-          <MemberTable memberList={membersList}></MemberTable>
+          <MemberTable memberList={showAll ? membersList : activeMembers}></MemberTable>
         </>
       ) : (
         <ParLg>No members found</ParLg>

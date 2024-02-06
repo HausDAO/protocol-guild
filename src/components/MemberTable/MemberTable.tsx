@@ -1,10 +1,12 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import moment from "moment";
-import { Bold, DataLg, H2, ParMd } from "@daohaus/ui";
+import { DataLg, ParMd } from "@daohaus/ui";
 import {
+  SortingState,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -46,11 +48,25 @@ const columns = [
 
 export const MemberTable = ({ memberList }: { memberList: Member[] }) => {
   
-  const [data] = React.useState(() => [...memberList]);
+  const [sorting, setSorting] = useState<SortingState>([{
+    id: "percAlloc",
+    desc: true,
+  }]);
+  const [data, setData] = useState(() => [...memberList], );
+
+  useEffect(() => {
+    setData([...memberList]);
+  }, [memberList]);
+
   const table = useReactTable({
     data,
     columns,
+    state: {
+      sorting
+    },
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
   });
 
   return (
@@ -63,10 +79,28 @@ export const MemberTable = ({ memberList }: { memberList: Member[] }) => {
                 <DataLg>
                   {header.isPlaceholder
                     ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                    : (
+                      <div
+                        {...{
+                          className: header.column.getCanSort()
+                            ? 'cursor-pointer select-none'
+                            : '',
+                          onClick: header.column.getToggleSortingHandler(),
+                        }}
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                        {
+                          {
+                            asc: '🔼',
+                            desc: '🔽',
+                          }[header.column.getIsSorted() as string] ?? null
+                        }
+                      </div>
+                    )
+                  } 
                 </DataLg>
               </th>
             ))}

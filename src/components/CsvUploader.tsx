@@ -52,6 +52,8 @@ export const CsvUploader = ({
       return "Invalid number of columns in CSV data";
     }
 
+    const accounts: Array<string> = [];
+
     for (const row of csvData.slice(1) as []) {
       if (
         !row[0] ||
@@ -60,6 +62,11 @@ export const CsvUploader = ({
       ) {
         return `Invalid address in CSV data (value: ${row[0]})`;
       }
+      const address = (row[0] as string).toLowerCase();
+      if (accounts.includes(address)) {
+        return `Duplicate address in CSV data (${address})`
+      }
+      accounts.push(address);
       const multiplier = Number(row[1]);
       if (
         !row[1] ||
