@@ -6,11 +6,12 @@ import styled from "styled-components";
 
 import { ExplorerLink } from "@daohaus/connect";
 import { ValidNetwork as ValidNetworkBase } from "@daohaus/keychain-utils";
-import { BiColumnLayout, CollapsibleCard, Link, ParMd, ParSm, SingleColumnLayout } from "@daohaus/ui";
+import { BiColumnLayout, Button, CollapsibleCard, Link, ParMd, ParSm, SingleColumnLayout, WarningText } from "@daohaus/ui";
 import { truncateAddress } from "@daohaus/utils";
 
 import { RegistryDisplay } from "../components/molecules/RegistryDisplay";
 import { useCurrentRegistry } from "../hooks/context/RegistryContext";
+import { useIndexer } from "../hooks/useIndexer";
 import { useNetworkRegistry } from "../hooks/useRegistry";
 import { db, SyncAction } from "../utils/indexer";
 import { HAUS_RPC, ValidNetwork } from "../utils/keychain";
@@ -54,6 +55,7 @@ type AggMemberEvent = {
 export const HistoryLogs = () => {
   const [memberEvents, setMemberEvents] = useState<Array<AggMemberEvent>>([]);
   const { daoChain, daoId, registryAddress, replicaChains } = useCurrentRegistry();
+  const { initIndexer } = useIndexer();
 
   const syncEvents = useLiveQuery(
     () => db.syncActions.reverse().sortBy('timestamp'), // TODO: is sorting working?
@@ -123,122 +125,130 @@ export const HistoryLogs = () => {
   }, [memberActions]);
 
   return (
-    <BiColumnLayout
-      title="Member Registry - Activity History"
-      left={
-        <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
-          <SingleColumnLayout subtitle="Membership Activity">
-            {memberEvents.length ? (
-              <ScrollableContainer>
-                {memberEvents.map((e, idx) => (
-                  <EventContainer key={`member-ev-container-${idx}`}>
-                    <div style={{display: 'flex', alignItems: 'center', maxWidth: '12rem'}}>
-                      <ParSm>{new Date(Number(e.timestamp) * 1000).toLocaleString().replaceAll(',', '')}</ParSm>
-                    </div>
-                    <div style={{margin: '0 2rem'}}>
-                      {e.newMembers > 0 && (
-                        <ParMd>{`${e.newMembers} new members`}</ParMd>
-                      )}
-                      {e.updateMembers > 0 && (
-                        <ParMd>{`${e.updateMembers} updated members`}</ParMd>
-                      )}
-                      <Link
-                        target="_self"
-                        href={`#/molochV3/${daoChain}/${daoId}/proposal/${e.proposalId}`}
-                        RightIcon={RiLinkM}
-                        showExternalIcon={false}
-                      >
-                        {`DAO Proposal #${e.proposalId}`}
-                      </Link>
-                      <ExplorerLink
-                        address={e.txHash}
-                        chainId={daoChain as ValidNetworkBase}
-                        type="tx"
-                      >
-                        View Transaction
-                      </ExplorerLink>
-                    </div>
-                  </EventContainer>
-                ))}
-              </ScrollableContainer>
-            ) : (
-              <ParMd>Indexing events...</ParMd>
-            )}
+    <div style={{display: 'flex', flexDirection: 'column'}}>
+      <BiColumnLayout
+        title="Member Registry - Activity History"
+        left={
+          <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
+            <SingleColumnLayout subtitle="Membership Activity">
+              {memberEvents.length ? (
+                <ScrollableContainer>
+                  {memberEvents.map((e, idx) => (
+                    <EventContainer key={`member-ev-container-${idx}`}>
+                      <div style={{display: 'flex', alignItems: 'center', maxWidth: '12rem'}}>
+                        <ParSm>{new Date(Number(e.timestamp) * 1000).toLocaleString().replaceAll(',', '')}</ParSm>
+                      </div>
+                      <div style={{margin: '0 2rem'}}>
+                        {e.newMembers > 0 && (
+                          <ParMd>{`${e.newMembers} new members`}</ParMd>
+                        )}
+                        {e.updateMembers > 0 && (
+                          <ParMd>{`${e.updateMembers} updated members`}</ParMd>
+                        )}
+                        <Link
+                          target="_self"
+                          href={`#/molochV3/${daoChain}/${daoId}/proposal/${e.proposalId}`}
+                          RightIcon={RiLinkM}
+                          showExternalIcon={false}
+                        >
+                          {`DAO Proposal #${e.proposalId}`}
+                        </Link>
+                        <ExplorerLink
+                          address={e.txHash}
+                          chainId={daoChain as ValidNetworkBase}
+                          type="tx"
+                        >
+                          View Transaction
+                        </ExplorerLink>
+                      </div>
+                    </EventContainer>
+                  ))}
+                </ScrollableContainer>
+              ) : (
+                <ParMd>Indexing events...</ParMd>
+              )}
+            </SingleColumnLayout>
+            <SingleColumnLayout subtitle="Registry Updates">
+              {updateEvents?.length ? (
+                <ScrollableContainer>
+                  {updateEvents.map((e, idx) => (
+                    <EventContainer key={`update-ev-container-${idx}`}>
+                      <div style={{maxWidth: '12rem'}}>
+                        <ParSm>{new Date(Number(e.timestamp) * 1000).toLocaleString().replaceAll(',', '')}</ParSm>
+                      </div>
+                      <div style={{margin: '0 2rem'}}>
+                        <ParSm>Total Members: {Number(e.totalMembers)}</ParSm>
+                        <ExplorerLink
+                          address={e.txHash}
+                          chainId={daoChain as ValidNetworkBase}
+                          type="tx"
+                        >
+                          View Transaction
+                        </ExplorerLink>
+                      </div>
+                    </EventContainer>
+                  ))}
+                </ScrollableContainer>
+              ) : (
+                <ParMd>Indexing events...</ParMd>
+              )}
+            </SingleColumnLayout>
+          </div>
+        }
+        right={
+          <SingleColumnLayout subtitle="Cross-chain Activity">
+            {!syncEvents?.length && <ParMd style={{ marginBottom: "1rem" }}>Indexing events...</ParMd>}
+            {syncEvents?.map((record, idx) => (
+              <div style={{ marginBottom: '2rem' }} key={`event-container-${idx}`}>
+                <CollapsibleCard key={`event-card-${idx}`}
+                  triggerLabel="More"
+                  collapsibleContent={(
+                    <SyncActionContainer>
+                      <SyncActionItem>
+                        <ParMd>Replica</ParMd>
+                        <ParSm>{replicaNames[record.toChainId] || truncateAddress(record.replicaAddress)}</ParSm>
+                      </SyncActionItem>
+                      <SyncActionItem>
+                        <ParMd>Tx Hash</ParMd>
+                        <RegistryDisplay
+                          address={record.replicaAddress}
+                          explorerNetworkId={record.fromChainId as ValidNetwork}
+                          truncate
+                          txHash={record.txHash}
+                        />
+                      </SyncActionItem>
+                      <SyncActionItem>
+                        <ParMd>Connext Tx</ParMd>
+                        <RegistryDisplay
+                          address={record.replicaAddress}
+                          connextExplorer
+                          explorerNetworkId={record.fromChainId as ValidNetwork}
+                          truncate
+                          txHash={record.transferId}
+                        />
+                      </SyncActionItem>
+                      <SyncActionItem>
+                        <ParMd>Status</ParMd>
+                        <ParSm>TODO</ParSm>
+                      </SyncActionItem>
+                    </SyncActionContainer>
+                  )}
+                  width="100%"
+                >
+                  <ParSm>{new Date(Number(record.timestamp) * 1000).toLocaleString().replaceAll(',', '')}</ParSm>
+                  <ParSm>Action: {record.actionId}</ParSm>
+                </CollapsibleCard>
+              </div>
+            ))}
           </SingleColumnLayout>
-          <SingleColumnLayout subtitle="Registry Updates">
-            {updateEvents?.length ? (
-              <ScrollableContainer>
-                {updateEvents.map((e, idx) => (
-                  <EventContainer key={`update-ev-container-${idx}`}>
-                    <div style={{maxWidth: '12rem'}}>
-                      <ParSm>{new Date(Number(e.timestamp) * 1000).toLocaleString().replaceAll(',', '')}</ParSm>
-                    </div>
-                    <div style={{margin: '0 2rem'}}>
-                      <ParSm>Total Members: {Number(e.totalMembers)}</ParSm>
-                      <ExplorerLink
-                        address={e.txHash}
-                        chainId={daoChain as ValidNetworkBase}
-                        type="tx"
-                      >
-                        View Transaction
-                      </ExplorerLink>
-                    </div>
-                  </EventContainer>
-                ))}
-              </ScrollableContainer>
-            ) : (
-              <ParMd>Indexing events...</ParMd>
-            )}
-          </SingleColumnLayout>
+        }
+      />
+      {(memberEvents.length || updateEvents?.length || syncEvents?.length) && (
+        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '24rem'}}>
+          <Button color='danger' placeholder="WARNING" onClick={() => initIndexer(true)}>Reset Indexer</Button>
+          <WarningText>WARNING: This action will reset the local indexer, starting to index event data from scratch</WarningText>
         </div>
-      }
-      right={
-        <SingleColumnLayout subtitle="Cross-chain Activity">
-          {!syncEvents?.length && <ParMd style={{ marginBottom: "1rem" }}>Indexing events...</ParMd>}
-          {syncEvents?.map((record, idx) => (
-            <div style={{ marginBottom: '2rem' }} key={`event-container-${idx}`}>
-              <CollapsibleCard key={`event-card-${idx}`}
-                triggerLabel="More"
-                collapsibleContent={(
-                  <SyncActionContainer>
-                    <SyncActionItem>
-                      <ParMd>Replica</ParMd>
-                      <ParSm>{replicaNames[record.toChainId] || truncateAddress(record.replicaAddress)}</ParSm>
-                    </SyncActionItem>
-                    <SyncActionItem>
-                      <ParMd>Tx Hash</ParMd>
-                      <RegistryDisplay
-                        address={record.replicaAddress}
-                        explorerNetworkId={record.fromChainId as ValidNetwork}
-                        truncate
-                        txHash={record.txHash}
-                      />
-                    </SyncActionItem>
-                    <SyncActionItem>
-                      <ParMd>Connext Tx</ParMd>
-                      <RegistryDisplay
-                        address={record.replicaAddress}
-                        connextExplorer
-                        explorerNetworkId={record.fromChainId as ValidNetwork}
-                        truncate
-                        txHash={record.transferId}
-                      />
-                    </SyncActionItem>
-                    <SyncActionItem>
-                      <ParMd>Status</ParMd>
-                      <ParSm>TODO</ParSm>
-                    </SyncActionItem>
-                  </SyncActionContainer>
-                )}
-                width="100%"
-              >
-                <ParSm>{new Date(Number(record.timestamp) * 1000).toLocaleString().replaceAll(',', '')}</ParSm>
-                <ParSm>Action: {record.actionId}</ParSm>
-              </CollapsibleCard>
-            </div>
-          ))}
-        </SingleColumnLayout>
-      }
-    />
+      )}
+    </div>
   );
 }

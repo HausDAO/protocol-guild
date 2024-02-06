@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AbiEvent, parseAbiItem } from "abitype";
 
 import { useDHConnect } from "@daohaus/connect";
@@ -13,46 +13,49 @@ const useIndexer = () => {
   const target = useTargets();
   const { publicClient, chainId } = useDHConnect();
 
-  useEffect(() => {
-    const initIndexer = async (chainId: ValidNetwork) => {
-      try {
-        console.log("InitIndexer...");
-        // check if the indexer has not been initialized
-        const indexer = new NetworkRegistryIndexer(publicClient!);
-        setIndexer(indexer);
-
-        // NOTICE: uncomment this to reboot the indexer
-        // await indexer.db.subscriptions.clear();
-        // await indexer.db.replicas.clear();
-        // await indexer.db.members.clear();
-        // await indexer.db.memberActions.clear();
-        // await indexer.db.activityUpdates.clear();
-        // await indexer.db.syncActions.clear();
-        // await indexer.db.keyvals.clear();
-
-        // // NOTICE: run this once if you change the db schema
-        // await indexer.db.delete();
-        
-        // await indexer.db.keyvals.update(`posterState-${chainId}`);
-
-        // Subscribe to Poster
-        //TODO better poster state management
-        if (!(await db.keyvals.get(`posterState-${chainId}`)) && !indexer) {
-          console.log("Initializing indexer...");
-          await db.keyvals.add(
-            { lastBlock: BigInt(target.START_BLOCK) },
-            `posterState-${chainId}`
-          );
-          console.log("Set START_BLOCK");
-        }
-      } catch (error) {
-        console.log("ERROR loading indexer");
-        console.error(error);
+  const initIndexer = useCallback(async (reset?: boolean) => {
+    try {
+      console.log("InitIndexer...");
+      // check if the indexer has not been initialized
+      const indexer = new NetworkRegistryIndexer(publicClient!);
+      
+      if (reset) {
+        // NOTICE: reboot the indexer
+        await indexer.db.subscriptions.clear();
+        await indexer.db.replicas.clear();
+        await indexer.db.members.clear();
+        await indexer.db.memberActions.clear();
+        await indexer.db.activityUpdates.clear();
+        await indexer.db.syncActions.clear();
+        await indexer.db.keyvals.clear();
       }
-    };
 
+      setIndexer(indexer);
+
+      // // NOTICE: run this once if you change the db schema
+      // await indexer.db.delete();
+      
+      // await indexer.db.keyvals.update(`posterState-${chainId}`);
+
+      // Subscribe to Poster
+      //TODO better poster state management
+      if (!(await db.keyvals.get(`posterState-${chainId}`)) && !indexer) {
+        console.log("Initializing indexer...");
+        await db.keyvals.add(
+          { lastBlock: BigInt(target.START_BLOCK) },
+          `posterState-${chainId}`
+        );
+        console.log("Set START_BLOCK");
+      }
+    } catch (error) {
+      console.log("ERROR loading indexer");
+      console.error(error);
+    }
+  }, [chainId, publicClient, setIndexer]);
+
+  useEffect(() => {
     if (chainId && publicClient && !indexer) {
-      initIndexer(chainId);
+      initIndexer();
     }
   }, []);
 
@@ -76,6 +79,7 @@ const useIndexer = () => {
 
   return {
     indexer,
+    initIndexer,
     client: publicClient,
   };
 };
