@@ -7,7 +7,7 @@ export default ({ mode }) => {
 
   return defineConfig({
     plugins: [react(), viteSingleFile()],
-    
+    // plugins: [react()], // original settings
     define: {
       "process.env": {
         NX_RIVET_KEY: process.env.VITE_RIVET_KEY,
@@ -23,6 +23,18 @@ export default ({ mode }) => {
         NX_ARBITRUM_ALCHEMY_KEY: process.env.VITE_ARBITRUM_ALCHEMY_KEY,
         NX_POLYGONPOS_ALCHEMY_KEY: process.env.VITE_POLYGONPOS_ALCHEMY_KEY,
         NODE_ENV: "16.6.0",
+
+        NX_GOERLI_RPC: process.env.VITE_GOERLI_RPC,
+        NX_GNOSISCHAIN_RPC: process.env.VITE_GNOSISCHAIN_RPC,
+        NX_OPTIMISM_RPC: process.env.VITE_OPTIMISM_RPC,
+        NX_POLYGONPOS_RPC: process.env.VITE_POLYGONPOS_RPC,
+        NX_ARBITRUM_RPC: process.env.VITE_ARBITRUM_RPC,
+        NX_SEPOLIA_RPC: process.env.VITE_SEPOLIA_RPC,
+        NX_BASE_RPC: process.env.VITE_BASE_RPC,
+        NX_SEPOLIASCAN_KEY: process.env.VITE_SEPOLIASCAN_KEY,
+        NX_BASESCAN_KEY: process.env.VITE_BASESCAN_KEY,
+        NX_SEPOLIA_ALCHEMY_KEY: process.env.VITE_SEPOLIA_ALCHEMY_KEY,
+        NX_BASE_ALCHEMY_KEY: process.env.VITE_BASE_ALCHEMY_KEY,
       },
     },
     optimizeDeps: {

@@ -131,7 +131,7 @@ export const fetchRegistryMembers = async ({
   const members = (await client.readContract({
     abi: APP_ABIS.NETWORK_REGISTRY,
     address: registryAddress,
-    functionName: "getMembers",
+    functionName: "getMembers", // TODO: should paginate to cover larger member lists
     args: [],
   })) as Member[];
 
@@ -148,10 +148,14 @@ export const fetchRegistryMembers = async ({
         args: [membersSorted.map((m) => m.account)],
       })) as [])
     : [];
+  
+  const allocMap = Object.fromEntries(
+    ((percAllocations?.[0] || []) as []).map((val, idx) => [val, percAllocations[1][idx]])
+  );
 
   membersSorted.forEach((m, idx) => {
-    // 10000 is the multiplier for the contract
-    m.percAlloc = percAllocations[1][idx]/10000; // TODO? isn't 1e6?
+    // TODO: 10000 is the multiplier for the contract
+    m.percAlloc = (allocMap[m.account] || 0) / 10000;
   });
 
   return {
@@ -273,7 +277,7 @@ export const checkRegistryState = async ({
     args: [splitAddress]
   }) as EthAddress);
 
-  const newPotentialControllerAddress = splitMainAddress && (await client.readContract({
+  const newPotentialControllerAddress: EthAddress | undefined = splitMainAddress && (await client.readContract({
     abi: APP_ABIS.ISPLIT_MAIN,
     address: splitMainAddress,
     functionName: "getNewPotentialController",

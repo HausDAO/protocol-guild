@@ -26,6 +26,9 @@ cp .env.sample .env
 ```yaml
 VITE_RIVET_KEY
 VITE_WALLET_CONNECT_ID
+VITE_ETHERSCAN_KEY
+VITE_GRAPH_API_KEY_MAINNET # mandatory if working on Ethereum mainnet
+VITE_TARGET_KEY # either TEST or PRODUCTION
 ```
 
 Get a free Rivet key [here](https://rivet.cloud/)

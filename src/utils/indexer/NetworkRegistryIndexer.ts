@@ -2,16 +2,19 @@ import { Abi, AbiEvent } from "abitype";
 import { debounce } from "lodash";
 import { PublicClient } from "viem";
 
+import { ValidNetwork as ValidNetworkBase } from "@daohaus/keychain-utils";
 import { EthAddress, ZERO_ADDRESS } from "@daohaus/utils";
 
 import { db, NetworkRegistryDB } from "./db";
 import { EventHandler, getEventHandler } from "./eventHandlers";
 import { ValidNetwork } from "../keychain";
+import { fetchProposalsByProcessedTxHash } from "../dao";
 
 interface NetworkRegistryIndexerInterface {
   db: NetworkRegistryDB;
   subscribe: (
     aggregateByTxHash: boolean,
+    daoProposal: boolean,
     chainId: ValidNetwork,
     address: EthAddress,
     event: AbiEvent,
@@ -83,15 +86,35 @@ class NetworkRegistryIndexer implements NetworkRegistryIndexerInterface {
               events
             );
 
-            // TODO: get block ranges
-            const block = await this._publicClient.getBlock({ blockNumber: currentBlockNo });
+            const blocksInfo: {[key: number]: any} = Object.fromEntries(
+                await Promise.all(
+                [... new Set(events.map(e => e.blockNumber))].map(
+                  async (blockNumber) => [blockNumber, await this._publicClient.getBlock({ blockNumber })]
+                )
+              )
+            );
 
             if (s.aggregateByTxHash) {
               // TODO: skip for now
               console.log("Skipping event with aggregateByTxHash=true")
             } else {
+              const daoProposals = s.daoProposal ?
+                (
+                  await fetchProposalsByProcessedTxHash({
+                    networkId: `0x${chainId.toString(16)}` as ValidNetworkBase,
+                    txHashes: events.map(e => e.transactionHash),
+                  })
+                ) : [];
               await Promise.all(
-                events.map(async (e) => eventHandler(s.event.name, e, this._publicClient, block.timestamp))
+                events.map(async (e) =>
+                  eventHandler(
+                    s.event.name,
+                    e,
+                    this._publicClient,
+                    blocksInfo[Number(e.blockNumber)].timestamp,
+                    daoProposals.find(p => p.processTxHash === e.transactionHash)
+                  )
+                )
               );
             }
           }
@@ -160,6 +183,7 @@ class NetworkRegistryIndexer implements NetworkRegistryIndexerInterface {
 
   subscribe = async (
     aggregateByTxHash: boolean,
+    daoProposal: boolean,
     chainId: ValidNetwork,
     address: EthAddress,
     event: AbiEvent,
@@ -183,6 +207,7 @@ class NetworkRegistryIndexer implements NetworkRegistryIndexerInterface {
     try {
       const id = await this.db.subscriptions.add({
         aggregateByTxHash,
+        daoProposal,
         chainId: Number(chainId),
         address,
         event,

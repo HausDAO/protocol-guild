@@ -1,9 +1,11 @@
-import styled from "styled-components";
+import { RiExternalLinkLine } from "react-icons/ri";
+import styled, { useTheme } from "styled-components";
 
-import { ParMd, ProfileAvatar } from "@daohaus/ui";
+import { Link, ParMd, ProfileAvatar } from "@daohaus/ui";
 import { truncateAddress } from "@daohaus/utils";
 
 import { useMemberProfile } from "../../hooks/useMemberProfile";
+import { useTargets } from "../../hooks/useTargets";
 
 const MemberBox = styled.div`
   display: flex;
@@ -21,6 +23,7 @@ export const MemberProfile = ({
   className?: string;
 }) => {
   const { profile } = useMemberProfile({ address });
+  const target = useTargets();
 
   return (
     <MemberBox className={className}>
@@ -30,6 +33,19 @@ export const MemberProfile = ({
         className="avatar"
       />
       <ParMd>{profile?.ens || truncateAddress(address)}</ParMd>
+      <Link
+        RightIcon={CustomRightIcon}
+        href={`https://app.splits.org/accounts/${address}/?chainId=${Number(target.CHAIN_ID)}`}
+        showExternalIcon={false}
+      />
     </MemberBox>
   );
 };
+
+// TODO: how to avoid this using custom theme
+const CustomRightIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  const theme = useTheme();
+  return (
+    <RiExternalLinkLine {...props} color={theme.addressDisplay.icon.color} />
+  );
+}

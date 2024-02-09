@@ -6,6 +6,7 @@ import { Registry } from "../hooks/context/RegistryContext";
 
 type ProposalDialogProps = {
   dialogTrigger: React.ReactNode;
+  error?: React.ReactNode;
   proposalDescription: string;
   proposalDetails: React.ReactNode;
   proposalAdditionalInfo: React.ReactNode;
@@ -27,6 +28,7 @@ export const DialogActions = styled.div`
 
 export const ProposalDialog = ({
   dialogTrigger,
+  error,
   proposalDescription,
   proposalDetails,
   proposalAdditionalInfo,
@@ -63,6 +65,12 @@ export const ProposalDialog = ({
               </ParMd>
               {proposalAdditionalInfo}
             </ContentParagraph>
+
+            {error && (
+              <DialogActions>
+                {error}
+              </DialogActions>
+            )}
 
             <DialogActions>
               {proposalSubmitTrigger}

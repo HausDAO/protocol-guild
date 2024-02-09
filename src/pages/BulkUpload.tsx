@@ -47,8 +47,10 @@ export const BulkUpload = () => {
   return (
     <SingleColumnLayout title="Member Registry - Bulk Upload">
       <ParMd>
-        Upload a CSV file with the following columns: address, modifier,
-        startDate
+        Upload a CSV file with the following column headers:
+      </ParMd>
+      <ParMd>
+        address, multiplier, startDate
       </ParMd>
       <StyledDivider />
 

@@ -21,6 +21,7 @@ export interface SyncAction {
   submitted: boolean;
   processed: boolean;
   timestamp: BigInt;
+  daoProposalId?: string;
 };
 
 export interface Member {
@@ -34,6 +35,7 @@ export interface MemberAction {
   memberAddress: EthAddress;
   timestamp: BigInt;
   txHash: string;
+  daoProposalId?: string;
 }
 
 export interface ActivityUpdate {
@@ -44,6 +46,7 @@ export interface ActivityUpdate {
 
 export interface Subscription {
   aggregateByTxHash: boolean;
+  daoProposal: boolean;
   chainId: number;
   address: EthAddress;
   event: AbiEvent;
@@ -64,7 +67,7 @@ export class NetworkRegistryDB extends Dexie {
 
   constructor() {
     super("networkRegistryDb");
-    this.version(1).stores({
+    this.version(2).stores({
       subscriptions:
         "[chainId+address+event.name], address, lastBlock, event.name, chainId",
       replicas: "[chainId+address]",
