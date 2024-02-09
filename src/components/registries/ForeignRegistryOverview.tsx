@@ -72,11 +72,16 @@ export const ForeignRegistryOverview = ({
             {replicaState?.warningMsg && (
               <Tag tagColor="yellow">{replicaState?.warningMsg}</Tag>
             )}
+            {!data?.DOMAIN_ID && (
+              <Tag tagColor="red">Not yet Supported</Tag>
+            )}
           </TagSection>
         </div>
-        <div className="right-section">
-          <RegistryMenu foreignRegistry={data} />
-        </div>
+        {Number(data?.DOMAIN_ID) > 0 && (
+          <div className="right-section">
+            <RegistryMenu foreignRegistry={data} />
+          </div>
+        )}
       </RegistryCardHeader>
       <DataGrid>
         <>

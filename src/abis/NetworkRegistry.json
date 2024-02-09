@@ -5,6 +5,38 @@
     "type": "constructor"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "target",
+        "type": "address"
+      }
+    ],
+    "name": "AddressEmptyCode",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "implementation",
+        "type": "address"
+      }
+    ],
+    "name": "ERC1967InvalidImplementation",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ERC1967NonPayable",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "FailedInnerCall",
+    "type": "error"
+  },
+  {
     "inputs": [],
     "name": "InvalidInitialization",
     "type": "error"
@@ -50,6 +82,11 @@
       }
     ],
     "name": "InvalidMember__StartDateInTheFuture",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "MemberRegistry_InvalidCutoffDate",
     "type": "error"
   },
   {
@@ -142,6 +179,16 @@
   },
   {
     "inputs": [],
+    "name": "NetworkRegistry__OnlyReplicaRegistrySync",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NetworkRegistry__UnauthorizedToUpgrade",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "NetworkRegistry__ValueSentLessThanRelayerFees",
     "type": "error"
   },
@@ -175,6 +222,22 @@
   {
     "inputs": [],
     "name": "Split_ControlNotHandedOver",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "UUPSUnauthorizedCallContext",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "slot",
+        "type": "bytes32"
+      }
+    ],
+    "name": "UUPSUnsupportedProxiableUUID",
     "type": "error"
   },
   {
@@ -470,6 +533,32 @@
     ],
     "name": "UpdateMemberSeconds",
     "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "implementation",
+        "type": "address"
+      }
+    ],
+    "name": "Upgraded",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "UPGRADE_INTERFACE_VERSION",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     "inputs": [
@@ -864,6 +953,19 @@
   },
   {
     "inputs": [],
+    "name": "proxiableUUID",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "renounceOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -1221,6 +1323,11 @@
   {
     "inputs": [
       {
+        "internalType": "uint32",
+        "name": "_cutoffDate",
+        "type": "uint32"
+      },
+      {
         "internalType": "address[]",
         "name": "_sortedList",
         "type": "address[]"
@@ -1300,7 +1407,13 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint32",
+        "name": "_cutoffDate",
+        "type": "uint32"
+      }
+    ],
     "name": "updateSecondsActive",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -1348,6 +1461,52 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint32[]",
+        "name": "_chainIds",
+        "type": "uint32[]"
+      },
+      {
+        "internalType": "address[]",
+        "name": "_newImplementations",
+        "type": "address[]"
+      },
+      {
+        "internalType": "bytes[]",
+        "name": "_data",
+        "type": "bytes[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_relayerFees",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "upgradeNetworkRegistryImplementation",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newImplementation",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
+    ],
+    "name": "upgradeToAndCall",
+    "outputs": [],
+    "stateMutability": "payable",
     "type": "function"
   },
   {

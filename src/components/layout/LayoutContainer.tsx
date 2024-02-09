@@ -137,9 +137,9 @@ const Layout = ({
         pathname={location.pathname}
         navLinks={[
           { label: "Home", href: `/` },
+          { label: "Bulk Edit", href: `/membership` },
           { label: "Registries", href: `/registries` },
           { label: "Activity Logs", href: `/history` },
-          { label: "Bulk Edit", href: `/membership` },
           { label: "DAO Proposals", href: `/proposals` },
         ]}
         // dropdownTriggerLabel="Membership"

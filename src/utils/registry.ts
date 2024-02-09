@@ -150,7 +150,7 @@ export const fetchRegistryMembers = async ({
     : [];
   
   const allocMap = Object.fromEntries(
-    (percAllocations[0] as []).map((val, idx) => [val, percAllocations[1][idx]])
+    ((percAllocations?.[0] || []) as []).map((val, idx) => [val, percAllocations[1][idx]])
   );
 
   membersSorted.forEach((m, idx) => {
@@ -277,7 +277,7 @@ export const checkRegistryState = async ({
     args: [splitAddress]
   }) as EthAddress);
 
-  const newPotentialControllerAddress = splitMainAddress && (await client.readContract({
+  const newPotentialControllerAddress: EthAddress | undefined = splitMainAddress && (await client.readContract({
     abi: APP_ABIS.ISPLIT_MAIN,
     address: splitMainAddress,
     functionName: "getNewPotentialController",

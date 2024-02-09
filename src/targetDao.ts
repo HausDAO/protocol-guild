@@ -37,36 +37,30 @@ export const TARGETS: {
  } = {
   "TEST": {
     REPLICA_CHAINS: [ // what are eligible replica networks
-      { // optimism goerli
+      { // optimism sepolia
         NETWORK_LOGO: "",
-        NETWORK_NAME: "Optimism Goerli",
-        NETWORK_ID: "0x1a4",
-        DOMAIN_ID: "1735356532" // Connext domain id
+        NETWORK_NAME: "Optimism Sepolia",
+        NETWORK_ID: "0xaa37dc",
+        DOMAIN_ID: "0", // TODO:
       },
       { // arbitrum goerli
         NETWORK_LOGO: "",
-        NETWORK_NAME: "Arbitrum Goerli",
-        NETWORK_ID: "0x66eed",
-        DOMAIN_ID: "1734439522"
-      },
-      { // polygon mumbai
-        NETWORK_LOGO: "",
-        NETWORK_NAME: "Polygon Mumbai",
-        NETWORK_ID: "0x13881",
-        DOMAIN_ID: "9991"
+        NETWORK_NAME: "Arbitrum Sepolia",
+        NETWORK_ID: "0x66eee",
+        DOMAIN_ID: "0", // TODO:
       },
     ],
     CONNEXT_ENV: "testnet",
-    DAO_ADDRESS: "0xbfb34e1e13d68922cb86769f4abcdab9bd68e5ff",
-    SAFE_ADDRESS: "0x7201030e136734e92560427b1346af2219d12074",
-    CHAIN_ID: '0x5',
-    REGISTRY_ADDRESS: "0x9eF64c547477b2263ed56821ce6Be79564824F44",
-    SPLIT_ADDRESS: "0xe650e123237920d5f620579fb42670145361a0a9",
-    DOMAIN_ID: "1735353714",
+    DAO_ADDRESS: "0x832ec97051ed6a1abdbafa74dace307af59b1ef3",
+    SAFE_ADDRESS: "0x79c740401f76b8a7b26baf3e522571add38362d0",
+    CHAIN_ID: '0xaa36a7',
+    REGISTRY_ADDRESS: "0x7A69DbBFF504FAB98ADe857992BC6d1Ae94Ba0d0",
+    SPLIT_ADDRESS: "0xccc8922d223f5bb2e623bf100970913ac85fd17d",
+    DOMAIN_ID: "0", // TODO:
     NETWORK_LOGO: "",
-    NETWORK_NAME: "Ethereum Goerli",
-    START_BLOCK: BigInt(10426416), // block No where the main registry was deployed
-    SHARES_TO_MINT: BigInt(100e18), // shares to mint to new members
+    NETWORK_NAME: "Ethereum Sepolia",
+    START_BLOCK: BigInt(5249508), // block No where the main registry was deployed
+    SHARES_TO_MINT: BigInt(1e18), // shares to mint to new members
   },
   "PRODUCTION": {
     REPLICA_CHAINS: [ // what are eligible replica networks

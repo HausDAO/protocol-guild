@@ -164,7 +164,7 @@ export const SyncUpdateAllDialog = ({
           )}
           {registryState?.warningMsg && (
             <div style={{padding: "3rem 0"}}>
-            <ErrorText>{registryState.warningMsg}</ErrorText>
+            <ErrorText>{`${registryState.warningMsg}. Check the Registry Settings for further info.`}</ErrorText>
           </div>
           )}
           {!connextFeeData?.signerHasBalance && (
